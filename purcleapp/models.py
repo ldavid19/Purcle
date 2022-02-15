@@ -68,3 +68,20 @@ class Post(models.Model):       # created by Nicole
     def get_post_time(self):
         return self.post_time
 
+# does not check if the user has already reacted to post
+class Reaction:                 # created by Nicole
+    # Reaction.id is created automatically
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)   # if the User is deleted, so will the Reaction
+    reaction_type = models.IntegerField()   # 0 for like, 1 for dislike
+    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)   # if the Post is deleted, so will the Reaction
+
+    # Reaction Getters
+    def get_reaction_id(self):
+        return self.id
+    def get_user_id(self):
+        return self.user_id
+    def get_reaction_type(self):
+        return self.reaction_type
+    def get_post_id(self):
+        return self.post_id
+
