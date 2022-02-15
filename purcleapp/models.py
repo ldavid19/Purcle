@@ -2,6 +2,10 @@ from django.db import models
 
 class User(models.Model):       # dummy class made for testing, Nicole
     user_email = models.CharField(max_length=50)
+    user_profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images')
+    user_bio = models.TextField(max_length=500)
+    
+
 
     def delete_user(self):
         self.delete()
