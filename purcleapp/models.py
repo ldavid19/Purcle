@@ -1,14 +1,23 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-class User(models.Model):       # dummy class made for testing, Nicole
-    user_email = models.CharField(max_length=50)
+User._meta.get_field('email').blank = False
+
+class UserProfile(models.Model):       # dummy class made for testing, Nicole
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    profile_name = models.CharField(max_length=100, null=True)
     user_profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images')
     user_bio = models.TextField(max_length=500)
-    
+    user_followers_count = models.FloatField(default=0, null=False)
+    user_following_count = models.FloatField(default=0, null=False)
+    allow_only_followed_users = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.name
 
     def delete_user(self):
         self.delete()
+
 
 class Topic(models.Model):      # created by Nicole
     topic_id = models.CharField(max_length=100, primary_key=True, unique=True)   # topic_id replaces the automatically created id
@@ -69,7 +78,7 @@ class Post(models.Model):       # created by Nicole
         return self.post_time
 
 # does not check if the user has already reacted to post
-class Reaction:                 # created by Nicole
+class Reaction(models.Model):                 # created by Nicole
     # Reaction.id is created automatically
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)   # if the User is deleted, so will the Reaction
     reaction_type = models.IntegerField()   # 0 for like, 1 for dislike
