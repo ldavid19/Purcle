@@ -5,6 +5,7 @@ function NavigationBar() {
     <Nav
       activeKey="/home"
       onSelect={(selectedKey) => alert(`selected ${selectedKey}`)}
+      style={{backgroundColor: "#bb8ee6"}}
     >
       <Nav.Item>
         <Nav.Link href="/home">Active</Nav.Link>
