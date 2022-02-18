@@ -28,6 +28,28 @@
   color: #61dafb;
 }
 
+.SignUp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem;
+}
+
+.SignUpCard {
+  padding: 1rem;
+}
+
+.form-group {
+  margin: 1rem;
+  text-align: left;
+}
+
+
+
+.btn {
+  margin: 1rem;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
