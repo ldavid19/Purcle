@@ -1,5 +1,5 @@
 import { Container, Row } from 'react-bootstrap';
-
+import React, { Component }  from 'react';
 import NavigationBar from "../Navbar/NavigationBar.js";
 import Body from "./Body.js";
 

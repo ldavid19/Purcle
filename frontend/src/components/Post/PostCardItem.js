@@ -1,5 +1,5 @@
 import { ListGroup, Row, Col, Image } from 'react-bootstrap';
-
+import React from 'react';
 function PostCardItem(props) {
     const imgSize = 50;
 
