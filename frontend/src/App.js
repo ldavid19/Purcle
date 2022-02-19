@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import UserProfile from '../../purcleapp/models.py';
 
 function App() {
   return (
@@ -17,6 +18,9 @@ function App() {
         >
           Learn React
         </a>
+        <p>
+          {UserProfile.objects.all()}
+        </p>
       </header>
     </div>
   );
