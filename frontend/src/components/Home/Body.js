@@ -1,5 +1,5 @@
 import { Container, Row } from 'react-bootstrap';
-
+import React, { Component }  from 'react';
 import NewPost from "../Post/NewPost.js";
 import PostCard from '../Post/PostCard';
 

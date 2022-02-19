@@ -1,5 +1,5 @@
 import { ListGroup } from 'react-bootstrap';
-
+import React from 'react';
 import PostCardItem from './PostCardItem';
 
 function PostCard() {
