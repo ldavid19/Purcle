@@ -21,6 +21,12 @@ function errorMessage(title, type, text, image) {
 
 function NewPost() {
 
+    const data = [
+        {label: "birbs", value: "birbs"},
+        {label: "cooking", value: "cooking"},
+        {label: "purdue", value: "purdue"}
+    ]
+
     const [show, setShow] = useState(false);
 
     const handleSubmit = () =>{
