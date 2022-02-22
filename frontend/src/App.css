@@ -28,12 +28,24 @@
   color: #61dafb;
 }
 
+.Login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem;
+}
+
+.LoginCard {
+  padding: 1rem;
+}
+
 .SignUp {
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 1rem;
 }
+
 
 .SignUpCard {
   padding: 1rem;

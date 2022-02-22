@@ -3,8 +3,7 @@ import React, { Component, useState, useEffect }  from 'react';
 import PostCard from '../Post/PostCard';
 
 import { getPost } from '../../api/apiRequest.js';
-// import React,{useEffect,useState,useContext} from 'react'
-// import {UserContext} from '../../App'
+
 
 const Profile  = ()=>{
     const [posts, setPosts] = useState([]);
