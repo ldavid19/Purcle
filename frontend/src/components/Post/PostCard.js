@@ -1,19 +1,44 @@
 import { ListGroup } from 'react-bootstrap';
-
+import React, { useEffect, useState } from 'react';
 import PostCardItem from './PostCardItem';
 
-function PostCard() {
-    let arr = ["title post 1", "title post 2", "title post 3", "title post 4", "title post 5", "title post 6", "title post 7", "title post 8"];
+function PostCard(props) {
+    const [list, setList] = useState([]);
 
-    let list = arr.map((name, index) => (
-        <PostCardItem key={index} title={name} textPost={index % 2}/>
-    ));
+    //console.log(props.postList)
     
-    return (
-        <ListGroup>
-            {list}
-        </ListGroup>
-    );
+    useEffect(() => {
+        var posts = Array.from(props.postList);
+
+        var postcards = posts.map((post) => (
+            <PostCardItem 
+                key={post.post_id} 
+                title={post.post_title}
+                content={post.post_content}
+                topic={post.post_topic}
+                type={post.post_type}
+                user={post.user_id}
+                anon={post.post_is_anonymous}
+                date={post.post_time}
+            />
+        ));
+
+        setList(postcards);
+    }, [props.postList])
+
+    if (props.postList.length > 0) {
+        return (
+            <ListGroup>
+                {list}
+            </ListGroup>
+        );
+    } else {
+        return (
+            <h2>No posts retrieved :(</h2>
+        )
+    }
+    
+    
 }
 
 export default PostCard;
