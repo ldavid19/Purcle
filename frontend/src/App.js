@@ -10,21 +10,40 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link
+  Link,
+  Outlet
 } from "react-router-dom";
 
 function App() {
   return (
     <div className="App">
       <Router>
-        <NavigationBar />
-
+        
         <Routes>
-          <Route exact path="/" element={<Home/>}/>
+          {/* Put pages with navbar here */}
+          <Route path="/" element={<LayoutsWithNavbar />}>
+            <Route path="/" element={<Home/>}/>
+            <Route path="/following" element={<Home/>}/>
+            <Route path="/messages" element={<Home/>}/>
+            <Route path="/profile" element={<Home/>}/>
+          </Route>
+          
+          {/* Put pages without navbar here */}
+          <Route path="/signup" element={<SignUp/>}/>
         </Routes>
 
       </Router>
     </div>
+  );
+}
+
+function LayoutsWithNavbar() {
+  return (
+    <>
+
+      <NavigationBar />
+      <Outlet /> 
+    </>
   );
 }
 

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import React from 'react';
 import { Button, Modal } from "react-bootstrap";
-import Select from 'react-select';
 
 function errorMessage(title, type, text, image) {
     let message = "";

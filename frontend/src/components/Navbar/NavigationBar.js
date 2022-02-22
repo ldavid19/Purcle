@@ -48,7 +48,7 @@ function NavigationBar() {
       <NavDropdown align="end" title="Profile" id="collasible-nav-dropdown" >
         <NavDropdown.Item href="#action/3.1">Followed Users</NavDropdown.Item>
         <NavDropdown.Item href="#action/3.2">Followed Topics</NavDropdown.Item>
-        <NavDropdown.Item href="#action/3.3">Profile</NavDropdown.Item>
+        <NavDropdown.Item as={Link} to={"/profile"}>Profile</NavDropdown.Item>
         <NavDropdown.Divider />
         <>
           <Button variant="danger" onClick={handleShow}>
@@ -64,7 +64,7 @@ function NavigationBar() {
               <Button variant="secondary" onClick={handleClose}>
                 No
               </Button>
-              <Button variant="primary" onClick={handleClose}>
+              <Button variant="primary" as={Link} to={"/signup"}>
                 Yes
               </Button>
             </Modal.Footer>
