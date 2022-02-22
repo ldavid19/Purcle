@@ -1,7 +1,6 @@
 import { useState } from "react";
 import React from 'react';
 import { Button, Modal } from "react-bootstrap";
-import Select from 'react-select';
 
 function errorMessage(title, type, text, image) {
     let message = "";
@@ -75,7 +74,6 @@ function NewPost() {
             <Button variant="primary" onClick={handleShow}>
                 Create new post!
             </Button>
-    
             <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>New Post</Modal.Title>
