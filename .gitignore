@@ -1,6 +1,6 @@
-purcleapp/_pycache_/
-migrations/_pycache_/
-Purcle/_pycache_/
+purcleapp/__pycache__/
+migrations/__pycache__/
+Purcle/__pycache__/
 db.sqlite3
 *.pyc
 
