@@ -1,12 +1,18 @@
 import { useState } from "react";
 import React from 'react';
 import { Button, Modal } from "react-bootstrap";
+import {View, StyleSheet, Text} from 'react-native';
 
 function NewPost() {
     const [show, setShow] = useState(false);
   
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    const [checked, setChecked] = React.useState(false);
+    const handleChange = () => {
+        setChecked(!checked);
+    };
   
     return (
         <>
@@ -18,11 +24,21 @@ function NewPost() {
             <Modal.Header closeButton>
                 <Modal.Title>New post</Modal.Title>
             </Modal.Header>
-            <Modal.Body>Sike u can't write a post yet lol</Modal.Body>
+            <Modal.Body>
+                <label>
+                    Anonymous{' '}
+                    <input type="checkbox" 
+                    checked={checked}
+                    onChange={handleChange}/>
+                </label>
+            </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                {/*<Button variant="secondary" onClick={handleClose}>
                 Cancel
-                </Button>
+    </Button> */}
+                <Text style={[{textAlign:'left'}]}>
+                    <p>{checked ? ' ' : checked.toString()}</p>
+                </Text>
                 <Button variant="primary" onClick={handleClose}>
                 Submit
                 </Button>
