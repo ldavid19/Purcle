@@ -64,7 +64,7 @@ function NavigationBar() {
               <Button variant="secondary" onClick={handleClose}>
                 No
               </Button>
-              <Button variant="primary" as={Link} to={"/signup"}>
+              <Button variant="primary" as={Link} to={"/login"}>
                 Yes
               </Button>
             </Modal.Footer>
