@@ -11,12 +11,42 @@ class UserProfile(models.Model):
     user_followers_count = models.FloatField(default=0, null=False)
     user_following_count = models.FloatField(default=0, null=False)
     allow_only_followed_users = models.BooleanField(default=False)
+    first_name = models.CharField(max_length=50, null=True)
+    last_name = models.CharField(max_length=50, null=True)
+    user_email = models.CharField(max_length=200, null=False)
 
     def __str__(self):
         return self.name
 
     def delete_user(self):
         self.delete()
+
+    def get_follower_count(self):
+        return self.user_profile_picture
+    
+    def get_following_count(self):
+        return self.user_following_count
+
+    def get_bio(self):
+        return self.user_bio
+
+    def get_fist_name(self):
+        return self.first_name
+
+    def get_last_name(self):
+        return self.last_name
+
+    def get_profile_pic(self):
+        return self.user_profile_picture
+    
+    def get_email(self):
+        return self.user_email
+
+    def get_allow_only_followed_users(self):
+        return self.allow_only_followed_users
+
+    def set_allow_only_followed_users(self, boolean):
+        self.allow_only_followed_users = boolean
 
 
 class Topic(models.Model):      # created by Nicole
