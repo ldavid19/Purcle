@@ -30,7 +30,7 @@ function App() {
           </Route>
           
           {/* Put pages without navbar here */}
-          <Route path="/signup" element={<SignUp/>}/>
+          <Route path="/login" element={<Login/>}/>
         </Routes>
 
       </Router>
