@@ -5,7 +5,7 @@ import Home from "../src/components/Home/Home.js";
 import SignUp from './components/Signup/SignUp';
 import Login from './components/Login/Login';
 import NavigationBar from './components/Navbar/NavigationBar';
-
+import Profile from './components/Profile/Profile.js'
 
 import {
   BrowserRouter as Router,
@@ -33,6 +33,9 @@ function App() {
           <Route path="/login" element={<Login/>}/>
         </Routes>
 
+        <Routes>
+          <Route exact path="/profile" element={<Profile/>}/>
+        </Routes>
       </Router>
     </div>
   );
