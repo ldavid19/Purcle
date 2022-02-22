@@ -1,6 +1,6 @@
 import { useState } from "react";
 import React from 'react';
-import { Button, Modal } from "react-bootstrap";
+import { Button, Dropdown, Modal } from "react-bootstrap";
 
 function errorMessage(title, type, text, image) {
     let message = "";
@@ -21,10 +21,10 @@ function errorMessage(title, type, text, image) {
 
 function NewPost() {
 
-    const data = [
-        {label: "birbs", value: "birbs"},
-        {label: "cooking", value: "cooking"},
-        {label: "purdue", value: "purdue"}
+    const options = [
+        {id: 'birbs', name: 'birbs'},
+        {id: 'cooking', name: 'cooking'},
+        {id: 'purdue', name: 'purdue'}
     ]
 
     const [show, setShow] = useState(false);
