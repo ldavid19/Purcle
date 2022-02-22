@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 User._meta.get_field('email').blank = False
 
-class UserProfile(models.Model):       # dummy class made for testing, Nicole
+class UserProfile(models.Model):
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     profile_name = models.CharField(max_length=100, null=True)
     user_profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images')
@@ -79,7 +79,7 @@ class Post(models.Model):       # created by Nicole
                                                                                 # happen, but in case it does), the Post's
                                                                                 # Topic is set to null
     post_type = models.IntegerField()   # 0 being a text post, 1 being a photo post
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)   # if the User is deleted, so will the Post
+    user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)   # if the UserProfile is deleted, so will the Post
     post_is_anonymous = models.BooleanField()
     post_title = models.CharField(max_length=100)
     post_content = models.CharField(max_length=500) # either the text field for a text post, or the photo for a photo post
@@ -110,7 +110,7 @@ class Post(models.Model):       # created by Nicole
 # does not check if the user has already reacted to post
 class Reaction(models.Model):                 # created by Nicole
     # Reaction.id is created automatically
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)   # if the User is deleted, so will the Reaction
+    user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)   # if the UserProfile is deleted, so will the Reaction
     reaction_type = models.IntegerField()   # 0 for like, 1 for dislike
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)   # if the Post is deleted, so will the Reaction
 
@@ -123,4 +123,3 @@ class Reaction(models.Model):                 # created by Nicole
         return self.reaction_type
     def get_post_id(self):
         return self.post_id
-
