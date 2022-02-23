@@ -20,6 +20,7 @@ function PostCard(props) {
                 user={post.user_id}
                 anon={post.post_is_anonymous}
                 date={post.post_time}
+                score={post.post_score}
             />
         ));
 
@@ -28,7 +29,7 @@ function PostCard(props) {
 
     if (props.postList.length > 0) {
         return (
-            <ListGroup>
+            <ListGroup style={{padding:"0px"}}>
                 {list}
             </ListGroup>
         );
