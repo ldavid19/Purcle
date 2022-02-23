@@ -143,7 +143,11 @@ export default class SignUp extends Component {
 
                         <div className="forgot-password">
                             <p>
+<<<<<<< HEAD
                                 Already registered? <a href="#">sign in</a>
+=======
+                                Already registered <a href="/">sign in?</a>
+>>>>>>> main
                             </p>
                         </div>
                         
