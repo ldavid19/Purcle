@@ -16,8 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
+from django.conf.urls import include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path(r'^admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='index.html')),
+    # path(r'^', include('Purcle.urls')),
 ]

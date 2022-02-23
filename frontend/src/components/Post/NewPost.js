@@ -1,6 +1,6 @@
 import { useState } from "react";
 import React from 'react';
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Image, } from "react-bootstrap";
 
 function errorMessage(title, type, text, image) {
     let message = "";
@@ -13,9 +13,17 @@ function errorMessage(title, type, text, image) {
     if (type.localeCompare("Text") === 0 && text.length === 0) {
         message = message + "Please insert text.\n";
     }
-    if (type.localeCompare("Image") === 0 && image.length === 0) {
+    if (type.localeCompare("Image") === 0 && text.length === 0) {
         message = message + "Please insert image.\n";
+    } else if (type.localeCompare("Image") === 0 && text.length < 5) {
+        message = message + "Filetype not supported.\n";
+    } else if (type.localeCompare("Image") === 0
+    && text.substring(text.length - 4, text.length).localeCompare(".png") !== 0
+    && text.substring(text.length - 4, text.length).localeCompare(".jpg") !== 0
+    && text.substring(text.length - 5, text.length).localeCompare(".jpeg") !== 0) {
+        message = message + "Filetype not supported.\n";
     }
+    message = message + text;
     return message;
 }
 
@@ -38,7 +46,7 @@ function NewPost() {
     const handleClose = () => {
         setShow(false);
         setTitle("");
-        setImage("");
+        setImage(null);
         setText("");
         setType("");
         setError("");
@@ -58,9 +66,10 @@ function NewPost() {
         setTitle(ev.target.value);
     };
 
-    const [image, setImage] = React.useState("");
+    const [image, setImage] = React.useState(null);
     const handleImageChange = ev => {
-        setImage(ev.target.value);
+        setImage(URL.createObjectURL(ev.target.files[0]));
+        setText(ev.target.value);
     };
 
     const [text, setText] = React.useState("");
@@ -123,16 +132,18 @@ function NewPost() {
                                 cols={5}
                             />
                         :
-                            <textarea
-                                name="image"
-                                placeholder=" Image"
-                                value={image || ""}
-                                onChange={handleImageChange}
-                                style={{width: "465px"}}
-                                maxlength="100"
-                                rows={1}
-                                cols={5}
-                            />
+                            <form>
+                                <input
+                                    type="file"
+                                    onChange={handleImageChange}
+                                />
+                                <p></p>
+                                { image.length > 0 ?
+                                            <Image
+                                                src={image} 
+                                            />
+                                : ""}
+                                </form>
                     :
                         <p></p>
                 }
