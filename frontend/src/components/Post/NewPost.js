@@ -1,6 +1,8 @@
 import { useState } from "react";
 import React from 'react';
-import { Button, Modal } from "react-bootstrap";
+
+import { Modal, Col, Row } from "react-bootstrap";
+import { Button } from '@mui/material';
 
 function errorMessage(title, type, text, image) {
     let message = "";
@@ -71,8 +73,8 @@ function NewPost() {
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Create new post!
+            <Button variant="contained" onClick={handleShow}>
+                Create new post
             </Button>
     
             <Modal show={show} onHide={handleClose}>
@@ -80,18 +82,45 @@ function NewPost() {
                 <Modal.Title>New Post</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <select onChange={handleTypeChange}>                        
-                    <option type="default" selected disabled hidden>Choose post type</option>
-                    <option type="text">Text</option>
-                    <option type="image">Image</option>
-                </select>
-                {' '}
-                <label>
-                    Anonymous{' '}
-                    <input type="checkbox" 
-                    checked={checked}
-                    onChange={handleAnonChange}/>
-                </label>
+                <Row>
+                <Col>
+                    <select onChange={handleTypeChange}>                        
+                        <option type="default" selected disabled hidden>Choose post type</option>
+                        <option type="text">Text</option>
+                        <option type="image">Image</option>
+                    </select>
+                    {' '}
+                </Col>
+                
+                <Col>
+                
+                </Col>
+
+                <Col>
+                    <label>
+                        Anonymous{' '}
+                        <input type="checkbox" 
+                        checked={checked}
+                        onChange={handleAnonChange}/>
+                    </label>
+                    {' '}
+                </Col>
+                </Row>
+
+                <p></p>
+
+                
+                <textarea
+                    name="topic"
+                    placeholder=" Topic"
+                    value={title || ""}
+                    onChange={handleTitleChange}
+                    style={{width:"465px"}}
+                    maxlength="100"
+                    rows={1}
+                    cols={5}
+                />
+
                 <p></p>
                 <textarea
                     name="title"
@@ -112,7 +141,7 @@ function NewPost() {
                                 placeholder=" Insert text here"
                                 value={text || ""}
                                 onChange={handleTextChange}                       
-                                style={{width: "465px"}}
+                                style={{width: "465px", height: "300px"}}
                                 maxlength="500"
                                 rows={5}
                                 cols={5}
