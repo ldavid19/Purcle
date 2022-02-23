@@ -61,6 +61,17 @@
   margin: 1rem;
 }
 
+.gallery{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.item{
+  width: 30%
+}
+
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
