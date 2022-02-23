@@ -2,7 +2,7 @@ import { Container, Row } from 'react-bootstrap';
 import React, { Component, useState, useEffect }  from 'react';
 import PostCard from '../Post/PostCard';
 
-import { getPost, getUser } from '../../api/apiRequest.js';
+import { getPosts, getUser } from '../../api/apiRequest.js';
 
 
 function Profile(props) {
@@ -40,7 +40,7 @@ function Profile(props) {
     }, []);
 
     const getNewPosts = () => {
-        getPost()
+        getPosts()
         .then((res) => {
             setPosts(res);
         })
@@ -130,7 +130,7 @@ function Profile(props) {
                    />
                  
                </div>
-               <div class="down">
+               <div className="down">
                    <p></p>
                    {/* <div style="padding-top:5em;"></div> */}
                    <h4>{user.profile_name}</h4>
