@@ -36,7 +36,7 @@ function PostCardTitle(props) {
     return (
         <Col style={{textAlign: "left"}}>
             <h3 style={{fontSize:20}}> {props.title} </h3>
-            <p style={{margin: 0}}><a href={"#" + props.user }>user</a> in <a href="#">{props.topic}</a> | {getRelativeTime()}</p>
+            <p style={{margin: 0}}><a href={"#" + props.user }>{props.user}</a> in <a href="#">{props.topic}</a> | {getRelativeTime()}</p>
         </Col>
     );
 }
@@ -46,14 +46,14 @@ function PostCardItem(props) {
 
     /*
         key={post.post_id} 
-                title={post.post_title}
-                content={post.post_content}
-                topic={post.post_topic}
-                type={post.post_type}
-                user={post.user_id}
-                anon={post.post_is_anonymous}
-                date={post.post_time}
-        */
+        title={post.post_title}
+        content={post.post_content}
+        topic={post.post_topic}
+        type={post.post_type}
+        user={post.user_id}
+        anon={post.post_is_anonymous}
+        date={post.post_time}
+    */
 
     if (props.type) {
         //image post

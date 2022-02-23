@@ -7,6 +7,8 @@ import Login from './components/Login/Login';
 import NavigationBar from './components/Navbar/NavigationBar';
 import Profile from './components/Profile/Profile.js'
 
+import { getUser } from './api/apiRequest';
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -26,15 +28,11 @@ function App() {
             <Route path="/" element={<Home/>}/>
             <Route path="/following" element={<Home/>}/>
             <Route path="/messages" element={<Home/>}/>
-            <Route path="/profile" element={<Home/>}/>
+            <Route path="/profile" element={<Profile id={0} />}/>
           </Route>
           
           {/* Put pages without navbar here */}
           <Route path="/login" element={<Login/>}/>
-        </Routes>
-
-        <Routes>
-          <Route exact path="/profile" element={<Profile/>}/>
         </Routes>
       </Router>
     </div>
@@ -44,7 +42,6 @@ function App() {
 function LayoutsWithNavbar() {
   return (
     <>
-
       <NavigationBar />
       <Outlet /> 
     </>
