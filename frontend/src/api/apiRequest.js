@@ -1,23 +1,32 @@
 import { createRandPost, createRandUser } from "./testing.js";
 
+var allPosts = [];
+
 /* GET functions */
 
 function getReq() {
     console.log("oh")
 }
 
-async function getPosts() {
+async function getRandPosts() {
     var res = [];
 
     for (var i = 0; i < 100; i++) {
         res.push(createRandPost(i));
     }
 
+    allPosts = res;
+
     return res;
 }
 
-async function getPost() {
-    return createRandPost();
+async function getPost(id) {
+    return allPosts[id];
+}
+
+async function getAllPosts() {
+    console.log(allPosts);
+    return allPosts;
 }
 
 async function getUser() {
@@ -26,17 +35,31 @@ async function getUser() {
     return user;
 }
 
-async function getScore(post) {
-    return Math.floor(Math.random() * 500);
+async function getScore(id) {
+    return allPosts[id].post_score;
+}
+
+function databaseLength() {
+    return allPosts.length;
 }
 
 /* POST functions */
-async function upvote(post) {
-    console.log("upvoted!")
+async function makePost(post) {
+    allPosts.push(post);
 }
 
-async function downvote(post) {
+function incrementScore(id, offset) {
+    allPosts[id].post_score += offset;
+}
+
+async function upvote(id) {
+    incrementScore(id, 1);
+    //console.log("upvoted!")
+}
+
+async function downvote(id) {
+    incrementScore(id, -1);
     console.log("downvoted!")
 }
 
-export { getPosts, getPost, getUser, getScore, upvote, downvote };
+export { getRandPosts, getPost, getAllPosts, getUser, getScore, makePost, databaseLength, upvote, downvote };
