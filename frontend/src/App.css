@@ -46,6 +46,12 @@
   margin: 1rem;
 }
 
+.ProfileSetup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem;
+}
 
 .SignUpCard {
   padding: 1rem;

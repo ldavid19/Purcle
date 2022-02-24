@@ -22,6 +22,12 @@ export default class Login extends Component {
                                 <a href="#">Forgot Password?</a>
                             </p>
                         </div>
+
+                        <div className="signup">
+                            <p>
+                                No account? <a href="/signup">Sign Up here</a>
+                            </p>
+                        </div>
                         
                     </form>
                 </Card>
