@@ -40,6 +40,11 @@ function NewPost() {
 
     const handleSubmit = () =>{
         setError(errorMessage(title, type, text, topic));
+        /*
+        if (error.length === 0) {
+            handleClose();
+        }
+        */
     }
 
     const [error, setError] = React.useState("");
