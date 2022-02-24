@@ -12,14 +12,13 @@ function Home() {
 
     useEffect(() => {
         getPosts();
-    }, []);
+    }, [posts]);
 
     const getPosts = () => {
         getAllPosts()
         .then((res) => {
             setPosts(res);
             console.log(res);
-            console.log("fUCK")
         })
         .catch(err => console.error(`Error: ${err}`));
     }
