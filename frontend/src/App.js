@@ -26,15 +26,11 @@ function App() {
             <Route path="/" element={<Home/>}/>
             <Route path="/following" element={<Home/>}/>
             <Route path="/messages" element={<Home/>}/>
-            <Route path="/profile" element={<Home/>}/>
+            <Route path="/profile" element={<Profile/>}/>
           </Route>
           
           {/* Put pages without navbar here */}
           <Route path="/login" element={<Login/>}/>
-        </Routes>
-
-        <Routes>
-          <Route exact path="/profile" element={<Profile/>}/>
         </Routes>
       </Router>
     </div>
