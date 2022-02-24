@@ -90,7 +90,6 @@ function NewPost() {
     const handleTopicChange = ev => {
         setTopic(ev);
         //topics.sort(function(a, b){return b.value-a.value});
-        //comment
     }
 
     var topics = [
