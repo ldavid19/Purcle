@@ -1,12 +1,16 @@
 import { Container, Row } from 'react-bootstrap';
-import React, { Component, useState, useEffect }  from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import PostCard from '../Post/PostCard';
+import { Modal, Col, Image } from "react-bootstrap";
+import { Button } from '@mui/material';
 
 import { getPosts, getUser } from '../../api/apiRequest.js';
 
 
 function Profile(props) {
     const [posts, setPosts] = useState([]);
+
+    const [show, setShow] = useState(false);
 
     const nullUser = {
         profile_name: "User not found",
@@ -41,19 +45,26 @@ function Profile(props) {
 
     const getNewPosts = () => {
         getPosts()
-        .then((res) => {
-            setPosts(res);
-        })
-        .catch(err => console.error(`Error: ${err}`));
+            .then((res) => {
+                setPosts(res);
+            })
+            .catch(err => console.error(`Error: ${err}`));
     }
 
     const getNewUser = () => {
         getUser()
-        .then((res) => {
-            setUser(res);
-        })
-        .catch(err => console.error(`Error: ${err}`));
+            .then((res) => {
+                setUser(res);
+            })
+            .catch(err => console.error(`Error: ${err}`));
     }
+
+    const handleClose = () => {
+        setShow(false);
+    }
+    const handleShow = () => {
+        setShow(true);
+    };
 
     // const [mypics,setPics] = useState([])
     // const {state,dispatch} = useContext(UserContext)
@@ -81,8 +92,8 @@ function Profile(props) {
     //     })
     //     .then(res=>res.json())
     //     .then(data=>{
-    
-       
+
+
     //        fetch('/updatepic',{
     //            method:"put",
     //            headers:{
@@ -99,7 +110,7 @@ function Profile(props) {
     //            dispatch({type:"UPDATEPIC",payload:result.pic})
     //            //window.location.reload()
     //        })
-       
+
     //     })
     //     .catch(err=>{
     //         console.log(err)
@@ -111,78 +122,105 @@ function Profile(props) {
     // }
 
 
-   return (
-       <div style={{maxWidth:"550px",margin:"0px auto"}}>
-           <div style={{
-              margin:"18px 0px",
-               borderBottom:"1px solid grey"
-           }}>
+    return (
+        <div style={{ maxWidth: "550px", margin: "0px auto" }}>
+            <div style={{
+                margin: "18px 0px",
+                borderBottom: "1px solid grey"
+            }}>
 
-         
-           <div style={{
-               display:"flex",
-               justifyContent:"space-around",
-              
-           }}>
-               <div>
-                   <img style={{width:"160px",height:"160px",borderRadius:"80px"}}
-                   src={user.user_profile_picture}
-                   />
-                 
-               </div>
-               <div className="down">
-                   <p></p>
-                   {/* <div style="padding-top:5em;"></div> */}
-                   <h4>{user.profile_name}</h4>
-                   <h7>{user.user_bio}</h7>
-                   <div style={{display:"flex",justifyContent:"space-between",width:"108%"}}>
-                       <h6>3 posts</h6>
-                       <h6>{user.user_followers_count} followers</h6>
-                       <h6>{user.user_following_count} following</h6>
-                   </div>
 
-               </div>
-           </div>
-        
-            <div className="file-field input-field" style={{margin:"0px"}}>
-            <div className="btn #64b5f6 blue darken-1">
-                <span>Update Profile</span>
-                {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
-            </div>
-            {/* <div className="file-path-wrapper">
+                <div style={{
+                    display: "flex",
+                    justifyContent: "space-around",
+
+                }}>
+                    <div>
+                        <img style={{ width: "160px", height: "160px", borderRadius: "80px" }}
+                            src={user.user_profile_picture}
+                        />
+
+                    </div>
+                    <div className="down">
+                        <p></p>
+                        {/* <div style="padding-top:5em;"></div> */}
+                        <h4>{user.profile_name}</h4>
+                        <h7>{user.user_bio}</h7>
+                        <div style={{ display: "flex", justifyContent: "space-between", width: "108%" }}>
+                            <h6>3 posts</h6>
+                            <h6>{user.user_followers_count} followers</h6>
+                            <h6>{user.user_following_count} following</h6>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div className="file-field input-field" style={{ margin: "0px" }}>
+                    <div className="btn #64b5f6 blue darken-1">
+                        <span onClick={handleShow}>Update Profile</span>
+
+                        <Modal show={show} onHide={handleClose}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Update Profile</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <textarea
+                                    name="bio"
+                                    placeholder="New Bio"
+                                    style={{ width: "465px" }}
+                                />
+                                <form>
+                                    <label>Upload New Profile Picture</label>
+                                    <input
+                                        type="file"
+                                    />
+                                </form>
+
+                            </Modal.Body>
+                            <Modal.Footer>
+                                
+                                <Button variant="primary">
+                                    Update
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
+
+                        {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
+                    </div>
+                    {/* <div className="file-path-wrapper">
                 <input className="file-path validate" type="text" />
             </div> */}
+                </div>
             </div>
-            </div>      
             <div>
                 <p>Post History</p>
                 {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
             </div>
-            <Container style={{padding: "25px 50px 75px"}}>
-            <Row>
-                <PostCard postList={posts}/> 
-            </Row>
+            <Container style={{ padding: "25px 50px 75px" }}>
+                <Row>
+                    <PostCard postList={posts} />
+                </Row>
             </Container>
-           <div className="gallery">
-               {/* {
+            <div className="gallery">
+                {/* {
                    mypics.map(item=>{
                        return(
                         <img key={item._id} className="item" src={item.photo} alt={item.title}/>  
                        )
                    })
                } */}
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
+                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture" />
+                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture" />
+                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture" />
                 {/* <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>   */}
 
-           
-           </div>
-       </div>
-   )
+
+            </div>
+        </div>
+    )
 }
 
 
