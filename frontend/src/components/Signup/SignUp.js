@@ -48,10 +48,10 @@ export default class SignUp extends Component {
                 formIsValid = false;
                 errors["email"] = "Email is not valid";
             } //TODO: check for uniqueness
-            else if (this.state.emails.findIndex(fields["email"]) !== -1) {
-                formIsValid = false;
-                errors["email"] = "Email is already in use"
-            }
+            //else if (this.state.emails.findIndex(fields["email"]) !== -1) {
+                //formIsValid = false;
+                //errors["email"] = "Email is already in use"
+            //}
         }
 
         //username
@@ -71,10 +71,10 @@ export default class SignUp extends Component {
                 formIsValid = false;
                 errors["username"] = "Username contains invalid characters";
             } //TODO: check for uniqueness
-            else if (this.state.users.findIndex(fields["username"]) !== -1) {
-                formIsValid = false;
-                errors["username"] = "Username is already in use";
-            }
+            //else if (this.state.users.findIndex(fields["username"]) !== -1) {
+                //formIsValid = false;
+                //errors["username"] = "Username is already in use";
+            //}
         }
 
         //password
@@ -127,7 +127,7 @@ export default class SignUp extends Component {
 
         if (this.handleValidation()) {
             alert("Form submitted");
-            let emails = this.state.emails;
+            /*let emails = this.state.emails;
             let users = this.state.users;
             emails.push(this.state.fields["email"]);
             users.push(this.state.fields["username"]);
@@ -136,7 +136,7 @@ export default class SignUp extends Component {
                     localStorage.setItem('emails', JSON.stringify(this.state.emails));
                     localStorage.setItem('users', JSON.stringify(this.state.users));
                 }
-            );
+            );*/
             
             window.location.href = "/";
         }
