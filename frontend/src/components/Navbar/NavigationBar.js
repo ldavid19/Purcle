@@ -1,13 +1,19 @@
-import { FormGroup, Nav } from "react-bootstrap";
+import { Nav } from "react-bootstrap";
 import { Navbar } from "react-bootstrap";
 import { NavDropdown } from "react-bootstrap";
-import { Container } from "react-bootstrap";
 import { Form, FormControl, Button } from "react-bootstrap";
 import React from 'react';
-import Body from "../Home/Body.js";
 
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
+
+import { InputBase, IconButton, TextField } from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
+
+import Paper from '@mui/material/Paper';
+import Divider from '@mui/material/Divider';
+import MenuIcon from '@mui/icons-material/Menu';
+import DirectionsIcon from '@mui/icons-material/Directions';
 
 import {
   BrowserRouter as Router,
@@ -24,9 +30,7 @@ function NavigationBar() {
   const handleShow = () => setShow(true);
 
   return (
-
-
-    <Navbar bg="dark" variant="dark" sticky="top">
+    <Navbar bg="dark" variant="dark" sticky="top" style={{padding: "10px 25px"}}>
 
       <Navbar.Brand as={Link} to={"/"}>Purcle</Navbar.Brand>
       <Nav className="me-auto">
@@ -35,21 +39,29 @@ function NavigationBar() {
       </Nav>
 
 
-      <Form inline className="d-flex">
-        <FormControl
-          type="text"
+      <Paper
+        component="form"
+        size="small"
+        sx={{  display: 'flex', alignItems: 'center'}}
+      >
+        <InputBase
+          sx={{ ml: 1, flex: 1 }}
           placeholder="Search"
-          className="mr-sm-2"
+          inputProps={{ 'aria-label': 'search' }}
+          size="small"
         />
-        <Button variant="outline-success">Search</Button>
-      </Form>
+        <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
+          <SearchIcon />
+        </IconButton>
+
+      </Paper>
 
 
       <NavDropdown align="end" title="Profile" id="collasible-nav-dropdown" >
+        <NavDropdown.Item as={Link} to={"/profile"}>Profile</NavDropdown.Item>
         <NavDropdown.Item href="#action/3.1">Followed Users</NavDropdown.Item>
         <NavDropdown.Item href="#action/3.2">Followed Topics</NavDropdown.Item>
 
-        <NavDropdown.Item as={Link} to={"/profile"}>Profile</NavDropdown.Item>
         <NavDropdown.Divider />
         <>
           <Button variant="danger" onClick={handleShow}>
@@ -74,11 +86,6 @@ function NavigationBar() {
       </NavDropdown>
 
     </Navbar>
-
-
-
-
-
 
   );
 }
