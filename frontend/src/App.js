@@ -20,9 +20,6 @@ import {
 function App() {
   return (
     <div className="App">
-<<<<<<< HEAD
-      <SignUp/>
-=======
       <Router>
         
         <Routes>
@@ -38,7 +35,6 @@ function App() {
           <Route path="/login" element={<Login/>}/>
         </Routes>
       </Router>
->>>>>>> main
     </div>
   );
 }
