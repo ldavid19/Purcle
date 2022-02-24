@@ -30,6 +30,7 @@ urlpatterns = [
     path('profilesetup/', TemplateView.as_view(template_name='index.html')),
     path('messages/', TemplateView.as_view(template_name='index.html')),
     path('post/', TemplateView.as_view(template_name='index.html')),
+    path('post/:id', TemplateView.as_view(template_name='index.html')),
     
     # path(r'^', include('Purcle.urls')),
 ]
