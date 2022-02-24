@@ -7,7 +7,6 @@ import {
     Link
   } from "react-router-dom";
 
-
 export default class SignUp extends Component {
     constructor(props) {
         super(props);
@@ -15,6 +14,10 @@ export default class SignUp extends Component {
         this.state = {
             fields: {},
             errors: {},
+            windows: {"error":false, "valid":false},
+            errormsg: "",
+            users: JSON.parse(localStorage.getItem('users')) || [],
+            emails: JSON.parse(localStorage.getItem('emails')) || [],
         };
     }
 
@@ -45,6 +48,10 @@ export default class SignUp extends Component {
                 formIsValid = false;
                 errors["email"] = "Email is not valid";
             } //TODO: check for uniqueness
+            else if (this.state.emails.findIndex(fields["email"]) !== -1) {
+                formIsValid = false;
+                errors["email"] = "Email is already in use"
+            }
         }
 
         //username
@@ -64,6 +71,10 @@ export default class SignUp extends Component {
                 formIsValid = false;
                 errors["username"] = "Username contains invalid characters";
             } //TODO: check for uniqueness
+            else if (this.state.users.findIndex(fields["username"]) !== -1) {
+                formIsValid = false;
+                errors["username"] = "Username is already in use";
+            }
         }
 
         //password
@@ -116,6 +127,18 @@ export default class SignUp extends Component {
 
         if (this.handleValidation()) {
             alert("Form submitted");
+            let emails = this.state.emails;
+            let users = this.state.users;
+            emails.push(this.state.fields["email"]);
+            users.push(this.state.fields["username"]);
+            this.setState({ emails: emails, users: users}, 
+                function() {
+                    localStorage.setItem('emails', JSON.stringify(this.state.emails));
+                    localStorage.setItem('users', JSON.stringify(this.state.users));
+                }
+            );
+            
+            window.location.href = "/";
         }
     }
 
@@ -128,6 +151,19 @@ export default class SignUp extends Component {
     render() {
         return (
             <div className="SignUp">
+                {/*<Modal show={this.state.windows["error"]} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Error</Modal.Title>
+                    </Modal.Header>
+                    
+                    <Modal.Body> this.state.errormsg </Modal.Body>
+                    
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={handleClose}>
+                            Ok
+                        </Button>
+                    </Modal.Footer>
+                </Modal>*/}
                 <Card className="SignUpCard" style={{ width: '18rem'}}>
                     <form onSubmit={this.hitSubmit.bind(this)}>
                         <h3>Sign Up</h3>
@@ -138,10 +174,6 @@ export default class SignUp extends Component {
                         <div className="form-group">
                             <label>Username</label>
                             <input refs="username" type="text" className="form-control" placeholder="Enter username" onChange={this.handleChange.bind(this, "username")} value={this.state.fields["username"]} />
-                        </div>
-                        <div className="form-group">
-                            <label>Username</label>
-                            <input type="text" className="form-control" placeholder="Enter username" />
                         </div>
                         <div className="form-group">
                             <label>Password</label>
