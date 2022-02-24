@@ -100,6 +100,9 @@ function NewPost() {
     const [topic, setTopic] = React.useState(null);
     const handleTopicChange = ev => {
         setTopic(ev);
+        if (ev.__isNew__ === true) {
+            ev.value = 0;
+        }
         //topics.sort(function(a, b){return b.value-a.value});
     }
 
