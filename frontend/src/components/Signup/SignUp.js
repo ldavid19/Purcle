@@ -138,7 +138,7 @@ export default class SignUp extends Component {
                 }
             );*/
             
-            window.location.href = "/";
+            window.location.href = "/profilesetup";
         }
     }
 
@@ -184,10 +184,6 @@ export default class SignUp extends Component {
                             <input refs="confirm" type="password" className="form-control" placeholder="Re-enter password" onChange={this.handleChange.bind(this, "confirm")} value={this.state.fields["confirm"]} />
                         </div>
                         <button className="btn btn-primary btn-block">Sign Up</button>
-
-                        <div>
-                            <a href="/profilesetup">omggg</a>
-                        </div>
 
                         <div className="forgot-password">
                             <p>
