@@ -2,12 +2,28 @@ import React, { Component } from "react";
 import { Card } from "react-bootstrap";
 
 
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link
+  } from "react-router-dom";
+
+
+const handleSubmit = (event) => {
+    event.preventDefault();
+    window.location.href = "/";
+}
+
+
 export default class ProfileSetup extends Component {
+
+    
     render() {
         return (
             <div className="ProfileSetup">
                 <Card className="LoginCard" style={{ width: '18rem' }}>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <h3>Create Profile</h3>
                         <div className="form-group">
                             <label>Bio</label>
@@ -19,7 +35,7 @@ export default class ProfileSetup extends Component {
                             <input type="file"/>
                         </div>
 
-                        <button type="submit" className="btn btn-primary btn-block">Create</button>
+                        <button className="btn btn-primary btn-block">Create</button>
                     </form>
                 </Card>
             </div>
