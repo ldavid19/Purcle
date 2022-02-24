@@ -1,20 +1,35 @@
 import { useState } from "react";
 import React from 'react';
-import { Button, Modal } from "react-bootstrap";
+import Select from 'react-select';
+import Creatable from 'react-select/creatable';
+import { Modal, Col, Row, Image } from "react-bootstrap";
+import { Button } from '@mui/material';
 
-function errorMessage(title, type, text, image) {
+function errorMessage(title, type, text, topic) {
     let message = "";
+    if (topic === null || topic.label === null) {
+        message = message + "Please choose topic.\n";
+    } else if (topic.label.length < 1) {
+        message = message + "Please choose topic.\n";
+    }
     if (type.localeCompare("Image") !== 0 && type.localeCompare("Text") !== 0) {
-        message = "A post type needs to be selected.\n";
+        message = message + "Please choose a post type.\n";
     }
     if (title.length === 0) {
-        message = message + "Your post needs a title.\n";
+        message = message + "Please insert title.\n";
     }
     if (type.localeCompare("Text") === 0 && text.length === 0) {
         message = message + "Please insert text.\n";
     }
-    if (type.localeCompare("Image") === 0 && image.length === 0) {
+    if (type.localeCompare("Image") === 0 && text.length === 0) {
         message = message + "Please insert image.\n";
+    } else if (type.localeCompare("Image") === 0 && text.length < 5) {
+        message = message + "Filetype not supported.\n";
+    } else if (type.localeCompare("Image") === 0
+    && text.substring(text.length - 4, text.length).localeCompare(".png") !== 0
+    && text.substring(text.length - 4, text.length).localeCompare(".jpg") !== 0
+    && text.substring(text.length - 5, text.length).localeCompare(".jpeg") !== 0) {
+        message = message + "Filetype not supported.\n";
     }
     return message;
 }
@@ -23,19 +38,31 @@ function NewPost() {
 
     const [show, setShow] = useState(false);
 
-    const handleSubmit = () =>{
-        setError(errorMessage(title, type, text, image));
-    }
-
     const [error, setError] = React.useState("");
+
+    const handleSubmit = () =>{
+        if (errorMessage(title, type, text, topic).length === 0) {
+            setShow(false);
+            setTitle("");
+            setImage(null);
+            setText("");
+            setType("");
+            setError("");
+            setTopic("");
+            setChecked(false);
+        } else {
+            setError(errorMessage(title, type, text, topic));
+        }
+    }
   
     const handleClose = () => {
         setShow(false);
         setTitle("");
-        setImage("");
+        setImage(null);
         setText("");
         setType("");
         setError("");
+        setTopic("");
         setChecked(false);
     }
     const handleShow = () => {
@@ -52,9 +79,10 @@ function NewPost() {
         setTitle(ev.target.value);
     };
 
-    const [image, setImage] = React.useState("");
+    const [image, setImage] = React.useState(null);
     const handleImageChange = ev => {
-        setImage(ev.target.value);
+        setImage(URL.createObjectURL(ev.target.files[0]));
+        setText(ev.target.value);
     };
 
     const [text, setText] = React.useState("");
@@ -69,29 +97,73 @@ function NewPost() {
         setText("");
     };
 
+    const [topic, setTopic] = React.useState(null);
+    const handleTopicChange = ev => {
+        setTopic(ev);
+        //topics.sort(function(a, b){return b.value-a.value});
+    }
+
+    var topics = [
+        {label: 'birding', value: 999},
+        {label: 'cooking', value: 700},
+        {label: 'botany', value: 85},
+        {label: 'birds', value: 69},
+        {label: 'cs', value: 5},
+        {label: 'purdue', value: 1},
+    ]
+
+    const formatOptionLabel = ({ label, value }) => (
+        <Row>
+            <Col>{label}</Col>
+            <Col></Col>
+            <Col>{value}</Col>
+        </Row>
+    );
+
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Create new post!
+            <Button variant="contained" onClick={handleShow}>
+                Create new post
             </Button>
-    
             <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>New Post</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <select onChange={handleTypeChange}>                        
-                    <option type="default" selected disabled hidden>Choose post type</option>
-                    <option type="text">Text</option>
-                    <option type="image">Image</option>
-                </select>
-                {' '}
-                <label>
-                    Anonymous{' '}
-                    <input type="checkbox" 
-                    checked={checked}
-                    onChange={handleAnonChange}/>
-                </label>
+                <Row>
+                    <Creatable
+                        value={topic}
+                        options={topics}
+                        onChange={handleTopicChange}
+                        placeholder="Choose Topic"
+                        formatOptionLabel={formatOptionLabel}
+                    />
+                    <p></p>
+                </Row>
+                <Row>
+                <Col>
+                    <select onChange={handleTypeChange}>                        
+                        <option type="default" selected disabled hidden>Choose post type</option>
+                        <option type="text">Text</option>
+                        <option type="image">Image</option>
+                    </select>
+                    {' '}
+                </Col>
+                
+                <Col>
+                </Col>
+
+                <Col>
+                    <label>
+                        Anonymous{' '}
+                        <input type="checkbox" 
+                        checked={checked}
+                        onChange={handleAnonChange}/>
+                    </label>
+                    {' '}
+                </Col>
+                </Row>
+
                 <p></p>
                 <textarea
                     name="title"
@@ -112,22 +184,24 @@ function NewPost() {
                                 placeholder=" Insert text here"
                                 value={text || ""}
                                 onChange={handleTextChange}                       
-                                style={{width: "465px"}}
+                                style={{width: "465px", height: "300px"}}
                                 maxlength="500"
                                 rows={5}
                                 cols={5}
                             />
                         :
-                            <textarea
-                                name="image"
-                                placeholder=" Image"
-                                value={image || ""}
-                                onChange={handleImageChange}
-                                style={{width: "465px"}}
-                                maxlength="100"
-                                rows={1}
-                                cols={5}
-                            />
+                            <form>
+                                <input
+                                    type="file"
+                                    onChange={handleImageChange}
+                                />
+                                <p></p>
+                                { image.length > 0 ?
+                                            <Image
+                                                src={image} 
+                                            />
+                                : ""}
+                                </form>
                     :
                         <p></p>
                 }

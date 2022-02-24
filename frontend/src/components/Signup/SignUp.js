@@ -1,5 +1,13 @@
 import React, { Component } from "react";
 import { Card } from "react-bootstrap";
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link
+  } from "react-router-dom";
+
+
 export default class SignUp extends Component {
     constructor(props) {
         super(props);
@@ -132,6 +140,10 @@ export default class SignUp extends Component {
                             <input refs="username" type="text" className="form-control" placeholder="Enter username" onChange={this.handleChange.bind(this, "username")} value={this.state.fields["username"]} />
                         </div>
                         <div className="form-group">
+                            <label>Username</label>
+                            <input type="text" className="form-control" placeholder="Enter username" />
+                        </div>
+                        <div className="form-group">
                             <label>Password</label>
                             <input refs="password" type="password" className="form-control" placeholder="Enter password" onChange={this.handleChange.bind(this, "password")} value={this.state.fields["password"]} />
                         </div>
@@ -139,14 +151,17 @@ export default class SignUp extends Component {
                             <label>Confirm Password</label>
                             <input refs="confirm" type="password" className="form-control" placeholder="Re-enter password" onChange={this.handleChange.bind(this, "confirm")} value={this.state.fields["confirm"]} />
                         </div>
-                        <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
+                        <button className="btn btn-primary btn-block">Sign Up</button>
+
+                        <div>
+                            <a href="/profilesetup">omggg</a>
+                        </div>
 
                         <div className="forgot-password">
                             <p>
                                 Already registered? <a href="#">sign in</a>
                             </p>
                         </div>
-                        
                     </form>
                 </Card>
             </div>
