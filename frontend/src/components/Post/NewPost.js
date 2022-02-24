@@ -5,6 +5,8 @@ import Creatable from 'react-select/creatable';
 import { Modal, Col, Row, Image } from "react-bootstrap";
 import { Button } from '@mui/material';
 
+import { makePost, databaseLength, getAllPosts } from "../../api/apiRequest";
+
 function errorMessage(title, type, text, topic) {
     let message = "";
     if (topic === null || topic.label === null) {
@@ -34,14 +36,38 @@ function errorMessage(title, type, text, topic) {
     return message;
 }
 
-function NewPost() {
+function NewPost(props) {
 
     const [show, setShow] = useState(false);
 
     const [error, setError] = React.useState("");
 
-    const handleSubmit = () =>{
+    const handleSubmit = () => {
         if (errorMessage(title, type, text, topic).length === 0) {
+            var content;
+            if (type == "Text") {
+                content = text;
+            } else {
+                content = "";
+            }
+            var newPost = {
+                post_id: databaseLength(),
+                post_topic: topic,
+                post_type: 0,
+                user_id: "user",
+                post_is_anonymous: checked,
+                post_title: title,
+                post_content: content,
+                post_time: new Date(Date.now()),
+                post_score: 0
+            };
+
+            makePost(newPost)
+            .then((res) => {
+                props.getPosts();
+                //getAllPosts();
+            });
+
             setShow(false);
             setTitle("");
             setImage(null);
@@ -174,7 +200,7 @@ function NewPost() {
                     value={title || ""}
                     onChange={handleTitleChange}
                     style={{width: "465px"}}
-                    maxlength="100"
+                    maxLength="100"
                     rows={1}
                     cols={5}
                 />
