@@ -22,7 +22,9 @@ export default class Login extends Component {
                             <label>Password</label>
                             <input type="password" className="form-control" placeholder="Enter password" />
                         </div>
-                        <button type="submit" className="btn btn-primary btn-block">Login</button>
+                        <form action="/">
+                            <input type="submit" className="btn btn-primary btn-block" value="Login"/>
+                        </form>
                         <div className="forgot-password">
                             <p>
                                 <a href="#">Forgot Password?</a>
