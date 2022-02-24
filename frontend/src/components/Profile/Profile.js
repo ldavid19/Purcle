@@ -7,7 +7,21 @@ import { Button } from '@mui/material';
 import { getPosts, getUser } from '../../api/apiRequest.js';
 
 
+
+
 function Profile(props) {
+
+    const [error, setError] = React.useState("");
+
+    function errorMessage(bio) {
+        console.log(bio)
+        let message = "";
+        if (bio === null || bio.length == 0) {
+            message = message + "Please enter a bio.\n";
+        }
+        return message;
+    }
+
     const [posts, setPosts] = useState([]);
 
     const [show, setShow] = useState(false);
@@ -42,6 +56,24 @@ function Profile(props) {
         getNewPosts();
         getNewUser();
     }, []);
+
+    const handleUpdateUser = (event) => {
+        console.log(event.target.name);
+        console.log(event.target.value);
+        setUser({
+            ...user,
+            [event.target.name]: event.target.value,
+        });
+    }
+
+    const handleSubmitUpdate = (event) => {
+        console.log("submit");
+        let err = errorMessage(user.user_bio);
+        setError(err);
+        if (err == "") {
+            handleClose();
+        }
+    }
 
     const getNewPosts = () => {
         getPosts()
@@ -128,8 +160,6 @@ function Profile(props) {
                 margin: "18px 0px",
                 borderBottom: "1px solid grey"
             }}>
-
-
                 <div style={{
                     display: "flex",
                     justifyContent: "space-around",
@@ -164,12 +194,14 @@ function Profile(props) {
                                 <Modal.Title>Update Profile</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                                <textarea
-                                    name="bio"
-                                    placeholder="New Bio"
-                                    style={{ width: "465px" }}
-                                />
+
                                 <form>
+                                    <textarea
+                                        name="user_bio"
+                                        placeholder="New Bio"
+                                        style={{ width: "465px" }}
+                                        onChange={handleUpdateUser}
+                                    />
                                     <label>Upload New Profile Picture</label>
                                     <input
                                         type="file"
@@ -178,8 +210,8 @@ function Profile(props) {
 
                             </Modal.Body>
                             <Modal.Footer>
-                                
-                                <Button variant="primary">
+                                <p>{error}</p>
+                                <Button variant="primary" onClick={handleSubmitUpdate}>
                                     Update
                                 </Button>
                             </Modal.Footer>
@@ -216,8 +248,6 @@ function Profile(props) {
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>   */}
-
-
             </div>
         </div>
     )
