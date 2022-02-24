@@ -38,11 +38,22 @@ function NewPost() {
 
     const [show, setShow] = useState(false);
 
-    const handleSubmit = () =>{
-        setError(errorMessage(title, type, text, topic));
-    }
-
     const [error, setError] = React.useState("");
+
+    const handleSubmit = () =>{
+        if (errorMessage(title, type, text, topic).length === 0) {
+            setShow(false);
+            setTitle("");
+            setImage(null);
+            setText("");
+            setType("");
+            setError("");
+            setTopic("");
+            setChecked(false);
+        } else {
+            setError(errorMessage(title, type, text, topic));
+        }
+    }
   
     const handleClose = () => {
         setShow(false);
@@ -90,7 +101,6 @@ function NewPost() {
     const handleTopicChange = ev => {
         setTopic(ev);
         //topics.sort(function(a, b){return b.value-a.value});
-        //comment
     }
 
     var topics = [
