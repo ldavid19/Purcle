@@ -1,5 +1,12 @@
 import React, { Component } from "react";
 import { Card } from "react-bootstrap";
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link
+  } from "react-router-dom";
+
 export default class Login extends Component {
     render() {
         return (
@@ -16,7 +23,6 @@ export default class Login extends Component {
                             <input type="password" className="form-control" placeholder="Enter password" />
                         </div>
                         <button type="submit" className="btn btn-primary btn-block">Login</button>
-
                         <div className="forgot-password">
                             <p>
                                 <a href="#">Forgot Password?</a>
