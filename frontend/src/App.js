@@ -7,6 +7,7 @@ import Login from './components/Login/Login';
 import NavigationBar from './components/Navbar/NavigationBar';
 import Profile from './components/Profile/Profile.js'
 import PostPage from './components/Post/PostPage';
+import ProfileSetup from './components/Profile/ProfileSetup';
 
 import {
   BrowserRouter as Router,
@@ -33,6 +34,8 @@ function App() {
           
           {/* Put pages without navbar here */}
           <Route path="/login" element={<Login/>}/>
+          <Route path="/signup" element={<SignUp/>}/>
+          <Route path="/profilesetup" element={<ProfileSetup/>}/>
         </Routes>
       </Router>
     </div>
