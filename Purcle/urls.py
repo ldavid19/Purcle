@@ -22,5 +22,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path(r'^admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='index.html')),
+    path('signup/', TemplateView.as_view(template_name='index.html')),
+    path('login/', TemplateView.as_view(template_name='index.html')),
+    path('following/', TemplateView.as_view(template_name='index.html')),
+    path('profile/', TemplateView.as_view(template_name='index.html')),
+    path('login/', TemplateView.as_view(template_name='index.html')),
+    path('profilesetup/', TemplateView.as_view(template_name='index.html')),
+    path('messages/', TemplateView.as_view(template_name='index.html')),
+    path('post/', TemplateView.as_view(template_name='index.html')),
+    
     # path(r'^', include('Purcle.urls')),
 ]
