@@ -30,7 +30,7 @@ class UserProfile(models.Model):
     def get_bio(self):
         return self.user_bio
 
-    def get_fist_name(self):
+    def get_first_name(self):
         return self.first_name
 
     def get_last_name(self):

@@ -8,5 +8,7 @@ Purcle/_pycache_/
 db.sqlite3
 *.pyc
 
+*.json
+
 frontend/node_modules/
 .DS_Store
