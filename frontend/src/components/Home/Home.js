@@ -3,17 +3,29 @@ import React, { useState, useEffect }  from 'react';
 import NewPost from "../Post/NewPost.js";
 import PostCard from '../Post/PostCard';
 
-import { getPosts } from '../../api/apiRequest.js';
+import { Button } from '@mui/material';
+
+import { getRandPosts, getAllPosts } from '../../api/apiRequest.js';
 
 function Home() {
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        getNewPosts();
+        getPosts();
     }, []);
 
+    const getPosts = () => {
+        getAllPosts()
+        .then((res) => {
+            setPosts(res);
+            console.log(res);
+            console.log("fUCK")
+        })
+        .catch(err => console.error(`Error: ${err}`));
+    }
+
     const getNewPosts = () => {
-        getPosts()
+        getRandPosts()
         .then((res) => {
             setPosts(res);
             console.log(res);
@@ -24,12 +36,18 @@ function Home() {
     return (
         <Container style={{padding: "0px 75px"}}>
             <Row style={{padding: "20px 0px"}}>
-                <NewPost />
+                <NewPost getPosts={getPosts}/>
             </Row>
 
             <Row>
                 <PostCard postList={posts}/> 
             </Row>
+
+            <Button onClick={() => {
+                getNewPosts();
+            }}>
+                reload
+            </Button>
         </Container>
     );
 }

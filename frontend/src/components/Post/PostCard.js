@@ -13,6 +13,7 @@ function PostCard(props) {
         var postcards = posts.map((post) => (
             <PostCardItem 
                 key={post.post_id} 
+                id={post.post_id}
                 title={post.post_title}
                 content={post.post_content}
                 topic={post.post_topic}

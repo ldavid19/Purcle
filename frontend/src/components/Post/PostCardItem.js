@@ -1,4 +1,4 @@
-import { ListGroup, Row, Col, Image, Ratio } from 'react-bootstrap';
+import { ListGroup, Row, Col, Image, Ratio, Card } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -6,6 +6,13 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import { getScore, upvote, downvote } from "../../api/apiRequest.js";
 import { IconButton } from '@mui/material';
+
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link
+  } from "react-router-dom";
 
 function PostCardTitle(props) {
     var getRelativeTime = () => {
@@ -54,7 +61,7 @@ function PostCardTitle(props) {
     }
 
     return (
-        <Col style={{textAlign: "left"}}>
+        <Col style={{textAlign: "left", textDecoration: "none"}}  as={Link} to={{pathname: `/post/${props.id}`, query:{id: props.id}}}>
             <h3 style={{fontSize:20}}> {props.title} </h3>
             <p style={{margin: 0}}>by <a href={"#" + props.user }>{props.user}</a> in <a href="#">{props.topic}</a> {getRelativeTime()}</p>
         </Col>
@@ -145,7 +152,7 @@ function PostCardItem(props) {
             <Row className="align-items-center">
                 <PostCardScore 
                     score={props.score} 
-                    id={props.user}
+                    id={props.id}
                 />
                 
                 <PostCardImg 
@@ -159,7 +166,8 @@ function PostCardItem(props) {
                     user={props.user} 
                     anon={props.anon}
                     date={props.date}
-                />                    
+                    id={props.id}
+                />                  
             </Row>
         </ListGroup.Item>
     );

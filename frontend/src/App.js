@@ -29,7 +29,7 @@ function App() {
             <Route path="/following" element={<Home/>}/>
             <Route path="/messages" element={<Home/>}/>
             <Route path="/profile" element={<Profile id={0} />}/>
-            <Route path="/post" element={<PostPage />}/>
+            <Route path="/post/:id" element={<PostPage />}/>
           </Route>
           
           {/* Put pages without navbar here */}

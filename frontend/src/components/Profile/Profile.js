@@ -4,7 +4,7 @@ import PostCard from '../Post/PostCard';
 import { Modal, Col, Image } from "react-bootstrap";
 import { Button } from '@mui/material';
 
-import { getPosts, getUser } from '../../api/apiRequest.js';
+import { getRandPosts, getUser } from '../../api/apiRequest.js';
 
 
 
@@ -76,7 +76,7 @@ function Profile(props) {
     }
 
     const getNewPosts = () => {
-        getPosts()
+        getRandPosts()
             .then((res) => {
                 setPosts(res);
             })
