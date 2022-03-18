@@ -8,6 +8,7 @@ import NavigationBar from './components/Navbar/NavigationBar';
 import Profile from './components/Profile/Profile.js'
 import PostPage from './components/Post/PostPage';
 import ProfileSetup from './components/Profile/ProfileSetup';
+import ErrorPage from './components/ErrorPage';
 
 import {
   BrowserRouter as Router,
@@ -16,6 +17,7 @@ import {
   Link,
   Outlet
 } from "react-router-dom";
+
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
             <Route path="/messages" element={<Home/>}/>
             <Route path="/profile" element={<Profile id={0} />}/>
             <Route path="/post/:id" element={<PostPage />}/>
+            <Route path="*" element={<ErrorPage />}/>
+            <Route path="/*/*" element={<ErrorPage />}/>
           </Route>
           
           {/* Put pages without navbar here */}
