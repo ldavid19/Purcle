@@ -33,7 +33,7 @@ function Home() {
     }
 
     return (
-        <Container style={{padding: "0px 75px"}}>
+        <Container className="Home" style={{padding: "0px 75px"}}>
             <Row style={{padding: "20px 0px"}}>
                 <NewPost getPosts={getPosts}/>
             </Row>
