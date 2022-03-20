@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Col, Row, Image } from 'react-bootstrap';
+import { Container, Card, Row, Image } from 'react-bootstrap';
 
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+
+import ErrorPage from '../ErrorPage';
 
 import { getPost } from '../../api/apiRequest';
+import { getRelativeTime } from '../../api/helper';
 
 function Content(props) {
     //if props.type == true then is image 
@@ -45,14 +48,19 @@ function PostPage(props) {
         post_anon: false,
         post_title: "Post not found",
         post_content: "",
-        post_date: (new Date()).toString(),
+        post_time: new Date(Date.now()),
         post_score: 0
     }
 
     const [post, setPost] = useState(nullPost);
+    const [error, setError] = useState(false);
     const { id } = useParams();
+    const navigate = useNavigate();
 
-    console.log(id);
+    const errorHandler = (e) => {
+        navigate('/post', { replace: true });
+        window.location.reload();
+    }
     
     useEffect(() => {
 
@@ -63,26 +71,39 @@ function PostPage(props) {
             setPost(res);
             console.log(res);
         })
-        .catch(err => console.error(`Error: ${err}`));
+        .catch(err => {
+            console.error(`Error: ${err}`);
+            errorHandler();
+            setError(true);
+        });
         
         //setPost(newPost);
     }, [post]);
 
-    const time = "fuck" //post.post_date.toString();
-    
+    /*
+    useEffect(() => {
+        if (error) {
+            navigate.push('/');
+        }
+    })*/
+
     return (
-        <Container fluid style={{textAlign: "left"}}>
-                <Row>
-                    <h1>{post.post_title}</h1>
-                </Row>
+        <Container>
+            <Card>
+                <h1>{post.post_title}</h1>
 
-                <Row>
-                    <p>posted by {post.user_id} in {post.post_topic}</p>
-                </Row>
+                <p style={{margin: 0}}>
+                    {"by "}
+                    <Link to="/profile">{post.user_id}</Link>
+                    {" in "} 
+                    <a href="#">{post.post_topic}</a> 
+                    {" " + getRelativeTime(post.post_time)}
+                </p>
 
-            <Content style={{textAlign: "center"}} type={post.post_type} content={post.post_content}/>
+                <Content style={{textAlign: "center"}} type={post.post_type} content={post.post_content}/>
+            </Card>
         </Container>
-    );
+    )
     
 }
 
