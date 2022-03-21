@@ -1,18 +1,16 @@
+import { formatPost, formatUser } from "./helper.js";
 import { createRandPost, createRandUser } from "./testing.js";
 
 var allPosts = [];
 
 /* GET functions */
 
-function getReq() {
-    console.log("oh")
-}
-
 async function getRandPosts() {
     var res = [];
 
     for (var i = 0; i < 100; i++) {
-        res.push(createRandPost(i));
+        const post = formatPost(createRandPost(i));
+        res.push(post);
     }
 
     allPosts = res;
@@ -32,11 +30,11 @@ async function getAllPosts() {
 async function getUser() {
     var user = createRandUser(0);
 
-    return user;
+    return formatUser(user);
 }
 
 async function getScore(id) {
-    return allPosts[id].post_score;
+    return allPosts[id].score;
 }
 
 function databaseLength() {
@@ -49,7 +47,7 @@ async function makePost(post) {
 }
 
 function incrementScore(id, offset) {
-    allPosts[id].post_score += offset;
+    allPosts[id].score += offset;
 }
 
 async function upvote(id) {
@@ -59,7 +57,7 @@ async function upvote(id) {
 
 async function downvote(id) {
     incrementScore(id, -1);
-    console.log("downvoted!")
+    //console.log("downvoted!")
 }
 
 export { getRandPosts, getPost, getAllPosts, getUser, getScore, makePost, databaseLength, upvote, downvote };
