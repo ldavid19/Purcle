@@ -6,7 +6,7 @@ User._meta.get_field('email').blank = False
 class UserProfile(models.Model):
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     profile_name = models.CharField(max_length=100, null=True)
-    user_profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images')
+    user_profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images', blank=True, null=True)
     user_bio = models.TextField(max_length=500)
     user_followers_count = models.FloatField(default=0, null=False)
     user_following_count = models.FloatField(default=0, null=False)
@@ -16,7 +16,7 @@ class UserProfile(models.Model):
     user_email = models.CharField(max_length=200, null=False)
 
     def __str__(self):
-        return self.name
+        return self.profile_name
 
     def delete_user(self):
         self.delete()
