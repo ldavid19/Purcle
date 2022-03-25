@@ -6,10 +6,14 @@ import { Button } from '@mui/material';
 
 import { getRandPosts, getUser } from '../../api/apiRequest.js';
 
+import axios from 'axios'
 
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
 
 
 function Profile(props) {
+    
 
     const [error, setError] = React.useState("");
 
@@ -56,10 +60,6 @@ function Profile(props) {
     }
     */
 
-    useEffect(() => {
-        getNewPosts();
-        getNewUser();
-    }, []);
 
     const handleUpdateUser = (event) => {
         console.log(event.target.name);
@@ -101,6 +101,31 @@ function Profile(props) {
     const handleShow = () => {
         setShow(true);
     };
+
+    const getUserApi = () => {
+        axios.get('/api/profile/1')
+            .then(res => {
+                const usr = res.data;
+                setUser(usr);
+            })
+    }
+
+    const setUserApi = () => {
+        axios.put('/api/profile/1', nullUser)
+            .then(response => {
+                console.log(response.data)
+                setUser(response.data)
+            
+            });
+    }
+
+    useEffect(() => {
+        getNewPosts();
+        //getNewUser();
+        getUserApi();
+    }, []);
+
+    
 
     // const [mypics,setPics] = useState([])
     // const {state,dispatch} = useContext(UserContext)
@@ -215,7 +240,7 @@ function Profile(props) {
                             </Modal.Body>
                             <Modal.Footer>
                                 <p>{error}</p>
-                                <Button variant="primary" onClick={handleSubmitUpdate}>
+                                <Button variant="primary" onClick={setUserApi}>
                                     Update
                                 </Button>
                             </Modal.Footer>
@@ -254,7 +279,8 @@ function Profile(props) {
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>   */}
             </div>
         </div>
-    )
+        
+    );
 }
 
 
