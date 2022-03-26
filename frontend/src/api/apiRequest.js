@@ -1,10 +1,41 @@
-import { formatPost, formatUser } from "./helper.js";
+import axios from 'axios';
+
+import { formatPost, formatUser, unformatUser } from "./helper.js";
 import { createRandPost, createRandUser } from "./testing.js";
+
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
 
 var allPosts = [];
 
-/* GET functions */
+/* General functions */
+async function get(type, id) { //GET request
+    var data = [];
 
+    await axios.get('/api/' + type + '/' + id)
+        .then((res) => {
+            data = res;
+        });
+
+    console.log(data);
+
+    return data;
+}
+
+async function put(type, id, data) { //PUT request
+    var ret = [];
+
+    await axios.put('/api/' + type + '/' + id, data)
+        .then((res) => {
+            ret = res;
+        });
+
+    return ret;
+}
+
+
+/* GET helper functions */
+/* post helpers */
 async function getRandPosts() {
     var res = [];
 
@@ -27,12 +58,12 @@ async function getAllPosts() {
     return allPosts;
 }
 
-async function getUser() {
-    var user = createRandUser(0);
-
-    return formatUser(user);
+/* user helpers */
+async function getUser(id) {
+    return get("profile", id);
 }
 
+/* misc helpers */
 async function getScore(id) {
     return allPosts[id].score;
 }
@@ -41,7 +72,9 @@ function databaseLength() {
     return allPosts.length;
 }
 
-/* POST functions */
+
+/* POST helper functions */
+/* post helpers */
 async function makePost(post) {
     allPosts.push(post);
 }
@@ -60,4 +93,10 @@ async function downvote(id) {
     //console.log("downvoted!")
 }
 
-export { getRandPosts, getPost, getAllPosts, getUser, getScore, makePost, databaseLength, upvote, downvote };
+/* user helpers */
+async function updateUser(id, data) {
+    return put("profile", id, unformatUser(data));
+}
+
+export { getRandPosts, getPost, getAllPosts, getUser, getScore, databaseLength, 
+        makePost, upvote, downvote, updateUser };
