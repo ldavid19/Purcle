@@ -129,23 +129,22 @@ function NewPost(props) {
         if (ev.__isNew__ === true) {
             ev.value = 0;
         }
-        //topics.sort(function(a, b){return b.value-a.value});
     }
 
     var topics = [
-        {label: 'birding', value: 999},
+        {label: 'cs', value: 5},
         {label: 'cooking', value: 700},
         {label: 'botany', value: 85},
+        {label: 'birding', value: 999},
         {label: 'birds', value: 69},
-        {label: 'cs', value: 5},
         {label: 'purdue', value: 1},
     ]
 
     const formatOptionLabel = ({ label, value }) => (
         <Row>
-            <Col>{label}</Col>
+            <Col>{label.toLowerCase()}</Col>
             <Col></Col>
-            <Col>{value}</Col>
+            <Col>{topics.some(e => e.label === label) ? value : 0} followers</Col>
         </Row>
     );
 
@@ -162,7 +161,7 @@ function NewPost(props) {
                 <Row>
                     <Creatable
                         value={topic}
-                        options={topics}
+                        options={topics.sort(function(a, b){return b.value-a.value})}
                         onChange={handleTopicChange}
                         placeholder="Choose Topic"
                         formatOptionLabel={formatOptionLabel}
