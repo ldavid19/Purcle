@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Card, Row, Col, Image } from 'react-bootstrap';
+import { Container, Card, Image } from 'react-bootstrap';
 
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
-import ErrorPage from '../ErrorPage';
-
-import { databaseLength, getPost } from '../../api/apiRequest';
+import { getPost } from '../../api/apiRequest';
 import { getRelativeTime } from '../../api/helper';
 
 import { Button } from '@mui/material';
@@ -13,6 +11,8 @@ import { Button } from '@mui/material';
 function Content(props) {
     //if props.type == true then is image 
     if (props.type) {
+        //uhhh this should print but it doesnt but it still works so idk 
+        console.log("IMAGE");
         return (
             <Container>
                 <Image
@@ -21,41 +21,42 @@ function Content(props) {
             </Container>
             
         );
-    } else {
-        return (
-            <Container>
-                <p>{props.content}</p>
-            </Container>
-        )
     }
+        
+    return (
+        <Container>
+            <p>{props.content}</p>
+        </Container>
+    )
 }
 
 function PostPage(props) {
-    /*
-        key={post.post_id} 
-        title={post.post_title}
-        content={post.post_content}
-        topic={post.post_topic}
-        type={post.post_type}
-        user={post.user_id}
-        anon={post.post_is_anonymous}
-        date={post.post_time}
-        score={post.post_score}
-    */
+    /* posts are formatted this way
+    post = {
+        id: post.post_id,
+        title: post.post_title,
+        content: post.post_content,
+        topic: post.post_topic,
+        type: post.post_type,
+        user: post.user_id,
+        anon: post.post_is_anonymous,
+        date: post.post_time,
+        score: post.post_score
+    }*/
 
     const nullPost = {
-        post_topic: "",
-        post_type: false,
-        user_id: "",
-        post_anon: false,
-        post_title: "Post not found",
-        post_content: "",
-        post_time: new Date(Date.now()),
-        post_score: 0
+        id: "",
+        title: "Post not found",
+        content: "",
+        topic: "",
+        type: false,
+        user: "",
+        anon: false,
+        date: new Date(Date.now()),
+        score: 0
     }
 
     const [post, setPost] = useState(nullPost);
-    const [error, setError] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -91,8 +92,9 @@ function PostPage(props) {
         setCommentText("");
     }
 
+    //redirects user to an error page, then reloads page to ensure that screen is not stuck on nothing 
     const errorHandler = (e) => {
-        navigate('/post', { replace: true });
+        navigate('/error', { replace: true });
         window.location.reload();
     }
     
@@ -108,33 +110,26 @@ function PostPage(props) {
         .catch(err => {
             console.error(`Error: ${err}`);
             errorHandler();
-            setError(true);
         });
         
         //setPost(newPost);
     }, [post]);
 
-    /*
-    useEffect(() => {
-        if (error) {
-            navigate.push('/');
-        }
-    })*/
 
     return (
         <Container>
             <Card>
-                <h1>{post.post_title}</h1>
+                <h1>{post.title}</h1>
 
                 <p style={{margin: 0}}>
                     {"by "}
-                    <Link to="/profile">{post.user_id}</Link>
+                    <Link to="/profile">{post.user}</Link>
                     {" in "} 
-                    <a href="#">{post.post_topic}</a> 
-                    {" " + getRelativeTime(post.post_time)}
+                    <a href="#">{post.topic}</a> 
+                    {" " + getRelativeTime(post.date)}
                 </p>
 
-                <Content style={{textAlign: "center"}} type={post.post_type} content={post.post_content}/>
+                <Content style={{textAlign: "center"}} type={post.type} content={post.content}/>
             </Card>
 
             <Card>

@@ -25,7 +25,7 @@ function PostCardTitle(props) {
                 {"by "}
                 <Link to="/profile">{props.user}</Link>
                 {" in "} 
-                <a href="#">{props.topic}</a> 
+                <Link to="/profile">{props.topic}</Link>
                 {" " + getRelativeTime(props.date)}
             </p>
         </Col>
@@ -89,57 +89,58 @@ function PostCardScore(props) {
 }
 
 function PostCardImg(props) {
-    //if props.type == true, then is image
-    if (props.type) {
-        return (
-            <Col lg={1} ms={2} xs={2}>
-                <Ratio aspectRatio="1x1">
-                    <Image
-                        thumbnail
-                        src={props.content} 
-                    />
-                </Ratio>
-            </Col>
-        )
-    } else {
-        return (null);
+    if (!props.type) {
+        return null;
     }
+    
+    //if props.type == true, then has image
+    return (
+        <Col lg={1} ms={2} xs={2}>
+            <Ratio aspectRatio="1x1">
+                <Image
+                    thumbnail
+                    src={props.content} 
+                />
+            </Ratio>
+        </Col>
+    )
 }
 
 function PostCardItem(props) {
     const imgSize = 70;
 
-    /*
-        key={post.post_id} 
-        title={post.post_title}
-        content={post.post_content}
-        topic={post.post_topic}
-        type={post.post_type}
-        user={post.user_id}
-        anon={post.post_is_anonymous}
-        date={post.post_time}
-    */
+    /* posts are formatted this way
+    post = {
+        id: post.post_id,
+        title: post.post_title,
+        content: post.post_content,
+        topic: post.post_topic,
+        type: post.post_type,
+        user: post.user_id,
+        anon: post.post_is_anonymous,
+        date: post.post_time,
+        score: post.post_score
+    }*/
 
     return (
         <ListGroup.Item>
             <Row className="align-items-center">
                 <PostCardScore 
-                    score={props.score} 
-                    id={props.id}
+                    id={props.post.id}
                 />
                 
                 <PostCardImg 
-                    type={props.type} 
-                    content={props.content}
+                    type={props.post.type} 
+                    content={props.post.content}
                 />
                 
                 <PostCardTitle 
-                    title={props.title} 
-                    topic={props.topic} 
-                    user={props.user} 
-                    anon={props.anon}
-                    date={props.date}
-                    id={props.id}
+                    title={props.post.title} 
+                    topic={props.post.topic} 
+                    user={props.post.user} 
+                    anon={props.post.anon}
+                    date={props.post.date}
+                    id={props.post.id}
                 />                  
             </Row>
         </ListGroup.Item>
