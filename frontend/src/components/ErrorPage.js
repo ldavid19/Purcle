@@ -4,11 +4,7 @@ import React from 'react';
 import { Button } from '@mui/material';
 
 import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    Link,
-    Outlet
+    Link
   } from "react-router-dom";
 
 function ErrorPage() {
