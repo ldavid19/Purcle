@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from 'react';
 import Select from 'react-select';
 import Creatable from 'react-select/creatable';
 import { Modal, Col, Row, Image } from "react-bootstrap";
 import { Button } from '@mui/material';
 
-import { makePost, databaseLength, getAllPosts } from "../../api/apiRequest";
+import { makePost, databaseLength, getAllTopics } from "../../api/apiRequest.js";
+import axios from 'axios'
+
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
 
 function errorMessage(title, type, text, topic) {
     let message = "";
@@ -131,7 +135,7 @@ function NewPost(props) {
         }
     }
 
-    var topics = [
+    var xtopics = [
         {label: 'cs', value: 5},
         {label: 'cooking', value: 700},
         {label: 'botany', value: 85},
@@ -139,12 +143,24 @@ function NewPost(props) {
         {label: 'birds', value: 69},
         {label: 'purdue', value: 1},
     ]
+    const [topics, setTopics] = useState([]);
+    const getTopics = () => {
+        getAllTopics()
+            .then((res) => {
+                setTopics(res);
+            })
+            .catch(err => console.error(`Error: ${err}`));
+    }
+
+    useEffect(() => {
+        getTopics();
+    }, []);
 
     const formatOptionLabel = ({ label, value }) => (
         <Row>
             <Col>{label.toLowerCase()}</Col>
             <Col></Col>
-            <Col>{topics.some(e => e.label === label) ? value : 0} followers</Col>
+            <Col>{xtopics.some(e => e.label === label) ? value : 0} followers</Col>
         </Row>
     );
 
@@ -161,10 +177,11 @@ function NewPost(props) {
                 <Row>
                     <Creatable
                         value={topic}
-                        options={topics.sort(function(a, b){return b.value-a.value})}
+                        //options={xtopics.sort(function(a, b){return b.value-a.value})}
+                        options={topics}
                         onChange={handleTopicChange}
                         placeholder="Choose Topic"
-                        formatOptionLabel={formatOptionLabel}
+                        //formatOptionLabel={formatOptionLabel}
                     />
                     <p></p>
                 </Row>

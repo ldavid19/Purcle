@@ -73,7 +73,7 @@ function PostPage(props) {
 
     const handleSubmit = () => {
         var newComment = {
-            comment_id: databaseLength(),
+            //comment_id: databaseLength(),
             user_id: "user",
             comment_content: commentText,
             comment_created_date: new Date(Date.now()),

@@ -19,3 +19,8 @@ class PostSerializer(serializers.ModelSerializer):
             'post_content',
             'post_time'
         )
+
+class TopicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Topic
+        fields = '__all__'
