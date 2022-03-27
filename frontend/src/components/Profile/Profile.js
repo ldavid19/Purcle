@@ -1,10 +1,11 @@
 import { Container, Row } from 'react-bootstrap';
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PostCard from '../Post/PostCard';
-import { Modal, Col, Image } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import { Button } from '@mui/material';
 
-import { getRandPosts, getUser } from '../../api/apiRequest.js';
+import { getRandPosts, getUser, updateUser } from '../../api/apiRequest.js';
+import { formatUser, unformatUser } from '../../api/helper';
 
 import axios from 'axios'
 
@@ -13,9 +14,62 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 
 function Profile(props) {
-    
+    var placeholder = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLeqsbTn6eqpr7PJzc/j5ebf4eLZ3N2wtrnBxsjN0NLGysy6v8HT1tissra8wMNxTKO9AAAFDklEQVR4nO2d3XqDIAxAlfivoO//tEOZWzvbVTEpic252W3PF0gAIcsyRVEURVEURVEURVEURVEURVEURVEURVEURVEURflgAFL/AirAqzXO9R7XNBVcy9TbuMHmxjN6lr92cNVVLKEurVfK/zCORVvW8iUBnC02dj+Wpu0z0Y6QlaN5phcwZqjkOkK5HZyPAjkIjSO4fIdfcOwFKkJlX4zPu7Ha1tIcwR3wWxyFhRG6g4Je0YpSPDJCV8a2Sv2zd1O1x/2WMDZCwljH+clRrHfWCLGK8REMiql//2si5+DKWKcWeAGcFMzzNrXC/0TUwQ2s6+LhlcwjTMlYsUIQzPOCb7YBiyHopyLXIEKPEkI/TgeuiidK/R9FniUDOjRDpvm0RhqjMyyXNjDhCfIMYl1gGjIMIuYsnGEYRMRZOMMunaLVwpWRW008v6fYKDIzxCwVAeNSO90BJW6emelYBRF/kHpYGVaoxTDAaxOFsfP9y8hpJ4xd7gOcij7JNGQ1EYFgkPJa1jQEiYZXRaRINKxSDUW9n+FT82lSKadkiru9/4XPqSLWOekGPoY05TAvLm9orm+YWuwHoBHkZKijNBJGmeb61eL6Ff/6q7bLr7yvv3vKGhpDRjvgjGaPz+gUg6YgcvpyAR2FIZ9U6nEEyZRTovmEU32KichpGn7C17XrfyH9gK/c0CMP05HZIM2uf9sEveizKveBy9/6Qt7o89ne33D525cfcIMW6ab+TMEukQbQbu+xu7X3A9bChmWaCeAkG17bpntwXgWxHaMzGPmUaR5dQZiKqRVeUZ3047fi3nAu28h4CHxCsZAgmEH8Y27jJAhm8c+5RQzRQNVGhVFSfxOYIjp/pP7RxzjevYXVGf4eLt+BJ1vCuLuLkrgABgCGXZ2wik5uty+oBvNirI6mkzhAf4Gsb58Hcm67Jzd+KwD10BYPLL3e0MjvKrgAULnOfveF/O4N2Xb9BZom3gJes3F9X5Zze8/6Yt09b4CrqsEjUv8oFBaR2rl+6CZr2xVrp24o/WitBKuGrrpl1+bFkmK2qXTON4VpbdfLa7o7y/WdLxG7lm2Lqh2clOwTegbvc/vj2U78CwhA87Bn8G5Nk3eOb0Nsr9flz3sG78UUtue4kpv1xvjg3TMay62BMlTlP+vrOMnJsRmt/ze0jsfkPPYdAH57hK+34PeOyc8XIXu5xT2HsUkdZz+adwg8HGFfQ3K5jtDvbUiO4Di9/ywHGrL88pDizZ++oTp+an+SMX/ndymUCwmHMdO7yuOx83pUx/eEMU0AvxWndwgidAqOZ8ypCwdEfvvEo6D9HwpA8wzvmOJEqAg9ySu8g4x0Hb9hSB/BANEKJ+LbPBU0lzbAJs4xt1AoshKkUGQmiH8/jJ0gdhTTLmSegHlPE0oOdXALnqDjKYh3px//fSgSWG8UqfrrIICzYYSJXRr9BSPbpNzw7gBjKjKOYI7ReIGqQRIap5+5MdjyvuDkExvGeXSlONWZAP3/AZBwJohU7QJRGU+cTVH18ELmRPNBmibW6MT/k1b0XhdkRBvyT6SB6EYv/GvhSmRNpGngRULsAlxMCGNXp7w3FfdEbTEEDdLI9TdIKRUzUesa3I461ER8cpNT7gMRhpKmYVS9ELOgCUQsa4SsulciKiLbY+AnHD8cpuhISsnxpamI84sbDq9qYJgf8wiiOBrC7Ml7M7ZECCqKoiiKoiiKoiiKoijv5AvJxlZRyNWWLwAAAABJRU5ErkJggg==";
+    placeholder = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
 
+    const nullUser = {
+        username: "User not really found",
+        pfp: placeholder,
+        bio: "",
+        follower_count: 0,
+        following_count: 0,
+        private: true,
+        first: "",
+        last: "",
+        email: ""
+    }
+
+    const testUser = {
+        username: "test user",
+        pfp: null,
+        bio: "i hate ap bio",
+        follower_count: 6,
+        following_count: 9,
+        private: true,
+        first: "what",
+        last: "thefuc",
+        email: "weyellforyahoo@yahoo.com"
+    }
+
+    /* state hooks */
+    const [user, setUser] = useState(nullUser);
     const [error, setError] = React.useState("");
+    const [posts, setPosts] = useState([]);
+    const [show, setShow] = useState(false);
+
+    /* user formatted this way:
+    User = {
+        username: string,
+        pfp: string,
+        bio: string,
+        follower_count: int,
+        following_count: int,
+        private: bool,
+        first: string,
+        last: string,
+        email: string
+    }
+    */
+
+    /* helper functions */
+    const handleUpdateUser = (event) => {
+        console.log(event.target.name);
+        console.log(event.target.value);
+        setUser({
+            ...user,
+            [event.target.name]: event.target.value,
+        });
+    }
 
     function errorMessage(bio) {
         console.log(bio)
@@ -26,52 +80,9 @@ function Profile(props) {
         return message;
     }
 
-    const [posts, setPosts] = useState([]);
-
-    const [show, setShow] = useState(false);
-
-    const nullUser = {
-        id: 1,
-        profile_name: "User not found",
-        user_profile_picture: null,
-        user_bio: "",
-        user_followers_count: 0,
-        user_following_count: 0,
-        allow_only_followed_users: 0,
-        first_name: "null first",
-        last_name: "null last",
-        user_email: "null email"
-    }
-
-    const [user, setUser] = useState(nullUser);
-
-    const [tempUser, setTempUser] = useState(nullUser);
-
-    /*
-        profile_name: randString(3, false, false),
-        user_profile_picture: randImg(),
-        user_bio: randString(15 + rand(10), true, true),
-        user_followers_count: rand(500),
-        user_following_count: rand(500),
-        allow_only_followed_users: rand(2),
-        first_name: randWord(),
-        last_name: randWord(),
-        user_email: randString(3, false, true) + "com"
-    */
-
-
-    const handleUpdateUser = (event) => {
-        console.log(event.target.name);
-        console.log(event.target.value);
-        setTempUser({
-            ...user,
-            [event.target.name]: event.target.value,
-        });
-    }
-
     const handleSubmitUpdate = (event) => {
         console.log("submit");
-        let err = errorMessage(tempUser.user_bio);
+        let err = errorMessage(user.bio);
         setError(err);
         if (err == "") {
             setUserApi();
@@ -88,6 +99,7 @@ function Profile(props) {
             .catch(err => console.error(`Error: ${err}`));
     }
 
+    /*
     const getNewUser = () => {
         getUser()
             .then((res) => {
@@ -95,6 +107,7 @@ function Profile(props) {
             })
             .catch(err => console.error(`Error: ${err}`));
     }
+    */
 
     const handleClose = () => {
         setShow(false);
@@ -104,20 +117,48 @@ function Profile(props) {
     };
 
     const getUserApi = () => {
+        console.log("help")
+        
+        
+        getUser(1)
+            .then(res => {
+                const usr = formatUser(res.data);
+                setUser(usr);
+                console.log(usr);
+            })
+            .catch(err => console.error(`Error: ${err}`));
+            
+        
+        /*
         axios.get('/api/profile/1')
             .then(res => {
-                const usr = res.data;
+                const usr = formatUser(res.data);
+                console.log(usr);
+                console.log(formatUser(usr))
                 setUser(usr);
             })
+        */
+        
+            
     }
 
     const setUserApi = () => {
-        axios.put('/api/profile/1', tempUser)
+        //change testUser to updated user object
+        //const updatedUser = unformatUser(testUser);
+
+        updateUser(1, testUser).then(res => {
+            const usr = formatUser(res.data);
+            setUser(usr);
+        })
+
+        /*
+        axios.put('/api/profile/1', testUser)
             .then(response => {
                 console.log(response.data)
                 setUser(response.data)
             
             });
+        */
     }
 
     useEffect(() => {
@@ -125,63 +166,6 @@ function Profile(props) {
         //getNewUser();
         getUserApi();
     }, []);
-
-    
-
-    // const [mypics,setPics] = useState([])
-    // const {state,dispatch} = useContext(UserContext)
-    // const [image,setImage] = useState("")
-    // useEffect(()=>{
-    //    fetch('/mypost',{
-    //        headers:{
-    //            "Authorization":"Bearer "+localStorage.getItem("jwt")
-    //        }
-    //    }).then(res=>res.json())
-    //    .then(result=>{
-    //        console.log(result)
-    //        setPics(result.mypost)
-    //    })
-    // },[])
-    // useEffect(()=>{
-    //    if(image){
-    //     const data = new FormData()
-    //     data.append("file",image)
-    //     data.append("upload_preset","insta-clone")
-    //     data.append("cloud_name","cnq")
-    //     fetch("https://api.cloudinary.com/v1_1/cnq/image/upload",{
-    //         method:"post",
-    //         body:data
-    //     })
-    //     .then(res=>res.json())
-    //     .then(data=>{
-
-
-    //        fetch('/updatepic',{
-    //            method:"put",
-    //            headers:{
-    //                "Content-Type":"application/json",
-    //                "Authorization":"Bearer "+localStorage.getItem("jwt")
-    //            },
-    //            body:JSON.stringify({
-    //                pic:data.url
-    //            })
-    //        }).then(res=>res.json())
-    //        .then(result=>{
-    //            console.log(result)
-    //            localStorage.setItem("user",JSON.stringify({...state,pic:result.pic}))
-    //            dispatch({type:"UPDATEPIC",payload:result.pic})
-    //            //window.location.reload()
-    //        })
-
-    //     })
-    //     .catch(err=>{
-    //         console.log(err)
-    //     })
-    //    }
-    // },[image])
-    // const updatePhoto = (file)=>{
-    //     setImage(file)
-    // }
 
 
     return (
@@ -197,21 +181,19 @@ function Profile(props) {
                 }}>
                     <div>
                         <img style={{ width: "160px", height: "160px", borderRadius: "80px" }}
-                            src={user.user_profile_picture}
+                            src={user.pfp}
                         />
-
                     </div>
                     <div className="down">
                         <p></p>
                         {/* <div style="padding-top:5em;"></div> */}
-                        <h4>{user.profile_name}</h4>
-                        <h7>{user.user_bio}</h7>
+                        <h4>{user.username}</h4>
+                        <h7>{user.bio}</h7>
                         <div style={{ display: "flex", justifyContent: "space-between", width: "108%" }}>
-                            <h6>727 posts</h6>
-                            <h6>{user.user_followers_count} followers</h6>
-                            <h6>{user.user_following_count} following</h6>
+                            <h6>3 posts</h6>
+                            <h6>{user.follower_count} followers</h6>
+                            <h6>{user.following_count} following</h6>
                         </div>
-
                     </div>
                 </div>
 
