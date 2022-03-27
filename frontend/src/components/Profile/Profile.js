@@ -34,7 +34,7 @@ function Profile(props) {
         id: 1,
         profile_name: "User not found",
         user_profile_picture: null,
-        user_bio: "null bio",
+        user_bio: "",
         user_followers_count: 0,
         user_following_count: 0,
         allow_only_followed_users: 0,
@@ -44,6 +44,8 @@ function Profile(props) {
     }
 
     const [user, setUser] = useState(nullUser);
+
+    const [tempUser, setTempUser] = useState(nullUser);
 
     /*
         profile_name: randString(3, false, false),
@@ -61,7 +63,7 @@ function Profile(props) {
     const handleUpdateUser = (event) => {
         console.log(event.target.name);
         console.log(event.target.value);
-        setUser({
+        setTempUser({
             ...user,
             [event.target.name]: event.target.value,
         });
@@ -69,9 +71,11 @@ function Profile(props) {
 
     const handleSubmitUpdate = (event) => {
         console.log("submit");
-        let err = errorMessage(user.user_bio);
+        let err = errorMessage(tempUser.user_bio);
         setError(err);
         if (err == "") {
+            setUserApi();
+            setTempUser(nullUser)
             handleClose();
         }
     }
@@ -108,7 +112,7 @@ function Profile(props) {
     }
 
     const setUserApi = () => {
-        axios.put('/api/profile/1', nullUser)
+        axios.put('/api/profile/1', tempUser)
             .then(response => {
                 console.log(response.data)
                 setUser(response.data)
@@ -237,7 +241,7 @@ function Profile(props) {
                             </Modal.Body>
                             <Modal.Footer>
                                 <p>{error}</p>
-                                <Button variant="primary" onClick={setUserApi}>
+                                <Button variant="primary" onClick={handleSubmitUpdate}>
                                     Update
                                 </Button>
                             </Modal.Footer>
