@@ -29,7 +29,7 @@ export default class ProfileSetup extends Component {
         if (typeof fields["bio"] !== "undefined") {
             if (fields["bio"].length > 500) {
                 formIsValid = false;
-                errors["bio"] = "First Name is too long";
+                errors["bio"] = "Sorry your bio is too long:(";
             } 
         }
 
@@ -88,13 +88,43 @@ export default class ProfileSetup extends Component {
         return formIsValid;
     }
 
+    hitSubmit(e) {
+        let errors = this.state.errors;
+        e.preventDefault();
+
+        if (this.handleValidation()) {
+            alert("Form submitted");
+            
+            window.location.href = "/";
+        }
+    }
+
+    handleChange(field, e) {
+        let fields = this.state.fields;
+        fields[field] = e.target.value;
+        this.setState({ fields });
+    }
+
 
     render() {
         return (
             <div className="ProfileSetup">
                 <Card className="LoginCard" style={{ width: '18rem' }}>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={this.hitSubmit.bind(this)}>
                         <h3>Create Profile</h3>
+
+                        <div className="form-group">
+                            <label>First Name*:</label>
+                            <input refs="firstname" type="text" required className="form-control" placeholder="Enter First Name" 
+                            onChange={this.handleChange.bind(this, "firstname")} value={this.state.fields["firstname"]} />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Last Name*:</label>
+                            <input refs="lastname" type="text" required className="form-control" placeholder="Enter Last Name" 
+                            onChange={this.handleChange.bind(this, "lastname")} value={this.state.fields["lastname"]} />
+                        </div>
+
                         <div className="form-group">
                             <label>Bio</label>
                             <textarea refs="bio" type="text" className="form-control" placeholder="Tell us about yourself!" 
@@ -109,23 +139,6 @@ export default class ProfileSetup extends Component {
                             {/* <input type="file"/> */}
                         </div>
                         
-
-                        <div className="form-group">
-                            <label>First Name*:</label>
-                            <input refs="firstname" type="text" required className="form-control" placeholder="Enter First Name" 
-                            onChange={this.handleChange.bind(this, "firstname")} value={this.state.fields["firstname"]} />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Last Name*:</label>
-                            <input refs="lastname" type="text" required className="form-control" placeholder="Enter Last Name" 
-                            onChange={this.handleChange.bind(this, "lastname")} value={this.state.fields["lastname"]} />
-                        </div>
-
-
-
-
-
                         <button className="btn btn-primary btn-block">Create</button>
                     </form>
                 </Card>
