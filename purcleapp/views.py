@@ -26,7 +26,7 @@ from rest_framework import generics
 #     path(r'^api/profile/(?P<pk>[0-9]+)$', views.profile_detail)
 # ]
 
-@api_view(['GET', 'POST', 'DELETE', 'PUT'])
+@api_view(['GET', 'POST', 'DELETE', 'PUT', 'PATCH'])
 def profile_detail(request, pk):
     print(request)
     print(pk)
@@ -43,6 +43,7 @@ def profile_detail(request, pk):
         print("this is a put request")
         user_data = JSONParser().parse(request)
         print(user_data)
+        print('--------')
         user_serializer = UserSerializer(userprofile, data=user_data) 
         if user_serializer.is_valid(): 
             user_serializer.save() 
