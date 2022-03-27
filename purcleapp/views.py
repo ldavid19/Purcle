@@ -1,5 +1,7 @@
 from os import lseek
 from django.shortcuts import render
+from django.http.response import JsonResponse
+
 from rest_framework.views import APIView
 from . models import *
 from rest_framework.response import Response
@@ -7,13 +9,48 @@ from .serializers import *
 from purcleapp import views
 from django.shortcuts import render
 from django.urls import path
+
+from rest_framework import status
+from rest_framework.parsers import JSONParser
+from rest_framework.decorators import api_view
+
+from rest_framework import generics
+
+
 # Create your views here.
 
-# urlpattern = [
-#     path(r'^api/posts$', views.posts_list),
-#     path(r'^api/posts/(?P<pk>[0-9]+)$', views.posts_detail),
-#     path(r'^api/posts/published$', views.posts_list_published)
+# urlpatterns = [S
+#     #path(r'^api/posts$', views.posts_list),
+#     #path(r'^api/posts/(?P<pk>[0-9]+)$', views.posts_detail),
+#     #path(r'^api/posts/published$', views.posts_list_published),
+#     path(r'^api/profile/(?P<pk>[0-9]+)$', views.profile_detail)
 # ]
+
+@api_view(['GET', 'POST', 'DELETE', 'PUT', 'PATCH'])
+def profile_detail(request, pk):
+    print(request)
+    print(pk)
+    try: 
+        userprofile = UserProfile.objects.get(pk=pk) 
+    except UserProfile.DoesNotExist: 
+        return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET': 
+        user_profile_serializer = UserSerializer(userprofile) 
+        return JsonResponse(user_profile_serializer.data)
+
+    elif request.method == 'PUT':
+        print("this is a put request")
+        user_data = JSONParser().parse(request)
+        print(user_data)
+        print('--------')
+        user_serializer = UserSerializer(userprofile, data=user_data) 
+        if user_serializer.is_valid(): 
+            user_serializer.save() 
+            return JsonResponse(user_serializer.data)
+        print(user_serializer.errors)
+        return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # @api_view(['GET', 'POST', 'DELETE'])
 # def posts_list(request):
