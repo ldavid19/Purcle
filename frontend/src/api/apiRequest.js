@@ -10,10 +10,14 @@ var allPosts = [];
 var allTopics = [];
 
 /* General functions */
-async function get(type, id) { //GET request
+async function get(type, query = "") { //GET request
     var data = [];
+
+    if (query != "") {
+        query = "/" + query;
+    }
     
-    await axios.get('/api/' + type + '/' + id)
+    await axios.get('/api/' + type + query)
         .then((res) => {
             data = res;
         });
@@ -74,9 +78,9 @@ function databaseLength() {
 }
 
 async function getAllTopics() {
-    console.log(allTopics);
+    //console.log(allTopics);
     //return allTopics;
-    return get("topic", "");
+    return get("topic");
 }
 
 

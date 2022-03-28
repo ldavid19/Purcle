@@ -13,7 +13,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 function errorMessage(title, type, text, topic) {
     let message = "";
-    if (topic === null || topic.label === null) {
+    if (topic === null || topic.value === null) {
         message = message + "Please choose topic.\n";
     } else if (topic.label.length < 1) {
         message = message + "Please choose topic.\n";
@@ -135,24 +135,34 @@ function NewPost(props) {
         }
     }
 
-    var xtopics = [
-        {label: 'cs', value: 5},
-        {label: 'cooking', value: 700},
-        {label: 'botany', value: 85},
-        {label: 'birding', value: 999},
-        {label: 'birds', value: 69},
-        {label: 'purdue', value: 1},
-    ]
     const [topics, setTopics] = useState([]);
     const getTopics = () => {
         getAllTopics()
             .then((res) => {
-                setTopics(res);
+                let data = res.data;
+
+                let topic_list = []
+                
+                data.map((topic) => {
+                    let newTopic = {
+                        label: topic.topic_id,
+                        value: topic.topic_num_followers
+                    }
+
+                    topic_list.push(newTopic);
+                })
+
+                console.log(topic_list)
+
+                console.log(res.data);
+                setTopics(topic_list);
+                console.log(topics);
             })
             .catch(err => console.error(`Error: ${err}`));
     }
 
     useEffect(() => {
+        console.log("LOADED!! :))")
         getTopics();
     }, []);
 
@@ -160,7 +170,7 @@ function NewPost(props) {
         <Row>
             <Col>{label.toLowerCase()}</Col>
             <Col></Col>
-            <Col>{xtopics.some(e => e.label === label) ? value : 0} followers</Col>
+            <Col>{topics.some(e => e.label === label) ? value : 0} followers</Col>
         </Row>
     );
 
@@ -177,11 +187,10 @@ function NewPost(props) {
                 <Row>
                     <Creatable
                         value={topic}
-                        //options={xtopics.sort(function(a, b){return b.value-a.value})}
-                        options={topics}
+                        options={topics.sort(function(a, b){return b.value-a.value})}
                         onChange={handleTopicChange}
                         placeholder="Choose Topic"
-                        //formatOptionLabel={formatOptionLabel}
+                        formatOptionLabel={formatOptionLabel}
                     />
                     <p></p>
                 </Row>
