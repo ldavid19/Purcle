@@ -52,9 +52,24 @@ def profile_detail(request, pk):
         print(user_serializer.errors)
         return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class SignUpView(generics.CreateAPIView):
-    queryset = get_user_model().objects.all()
-    serializer_class = UserSerializer
+# class SignUpView(generics.CreateAPIView):
+#     queryset = get_user_model().objects.all()
+#     serializer_class = UserSerializer
+
+@api_view(['GET', 'POST', 'DELETE', 'PUT', 'PATCH'])
+def user_detail(request):
+    if request.method == 'POST':
+        user_data = JSONParser().parse(request)
+        user_serializer = UserSerializer(data=user_data)
+        if user_serializer.is_valid():
+            user_serializer.save() 
+            return JsonResponse(user_serializer.data)
+        print(user_serializer.errors)
+        message = ""
+        for error in user_serializer.errors:
+            message = user_serializer.errors[error][0].title()
+        return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
+    
 
 # @api_view(['GET', 'POST', 'DELETE'])
 # def posts_list(request):
