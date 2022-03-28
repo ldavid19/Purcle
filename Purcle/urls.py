@@ -14,9 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path, include, re_path
 from django.views.generic import TemplateView
-from django.conf.urls import include
+
+#from rest_auth import urls
 
 from purcleapp import views
 
@@ -34,6 +35,9 @@ urlpatterns = [
     path('messages/', TemplateView.as_view(template_name='index.html')),
     path('post/', TemplateView.as_view(template_name='index.html')),
     path('post/:id', TemplateView.as_view(template_name='index.html')),
+    path('api/sign_up/', views.SignUpView.as_view(), name='sign_up'),
     
+    #path('api/auth/', include('rest_auth.urls')),    
+    #path('api/auth/register/', include('rest_auth.registration.urls')),
     # path(r'^', include('Purcle.urls')),
 ]

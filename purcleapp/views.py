@@ -16,6 +16,7 @@ from rest_framework.decorators import api_view
 
 from rest_framework import generics
 
+from django.contrib.auth import get_user_model
 
 # Create your views here.
 
@@ -36,7 +37,7 @@ def profile_detail(request, pk):
         return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET': 
-        user_profile_serializer = UserSerializer(userprofile) 
+        user_profile_serializer = UserProfileSerializer(userprofile) 
         return JsonResponse(user_profile_serializer.data)
 
     elif request.method == 'PUT':
@@ -44,13 +45,16 @@ def profile_detail(request, pk):
         user_data = JSONParser().parse(request)
         print(user_data)
         print('--------')
-        user_serializer = UserSerializer(userprofile, data=user_data) 
+        user_serializer = UserProfileSerializer(userprofile, data=user_data) 
         if user_serializer.is_valid(): 
             user_serializer.save() 
             return JsonResponse(user_serializer.data)
         print(user_serializer.errors)
         return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class SignUpView(generics.CreateAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
 
 # @api_view(['GET', 'POST', 'DELETE'])
 # def posts_list(request):
