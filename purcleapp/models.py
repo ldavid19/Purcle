@@ -20,23 +20,23 @@ class UserProfile(models.Model):
     user_followers_count = models.FloatField(default=0, null=False)
     user_following_count = models.FloatField(default=0, null=False)
     user_following_topic = ArrayField(models.CharField(max_length=200), blank=True)
-    user_blocked = models.ArrayField(models.CharField(max_length=200), blank=True)
+    user_blocked = ArrayField(models.CharField(max_length=200), blank=True)
     allow_only_followed_users = models.BooleanField(default=False)
 
     def __str__(self):
         return self.profile_name
 
     def get_id(self):
-        return self.user_id;
+        return self.user_id
 
     def get_password(self):
-        return self.user_password;
+        return self.user_password
 
     def get_created_date(self):
-        return self.created_date;
+        return self.created_date
 
     def get_following_topic(self):
-        return self.user_following_topic;
+        return self.user_following_topic
 
     def delete_user(self):
         self.delete()

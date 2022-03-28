@@ -1,4 +1,4 @@
-import { ListGroup } from 'react-bootstrap';
+import { ListGroup, Spinner, Col } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 import PostCardItem from './PostCardItem';
 
@@ -21,6 +21,7 @@ function PostCard(props) {
     
     useEffect(() => {
         var posts = Array.from(props.postList);
+        console.log(posts);
 
         var postcards = posts.map((post) => (
             <PostCardItem 
@@ -35,7 +36,11 @@ function PostCard(props) {
     //check if post list not retrieved yet
     if (props.postList.length <= 0) {
         return (
-            <h2>No posts retrieved :(</h2>
+            <Col>
+                <Spinner animation="border" role="status" variant='primary' style={{justifyContent: "center"}}>
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </Col>
         )
     }
 

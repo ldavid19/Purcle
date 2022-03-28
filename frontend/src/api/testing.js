@@ -87,7 +87,7 @@ function createRandPost(id) {
     }
 
     var newPost = {
-        post_id: id,
+        id: id,
         post_topic: topics[rand(topics.length)],
         post_type: postType,
         user_id: randString(2 + rand(2), false, false),
