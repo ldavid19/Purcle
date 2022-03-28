@@ -74,7 +74,7 @@ def posts_list(request):
         return JsonResponse(posts_serializer.data, safe=False)
 #     # GET list of posts, POST a new post, DELETE all posts
  
- 
+'''
 @api_view(['GET', 'PUT', 'DELETE'])
 def posts_detail(request, pk):
 #     # find post by pk (id)
@@ -87,6 +87,7 @@ def posts_detail(request, pk):
         user_profile_serializer = UserSerializer(userprofile) 
         return JsonResponse(user_profile_serializer.data)
 #     # GET / PUT / DELETE post 
+'''
       
 # # @api_view(['GET'])
 # # def posts_list_published(request):
