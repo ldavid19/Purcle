@@ -33,6 +33,17 @@ async function put(type, id, data) { //PUT request
     return ret;
 }
 
+async function post(type, id, data) { //POST request
+    var ret = [];
+
+    await axios.post('/api/' + type + '/' + id, data)
+        .then((res) => {
+            ret = res;
+        });
+
+    return ret;
+}
+
 
 /* GET helper functions */
 /* post helpers */
