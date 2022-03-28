@@ -26,6 +26,7 @@ from rest_framework import generics
 #     path(r'^api/profile/(?P<pk>[0-9]+)$', views.profile_detail)
 # ]
 
+
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
 def profile_detail(request, pk):
     print(request)
@@ -51,18 +52,28 @@ def profile_detail(request, pk):
         return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# @api_view(['GET', 'POST', 'DELETE'])
-# def posts_list(request):
+@api_view(['GET', 'POST', 'DELETE'])
+def posts_list(request):
+    if request.method == 'GET':
+
+        post_list = Post.objects.all()
+
+        posts_serializer = PostSerializer(post_list, many=True)
+        return JsonResponse(posts_serializer.data, safe=False)
 #     # GET list of posts, POST a new post, DELETE all posts
  
  
-# @api_view(['GET', 'PUT', 'DELETE'])
-# def posts_detail(request, pk):
+@api_view(['GET', 'PUT', 'DELETE'])
+def posts_detail(request, pk):
 #     # find post by pk (id)
-#     try: 
-#         post = Post.objects.get(pk=pk) 
-#     except Post.DoesNotExist: 
-#         return JsonResponse({'message': 'The post does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+    try: 
+        post = Post.objects.get(pk=pk) 
+    except Post.DoesNotExist: 
+        return JsonResponse({'message': 'The post does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+
+    if request.method == 'GET': 
+        user_profile_serializer = UserSerializer(userprofile) 
+        return JsonResponse(user_profile_serializer.data)
 #     # GET / PUT / DELETE post 
       
 # # @api_view(['GET'])

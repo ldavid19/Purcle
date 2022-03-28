@@ -15,15 +15,27 @@ import {
     Link
   } from "react-router-dom";
 
-function PostCardTitle(props) {
-    
+
+function Anon(props) {
+    if (props.anon) {
+        return (
+            <nobr>anonymous</nobr>
+        );
+    }
 
     return (
-        <Col style={{textAlign: "left", textDecoration: "none"}}  as={Link} to={{pathname: `/post/${props.id}`, query:{id: props.id}}}>
+        <Link to="/profile">{props.user}</Link>
+    );
+}
+function PostCardTitle(props) {
+    return (
+        <Col style={{textAlign: "left", textDecoration: "none"}} 
+            as={Link} to={{pathname: `/post/${props.id}`, query:{id: props.id}}}>
+            
             <h3 style={{fontSize:20}}> {props.title} </h3>
             <p style={{margin: 0}}>
                 {"by "}
-                <Link to="/profile">{props.user}</Link>
+                < Anon user={props.user} anon={props.anon}/>
                 {" in "} 
                 <Link to="/profile">{props.topic}</Link>
                 {" " + getRelativeTime(props.date)}
@@ -99,6 +111,8 @@ function PostCardImg(props) {
 
 function PostCardItem(props) {
     const imgSize = 70;
+    console.log(props);
+    console.log(props.post)
 
     /* posts are formatted this way
     post = {

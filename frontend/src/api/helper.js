@@ -1,6 +1,33 @@
-import { useReducer } from "react";
+var moment = require('moment'); // require
+moment().format(); 
 
 const placeholder = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+
+const nullPostFrontend = {
+    id: 0,
+    title: "Post not found",
+    content: "",
+    topic: "",
+    type: 0,
+    user: "",
+    anon: true,
+    date: new Date(Date.now()),
+    score: 0
+}
+
+/*
+const nullPostBackend = {
+    post_id: databaseLength(),
+    post_topic: topic,
+    post_type: 0,
+    user_id: "user",
+    post_is_anonymous: checked,
+    post_title: title,
+    post_content: content,
+    post_time: new Date(Date.now()),
+    post_score: 0
+};
+*/
 
 const nullUserFrontend = {
     username: "User not found",
@@ -30,7 +57,7 @@ function getRelativeTime(date) {
     if (!date) {
         return "some time ago";
     }
-
+/*
     var now = new Date(Date.now());
 
     var time = 0;
@@ -71,8 +98,9 @@ function getRelativeTime(date) {
     } else if (time !== 1) {
         unit += "s"
     }
-
-    return time + " " + unit + " ago";
+*/
+    //return time + " " + unit + " ago";
+    return moment(date).fromNow();
 }
 
 /*
@@ -95,22 +123,41 @@ function formatPost(post) {
     */
 
     //reformat post into simpler keys
+    /*
+    var newPost = nullPostFrontend;
+
+    if (post.post_id) newPost.id = post_id;
+
+    if (post.post_title) newPost.title = post.post_title;
+
+    if (post.post_)
+    */
+
     try {
+        // date timefield is formatted: "2022-03-27T23:46:14.588566Z"
+        const momentDate = moment(post.post_time);
+
+        //console.log(momentDate);
+
         const newPost = {
-            id: post.post_id,
+            id: post.id,
             title: post.post_title,
             content: post.post_content,
             topic: post.post_topic,
             type: post.post_type,
             user: post.user_id,
             anon: post.post_is_anonymous,
-            date: post.post_time,
+            date: momentDate.toDate(),
             score: post.post_score
         }
 
-        return newPost
+        //console.log(post);
+        //console.log(newPost);
+
+        return newPost;
     } catch (e) {
-        return post;
+        console.log("failed to parse post!!");
+        return nullPostFrontend;
     }
 }
 

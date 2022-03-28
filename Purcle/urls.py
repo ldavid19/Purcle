@@ -29,10 +29,11 @@ urlpatterns = [
     path('following/', TemplateView.as_view(template_name='index.html')),
     path('profile/', TemplateView.as_view(template_name='index.html')),
     re_path(r'^api/profile/(?P<pk>[0-9]+)$', views.profile_detail),
+    re_path(r'^api/post$', views.posts_list),
     path('login/', TemplateView.as_view(template_name='index.html')),
     path('profilesetup/', TemplateView.as_view(template_name='index.html')),
     path('messages/', TemplateView.as_view(template_name='index.html')),
-    path('post/', TemplateView.as_view(template_name='index.html')),
+    path('post/', views.posts_list),
     path('post/:id', TemplateView.as_view(template_name='index.html')),
     
     # path(r'^', include('Purcle.urls')),

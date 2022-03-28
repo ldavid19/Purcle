@@ -9,10 +9,17 @@ axios.defaults.xsrfCookieName = "csrftoken";
 var allPosts = [];
 
 /* General functions */
-async function get(type, id) { //GET request
+async function get(type, query = "") { //GET request
     var data = [];
 
-    await axios.get('/api/' + type + '/' + id)
+    if (query != "") {
+        query = "/" + query;
+    }
+
+    const url = '/api/' + type + query;
+    //console.log(url);
+
+    await axios.get(url)
         .then((res) => {
             data = res;
         });
@@ -22,10 +29,14 @@ async function get(type, id) { //GET request
     return data;
 }
 
-async function put(type, id, data) { //PUT request
+async function put(type, query = "", data) { //PUT request
     var ret = [];
 
-    await axios.put('/api/' + type + '/' + id, data)
+    if (query != "") {
+        query = "/" + query;
+    }
+
+    await axios.put('/api/' + type + query, data)
         .then((res) => {
             ret = res;
         });
@@ -40,7 +51,7 @@ async function getRandPosts() {
     var res = [];
 
     for (var i = 0; i < 100; i++) {
-        const post = formatPost(createRandPost(i));
+        const post = createRandPost(i);
         res.push(post);
     }
 
@@ -50,12 +61,24 @@ async function getRandPosts() {
 }
 
 async function getPost(id) {
-    return allPosts[id];
+    return get("post");
 }
 
 async function getAllPosts() {
     console.log(allPosts);
-    return allPosts;
+    return get("post");
+}
+
+/*
+ * retrieve a limited number posts from database
+ * with an offset argument so when we want to pull
+ * more posts we don't grab the same ones
+ * 
+ * limit = number of posts to retrieve
+ * offset = number of posts to skip over
+ */
+async function getNumPosts(limit, offset) {
+
 }
 
 /* user helpers */
@@ -65,7 +88,7 @@ async function getUser(id) {
 
 /* misc helpers */
 async function getScore(id) {
-    return allPosts[id].score;
+    return 0;
 }
 
 function databaseLength() {
