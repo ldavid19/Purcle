@@ -1,22 +1,42 @@
+from typing_extensions import Self
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import ArrayField
 
 User._meta.get_field('email').blank = False
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    user_id = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    user_email = models.EmailField(max_length=200, null=False)
+    user_password = models.CharField(max_length=50, null=False)
     profile_name = models.CharField(max_length=100, null=True)
-    user_profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images', blank=True, null=True)
-    user_bio = models.TextField(max_length=500)
-    user_followers_count = models.FloatField(default=0, null=False)
-    user_following_count = models.FloatField(default=0, null=False)
-    allow_only_followed_users = models.BooleanField(default=False)
     first_name = models.CharField(max_length=50, null=True)
     last_name = models.CharField(max_length=50, null=True)
-    user_email = models.CharField(max_length=200, null=False)
+    created_date = models.TimeField(null=False)
+    user_profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images', blank=True, null=True)
+    user_bio = models.TextField(max_length=500)
+    user_followers = ArrayField(models.CharField(max_length=200), blank=True)
+    user_following = ArrayField(models.CharField(max_length=200), blank=True)
+    user_followers_count = models.FloatField(default=0, null=False)
+    user_following_count = models.FloatField(default=0, null=False)
+    user_following_topic = ArrayField(models.CharField(max_length=200), blank=True)
+    user_blocked = models.ArrayField(models.CharField(max_length=200), blank=True)
+    allow_only_followed_users = models.BooleanField(default=False)
 
     def __str__(self):
         return self.profile_name
+
+    def get_id(self):
+        return self.user_id;
+
+    def get_password(self):
+        return self.user_password;
+
+    def get_created_date(self):
+        return self.created_date;
+
+    def get_following_topic(self):
+        return self.user_following_topic;
 
     def delete_user(self):
         self.delete()
@@ -27,7 +47,7 @@ class UserProfile(models.Model):
     def get_following_count(self):
         return self.user_following_count
 
-    def get_bio(self):
+    def get_user_bio(self):
         return self.user_bio
 
     def get_first_name(self):
