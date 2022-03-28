@@ -7,13 +7,80 @@ import { Button } from '@mui/material';
 import { getRandPosts, getUser, updateUser } from '../../api/apiRequest.js';
 import { formatUser, unformatUser } from '../../api/helper';
 
+/*
 import axios from 'axios'
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
+*/
 
+function ConfirmationModal(props) {
+    console.log("poop");
+
+    return (
+        <>
+            <Modal show={props.show} onHide={props.handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete Account</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Are you sure about deleting your account?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={props.handleClose}>
+                        No
+                    </Button>
+                    <Button variant="primary" onClick={props.handleDelete} color="error">
+                        Yes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    )
+
+}
+
+function UpdateProfileModal(props) {
+    return (
+        <Modal show={props.show} onHide={props.handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Update Profile</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+
+                <form>
+                    <textarea
+                        name="bio"
+                        placeholder="New Bio"
+                        style={{ width: "465px" }}
+                        onChange={props.handleUpdateUser}
+                    />
+                    <label>Upload New Profile Picture</label>
+                    <input
+                        type="file"
+                    />
+                </form>
+                <br></br>
+                <br></br>
+                <Button onClick={props.handleShowConfirmation} color="error">
+                    Delete Account
+                </Button>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <p>{props.error}</p>
+                <Button variant="primary" onClick={props.handleSubmitUpdate}>
+                    Update
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    )
+}
+
+function CloseConfirmationModal() {
+
+}
 
 function Profile(props) {
+    /* class constants */
     var placeholder = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLeqsbTn6eqpr7PJzc/j5ebf4eLZ3N2wtrnBxsjN0NLGysy6v8HT1tissra8wMNxTKO9AAAFDklEQVR4nO2d3XqDIAxAlfivoO//tEOZWzvbVTEpic252W3PF0gAIcsyRVEURVEURVEURVEURVEURVEURVEURVEURVEURflgAFL/AirAqzXO9R7XNBVcy9TbuMHmxjN6lr92cNVVLKEurVfK/zCORVvW8iUBnC02dj+Wpu0z0Y6QlaN5phcwZqjkOkK5HZyPAjkIjSO4fIdfcOwFKkJlX4zPu7Ha1tIcwR3wWxyFhRG6g4Je0YpSPDJCV8a2Sv2zd1O1x/2WMDZCwljH+clRrHfWCLGK8REMiql//2si5+DKWKcWeAGcFMzzNrXC/0TUwQ2s6+LhlcwjTMlYsUIQzPOCb7YBiyHopyLXIEKPEkI/TgeuiidK/R9FniUDOjRDpvm0RhqjMyyXNjDhCfIMYl1gGjIMIuYsnGEYRMRZOMMunaLVwpWRW008v6fYKDIzxCwVAeNSO90BJW6emelYBRF/kHpYGVaoxTDAaxOFsfP9y8hpJ4xd7gOcij7JNGQ1EYFgkPJa1jQEiYZXRaRINKxSDUW9n+FT82lSKadkiru9/4XPqSLWOekGPoY05TAvLm9orm+YWuwHoBHkZKijNBJGmeb61eL6Ff/6q7bLr7yvv3vKGhpDRjvgjGaPz+gUg6YgcvpyAR2FIZ9U6nEEyZRTovmEU32KichpGn7C17XrfyH9gK/c0CMP05HZIM2uf9sEveizKveBy9/6Qt7o89ne33D525cfcIMW6ab+TMEukQbQbu+xu7X3A9bChmWaCeAkG17bpntwXgWxHaMzGPmUaR5dQZiKqRVeUZ3047fi3nAu28h4CHxCsZAgmEH8Y27jJAhm8c+5RQzRQNVGhVFSfxOYIjp/pP7RxzjevYXVGf4eLt+BJ1vCuLuLkrgABgCGXZ2wik5uty+oBvNirI6mkzhAf4Gsb58Hcm67Jzd+KwD10BYPLL3e0MjvKrgAULnOfveF/O4N2Xb9BZom3gJes3F9X5Zze8/6Yt09b4CrqsEjUv8oFBaR2rl+6CZr2xVrp24o/WitBKuGrrpl1+bFkmK2qXTON4VpbdfLa7o7y/WdLxG7lm2Lqh2clOwTegbvc/vj2U78CwhA87Bn8G5Nk3eOb0Nsr9flz3sG78UUtue4kpv1xvjg3TMay62BMlTlP+vrOMnJsRmt/ze0jsfkPPYdAH57hK+34PeOyc8XIXu5xT2HsUkdZz+adwg8HGFfQ3K5jtDvbUiO4Di9/ywHGrL88pDizZ++oTp+an+SMX/ndymUCwmHMdO7yuOx83pUx/eEMU0AvxWndwgidAqOZ8ypCwdEfvvEo6D9HwpA8wzvmOJEqAg9ySu8g4x0Hb9hSB/BANEKJ+LbPBU0lzbAJs4xt1AoshKkUGQmiH8/jJ0gdhTTLmSegHlPE0oOdXALnqDjKYh3px//fSgSWG8UqfrrIICzYYSJXRr9BSPbpNzw7gBjKjKOYI7ReIGqQRIap5+5MdjyvuDkExvGeXSlONWZAP3/AZBwJohU7QJRGU+cTVH18ELmRPNBmibW6MT/k1b0XhdkRBvyT6SB6EYv/GvhSmRNpGngRULsAlxMCGNXp7w3FfdEbTEEDdLI9TdIKRUzUesa3I461ER8cpNT7gMRhpKmYVS9ELOgCUQsa4SsulciKiLbY+AnHD8cpuhISsnxpamI84sbDq9qYJgf8wiiOBrC7Ml7M7ZECCqKoiiKoiiKoiiKoijv5AvJxlZRyNWWLwAAAABJRU5ErkJggg==";
     placeholder = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
 
@@ -46,6 +113,7 @@ function Profile(props) {
     const [error, setError] = React.useState("");
     const [posts, setPosts] = useState([]);
     const [show, setShow] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const [tempUser, setTempUser] = useState(nullUser);
 
     /* user formatted this way:
@@ -110,17 +178,26 @@ function Profile(props) {
     }
     */
 
+    /* handler helper functions */
+    const handleOpenConfirmation = () => {
+        setShowConfirmation(true);
+    }
+
+    const handleCloseConfirmation = () => {
+        setShowConfirmation(false);
+    }
+
+    const handleShow = () => {
+        setShow(true);
+    }
+
     const handleClose = () => {
         setShow(false);
     }
-    const handleShow = () => {
-        setShow(true);
-    };
 
+    /* api calls */
     const getUserApi = () => {
-        console.log("help")
-        
-        
+
         getUser(1)
             .then(res => {
                 const usr = formatUser(res.data);
@@ -128,8 +205,8 @@ function Profile(props) {
                 console.log(usr);
             })
             .catch(err => console.error(`Error: ${err}`));
-            
-        
+
+
         /*
         axios.get('/api/profile/1')
             .then(res => {
@@ -139,8 +216,7 @@ function Profile(props) {
                 setUser(usr);
             })
         */
-        
-            
+
     }
 
     const setUserApi = () => {
@@ -165,12 +241,15 @@ function Profile(props) {
         */
     }
 
+    const deleteProfile = () => {
+        console.log("ACCOUNT DELETED BRUH");
+    }
+
     useEffect(() => {
         getNewPosts();
         //getNewUser();
         getUserApi();
     }, []);
-
 
     return (
         <div style={{ maxWidth: "550px", margin: "0px auto" }}>
@@ -205,33 +284,19 @@ function Profile(props) {
                     <div className="btn #64b5f6 blue darken-1">
                         <span onClick={handleShow}>Update Profile</span>
 
-                        <Modal show={show} onHide={handleClose}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Update Profile</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-
-                                <form>
-                                    <textarea
-                                        name="bio"
-                                        placeholder="New Bio"
-                                        style={{ width: "465px" }}
-                                        onChange={handleUpdateUser}
-                                    />
-                                    <label>Upload New Profile Picture</label>
-                                    <input
-                                        type="file"
-                                    />
-                                </form>
-
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <p>{error}</p>
-                                <Button variant="primary" onClick={handleSubmitUpdate}>
-                                    Update
-                                </Button>
-                            </Modal.Footer>
-                        </Modal>
+                        <UpdateProfileModal 
+                            show={show}
+                            handleClose={handleClose}
+                            handleShowConfirmation={handleOpenConfirmation}
+                            handleSubmitUpdate={handleSubmitUpdate}
+                            handleUpdateUser={handleUpdateUser}
+                            error={error}
+                        />
+                        <ConfirmationModal 
+                            show={showConfirmation} 
+                            handleClose={handleCloseConfirmation} 
+                            handleDelete={deleteProfile}
+                        />
 
                         {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
                     </div>
@@ -266,7 +331,7 @@ function Profile(props) {
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>   */}
             </div>
         </div>
-        
+
     );
 }
 
