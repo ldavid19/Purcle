@@ -123,3 +123,28 @@ class Reaction(models.Model):                 # created by Nicole
         return self.reaction_type
     def get_post_id(self):
         return self.post_id
+
+class Comment(models.Model):                # created by Nicole
+    #Comment.id is created automatically
+    user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)  # if the UserProfile is deleted, so will the Comment
+    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)         # if the Post is deleted, so will the Comment
+    comment_content = models.CharField(max_length=500)
+    comment_created_date = models.DateTimeField(auto_now=False, auto_now_add=True) # time is set on initial creation
+    comment_is_anonymous = models.BooleanField() # I added this, wasn't on design doc
+    # comment_parent_id = models.ForeignKey(Comment, on_delete=models.CASCADE)    # allows for comment threads
+    # ^ this isn't actually required so I'm going to ignore it for now
+    # Reactions for Comments also aren't required, so I'm ignoring that as well
+
+    # Comment Getters
+    def get_user_id(self):
+        return self.user_id
+    def get_post_id(self):
+        return self.post_id
+    def get_comment_content(self):
+        return self.comment_content
+    def get_comment_created_date(self):
+        return self.comment_created_date
+    def get_comment_is_anonymous(self):
+        return self.comment_is_anonymous
+    # def get_comment_parent_id(self):
+        # return self.comment_parrent_id
