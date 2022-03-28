@@ -1,22 +1,42 @@
+from typing_extensions import Self
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import ArrayField
 
 User._meta.get_field('email').blank = False
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    user_id = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    user_email = models.EmailField(max_length=200, null=False)
+    user_password = models.CharField(max_length=50, null=False)
     profile_name = models.CharField(max_length=100, null=True)
-    user_profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images', blank=True, null=True)
-    user_bio = models.TextField(max_length=500)
-    user_followers_count = models.FloatField(default=0, null=False)
-    user_following_count = models.FloatField(default=0, null=False)
-    allow_only_followed_users = models.BooleanField(default=False)
     first_name = models.CharField(max_length=50, null=True)
     last_name = models.CharField(max_length=50, null=True)
-    user_email = models.CharField(max_length=200, null=False)
+    created_date = models.TimeField(null=False)
+    user_profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images', blank=True, null=True)
+    user_bio = models.TextField(max_length=500)
+    user_followers = ArrayField(models.CharField(max_length=200), blank=True)
+    user_following = ArrayField(models.CharField(max_length=200), blank=True)
+    user_followers_count = models.FloatField(default=0, null=False)
+    user_following_count = models.FloatField(default=0, null=False)
+    user_following_topic = ArrayField(models.CharField(max_length=200), blank=True)
+    user_blocked = models.ArrayField(models.CharField(max_length=200), blank=True)
+    allow_only_followed_users = models.BooleanField(default=False)
 
     def __str__(self):
         return self.profile_name
+
+    def get_id(self):
+        return self.user_id;
+
+    def get_password(self):
+        return self.user_password;
+
+    def get_created_date(self):
+        return self.created_date;
+
+    def get_following_topic(self):
+        return self.user_following_topic;
 
     def delete_user(self):
         self.delete()
@@ -27,7 +47,7 @@ class UserProfile(models.Model):
     def get_following_count(self):
         return self.user_following_count
 
-    def get_bio(self):
+    def get_user_bio(self):
         return self.user_bio
 
     def get_first_name(self):
@@ -123,3 +143,28 @@ class Reaction(models.Model):                 # created by Nicole
         return self.reaction_type
     def get_post_id(self):
         return self.post_id
+
+class Comment(models.Model):                # created by Nicole
+    #Comment.id is created automatically
+    user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)  # if the UserProfile is deleted, so will the Comment
+    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)         # if the Post is deleted, so will the Comment
+    comment_content = models.CharField(max_length=500)
+    comment_created_date = models.DateTimeField(auto_now=False, auto_now_add=True) # time is set on initial creation
+    comment_is_anonymous = models.BooleanField() # I added this, wasn't on design doc
+    # comment_parent_id = models.ForeignKey(Comment, on_delete=models.CASCADE)    # allows for comment threads
+    # ^ this isn't actually required so I'm going to ignore it for now
+    # Reactions for Comments also aren't required, so I'm ignoring that as well
+
+    # Comment Getters
+    def get_user_id(self):
+        return self.user_id
+    def get_post_id(self):
+        return self.post_id
+    def get_comment_content(self):
+        return self.comment_content
+    def get_comment_created_date(self):
+        return self.comment_created_date
+    def get_comment_is_anonymous(self):
+        return self.comment_is_anonymous
+    # def get_comment_parent_id(self):
+        # return self.comment_parrent_id

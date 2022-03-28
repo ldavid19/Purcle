@@ -7,6 +7,7 @@ axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
 var allPosts = [];
+var allTopics = [];
 
 /* General functions */
 async function get(type, query = "") { //GET request
@@ -37,6 +38,17 @@ async function put(type, query = "", data) { //PUT request
     }
 
     await axios.put('/api/' + type + query, data)
+        .then((res) => {
+            ret = res;
+        });
+
+    return ret;
+}
+
+async function post(type, id, data) { //POST request
+    var ret = [];
+
+    await axios.post('/api/' + type + '/' + id, data)
         .then((res) => {
             ret = res;
         });
@@ -95,11 +107,21 @@ function databaseLength() {
     return allPosts.length;
 }
 
+async function getAllTopics() {
+    //console.log(allTopics);
+    //return allTopics;
+    return get("topic");
+}
+
 
 /* POST helper functions */
 /* post helpers */
 async function makePost(post) {
     allPosts.push(post);
+}
+
+async function makeTopic(topic) {
+    allTopics.push(topic);
 }
 
 function incrementScore(id, offset) {
@@ -122,4 +144,4 @@ async function updateUser(id, data) {
 }
 
 export { getRandPosts, getPost, getAllPosts, getUser, getScore, databaseLength, 
-        makePost, upvote, downvote, updateUser };
+        makePost, upvote, downvote, updateUser, getAllTopics };

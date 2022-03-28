@@ -47,6 +47,9 @@ function PostCardTitle(props) {
 function PostCardScore(props) {
     var [score, setScore] = useState(0);
 
+    var [up_color, setUpColor] = useState("black");
+    var [down_color, setDownColor] = useState("black");
+
     function updateScore(id) {
         getScore(id)
         .then((res) => {
@@ -68,9 +71,12 @@ function PostCardScore(props) {
                     .then(() => {
                         updateScore(props.id);
                     });
+                    up_color.localeCompare("black") === 0
+                    ? setUpColor("mediumslateblue"):setUpColor("black");
+                    setDownColor("black");
                 }}
             >
-                < KeyboardArrowUpIcon />
+                < KeyboardArrowUpIcon style={{color: up_color}}/>
             </IconButton>
 
             <p style={{margin: "0px"}}>{score}</p>
@@ -83,9 +89,12 @@ function PostCardScore(props) {
                     .then(() => {
                         updateScore(props.id);
                     });
+                    down_color.localeCompare("black") === 0
+                    ? setDownColor("mediumslateblue"):setDownColor("black");
+                    setUpColor("black");
                 }}
             >
-                < KeyboardArrowDownIcon />
+                < KeyboardArrowDownIcon style={{color: down_color}}/>
             </IconButton>
         </Col>
     );

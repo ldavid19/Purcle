@@ -48,6 +48,7 @@ function Profile(props) {
     const [error, setError] = React.useState("");
     const [posts, setPosts] = useState([]);
     const [show, setShow] = useState(false);
+    const [tempUser, setTempUser] = useState(nullUser);
 
     /* user formatted this way:
     User = {
@@ -67,7 +68,7 @@ function Profile(props) {
     const handleUpdateUser = (event) => {
         console.log(event.target.name);
         console.log(event.target.value);
-        setUser({
+        setTempUser({
             ...user,
             [event.target.name]: event.target.value,
         });
@@ -84,9 +85,11 @@ function Profile(props) {
 
     const handleSubmitUpdate = (event) => {
         console.log("submit");
-        let err = errorMessage(user.bio);
+        let err = errorMessage(tempUser.bio);
         setError(err);
         if (err == "") {
+            setUserApi();
+            setTempUser(nullUser)
             handleClose();
         }
     }
@@ -146,7 +149,10 @@ function Profile(props) {
         //change testUser to updated user object
         //const updatedUser = unformatUser(testUser);
 
-        updateUser(1, testUser).then(res => {
+        console.log("put user----------");
+        console.log(tempUser);
+        console.log("------------------");
+        updateUser(1, tempUser).then(res => {
             const usr = formatUser(res.data);
             setUser(usr);
         })
@@ -209,7 +215,7 @@ function Profile(props) {
 
                                 <form>
                                     <textarea
-                                        name="user_bio"
+                                        name="bio"
                                         placeholder="New Bio"
                                         style={{ width: "465px" }}
                                         onChange={handleUpdateUser}
@@ -223,7 +229,7 @@ function Profile(props) {
                             </Modal.Body>
                             <Modal.Footer>
                                 <p>{error}</p>
-                                <Button variant="primary" onClick={setUserApi}>
+                                <Button variant="primary" onClick={handleSubmitUpdate}>
                                     Update
                                 </Button>
                             </Modal.Footer>
