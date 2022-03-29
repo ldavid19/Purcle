@@ -30,6 +30,23 @@ async function get(type, query = "") { //GET request
     return data;
 }
 
+async function getNoID(type) {
+    var data = [];
+
+    await axios.get('/api/' + type)
+        .then((res) => {
+            data = res;
+        });
+
+    console.log(data);
+
+    return data;
+}
+
+async function put(type, id, data, token) { //PUT request
+    var ret = [];
+
+    await axios.put('/api/' + type + '/' + id, data, {Authorization: 'Token ' + token})
 async function put(type, query = "", data) { //PUT request
     var ret = [];
 
@@ -125,6 +142,10 @@ async function getUser(id) {
     return get("profile", id);
 }
 
+async function getCurrUser() {
+    return getNoID("current_user");
+}
+
 /* misc helpers */
 async function getScore(id) {
     return 0;
@@ -165,6 +186,13 @@ async function downvote(id) {
     //console.log("downvoted!")
 }
 
+/* user helpers */
+async function updateUser(id, data, token) {
+    return put("profile", id, unformatUser(data), token);
+}
+
+export { getRandPosts, getPost, getAllPosts, getUser, getScore, databaseLength, 
+        makePost, upvote, downvote, updateUser, getCurrUser };
 /* user helpers */ //MOVE LATER THX
 async function updateUser(id, data) {
     return put("profile", id, unformatUser(data));
