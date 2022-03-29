@@ -6,19 +6,28 @@ import PostCard from '../Post/PostCard';
 import { Button } from '@mui/material';
 
 import { getRandPosts, getAllPosts } from '../../api/apiRequest.js';
+import { formatPost } from '../../api/helper.js';
 
 function Home() {
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
         getPosts();
-    }, [posts]);
+    }, []);
 
     const getPosts = () => {
         getAllPosts()
         .then((res) => {
-            setPosts(res);
-            console.log(res);
+            var post_list = [];
+            var data = Array.from(res.data);
+
+            data.map((post) => {
+                const formattedPost = formatPost(post);
+                console.log(formattedPost)
+                post_list.push(formattedPost);
+            }, setPosts(post_list));
+
+            //setPosts(res.data);
         })
         .catch(err => console.error(`Error: ${err}`));
     }
@@ -26,7 +35,14 @@ function Home() {
     const getNewPosts = () => {
         getRandPosts()
         .then((res) => {
-            setPosts(res);
+            var post_list = [];
+
+            res.map((post) => {
+                const formattedPost = formatPost(post);
+                console.log(formattedPost)
+                post_list.push(formattedPost);
+            }, setPosts(post_list));
+
             console.log(res);
         })
         .catch(err => console.error(`Error: ${err}`));
@@ -38,7 +54,7 @@ function Home() {
                 <NewPost getPosts={getPosts}/>
             </Row>
 
-            <Row>
+            <Row style={{display: "flex"}}>
                 <PostCard postList={posts}/> 
             </Row>
 

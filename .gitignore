@@ -10,5 +10,8 @@ db.sqlite3
 
 *.json
 
+/frontend/build/
+/frontend/build/*
+/node_modules
 frontend/node_modules/
 .DS_Store
