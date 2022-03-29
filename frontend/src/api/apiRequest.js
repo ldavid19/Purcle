@@ -7,7 +7,6 @@ axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
 var allPosts = [];
-var allTopics = [];
 
 /* General functions */
 async function get(type, query = "") { //GET request
@@ -30,7 +29,11 @@ async function get(type, query = "") { //GET request
 async function put(type, id, data) { //PUT request
     var ret = [];
 
-    await axios.put('/api/' + type + '/' + id, data)
+    if (id != "") {
+        id = "/" + id;
+    }
+
+    await axios.put('/api/' + type + id, data)
         .then((res) => {
             ret = res;
         });
@@ -38,6 +41,16 @@ async function put(type, id, data) { //PUT request
     return ret;
 }
 
+async function post(type, data) { //POST request
+    var ret = [];
+
+    await axios.post('/api/' + type, data)
+        .then((res) => {
+            ret = res;
+        });
+
+    return ret;
+}
 
 /* GET helper functions */
 /* post helpers */
@@ -78,20 +91,21 @@ function databaseLength() {
 }
 
 async function getAllTopics() {
-    //console.log(allTopics);
-    //return allTopics;
     return get("topic");
 }
 
+async function getTopic(id) {
+    return get("topic", id);
+}
 
 /* POST helper functions */
 /* post helpers */
 async function makePost(post) {
-    allPosts.push(post);
+    return post("post", post);
 }
 
-async function makeTopic(topic) {
-    allTopics.push(topic);
+async function makeTopic(data) {
+    return post("topic", data);
 }
 
 function incrementScore(id, offset) {
@@ -114,4 +128,4 @@ async function updateUser(id, data) {
 }
 
 export { getRandPosts, getPost, getAllPosts, getUser, getScore, databaseLength, 
-        makePost, upvote, downvote, updateUser, getAllTopics };
+        makePost, upvote, downvote, updateUser, getAllTopics, makeTopic, getTopic, }; // always leave a comma on the last entry

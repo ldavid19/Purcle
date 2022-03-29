@@ -79,12 +79,16 @@ def topic_list(request):
     if request.method == 'GET':
         topics = Topic.objects.all()
 
-        # topic_id = request.GET.get('topic_id', None)
-        # if topic_id is not None:
-        #     topics = topics.filter(topic_id__icontains=topic_id)
-
         topics_serializer = TopicSerializer(topics, many=True)
         return JsonResponse(topics_serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        topic_data = JSONParser().parse(request)
+        topic_serializer = TopicSerializer(data=topic_data)
+        if topic_serializer.is_valid():
+            topic_serializer.save()
+            return JsonResponse(topic_serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(topic_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
 def topic_detail(request, pk):
@@ -109,3 +113,19 @@ def topic_detail(request, pk):
             return JsonResponse(topic_serializer.data)
         print(topic_serializer.errors)
         return JsonResponse(topic_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'POST', 'DELETE', 'PUT'])
+def post_list(request):
+    # if request.method == 'GET':
+    #     topics = Topic.objects.all()
+
+    #     topics_serializer = TopicSerializer(topics, many=True)
+    #     return JsonResponse(topics_serializer.data, safe=False)
+
+    if request.method == 'POST':
+        post_data = JSONParser().parse(request)
+        post_serializer = PostSerializer(data=post_data)
+        if post_serializer.is_valid():
+            post_serializer.save()
+            return JsonResponse(post_serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
