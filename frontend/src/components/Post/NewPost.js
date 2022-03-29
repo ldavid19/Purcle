@@ -5,7 +5,7 @@ import Creatable from 'react-select/creatable';
 import { Modal, Col, Row, Image } from "react-bootstrap";
 import { Button } from '@mui/material';
 
-import { makePost, databaseLength, getAllTopics } from "../../api/apiRequest.js";
+import { makePost, databaseLength, getAllTopics, makeTopic, getTopic } from "../../api/apiRequest.js";
 import axios from 'axios'
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
@@ -44,6 +44,8 @@ function NewPost(props) {
 
     const [show, setShow] = useState(false);
 
+    const [newTopic, setNewTopic] = useState(false);
+
     const [error, setError] = React.useState("");
 
     const handleSubmit = () => {
@@ -66,11 +68,40 @@ function NewPost(props) {
                 post_score: 0
             };
 
-            makePost(newPost)
-            .then((res) => {
-                props.getPosts();
-                //getAllPosts();
-            });
+            if (newTopic) {
+                console.log("trying to create a new topic");
+                var createdTopic = {
+                    topic_id: topic.label,
+                    topic_num_followers: 0
+                };
+                makeTopic(createdTopic);
+            }
+
+            var type_int = type.localeCompare("Image") === 0 ? 1 : 0;
+            var content_str = type.localeCompare("Image") === 0 ? image : text;
+            var topic_data;
+            /*
+            getTopic(topic.label)
+                .then((res) => {
+                    topic_data = res.data;
+                })
+            */
+            var newPost = {
+                //DO STUFF HERE XXXX
+                //MAKE SURE YOU LEAVE A COMMENT ABOUT ADDING
+                //THE NEW POST TO THE CREATOR'S POST LIST
+                //IF THAT'S EVEN A THING IDK
+                //post_topic: topic_data,
+                id: null,
+                post_topic: {topic_id: topic.label, topic_num_followers: topic.value},
+                post_type: type_int,
+                user_id: null, //needs changed to currentuser XXXX
+                post_is_anonymous: checked,
+                post_title: title,
+                post_content: content_str,
+                post_time: null //idk if this is right XXXX
+            };
+            makePost(newPost);
 
             setShow(false);
             setTitle("");
@@ -132,6 +163,9 @@ function NewPost(props) {
         setTopic(ev);
         if (ev.__isNew__ === true) {
             ev.value = 0;
+            setNewTopic(true);
+        } else {
+            setNewTopic(false);
         }
     }
 
