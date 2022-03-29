@@ -45,6 +45,7 @@ async function put(type, query = "", data) { //PUT request
     return ret;
 }
 
+/*
 async function post(type, id, data) { //POST request
     var ret = [];
 
@@ -55,6 +56,7 @@ async function post(type, id, data) { //POST request
 
     return ret;
 }
+*/
 
 async function post(type, data) { //POST request
     var ret = [];
@@ -176,6 +178,6 @@ async function postUser(data) {
 }
 
 export {
-    getRandPosts, getPost, getAllPosts, getUser, getScore, databaseLength,
+    getRandPosts, getPost, getAllPosts, getUser, getScore, databaseLength, getAllTopics,
     makePost, upvote, downvote, updateUser, postUser
 };
