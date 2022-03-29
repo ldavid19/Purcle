@@ -31,6 +31,7 @@ function Profile(props) {
         first: "",
         last: "",
         email: ""
+        //topics = []
     }
 
     const testUser = {
@@ -43,6 +44,7 @@ function Profile(props) {
         first: "what",
         last: "thefuc",
         email: "weyellforyahoo@yahoo.com"
+        //topics = []
     }
 
     const updateBool = {

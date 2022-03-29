@@ -34,10 +34,13 @@ urlpatterns = [
     re_path(r'^profile/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
     re_path(r'^api/profile/(?P<pk>[0-9]+)$', views.profile_detail),
     re_path(r'^api/profile_update/(?P<pk>[0-9]+)$', views.profile_update),
+    re_path(r'^api/post$', views.posts_list),
+    re_path(r'^api/topic$', views.topic_list),
+    re_path(r'^api/topic/(?P<pk>[0-9]+)$', views.topic_detail), # id is char not int
     path('login/', TemplateView.as_view(template_name='index.html')),
     path('profilesetup/', TemplateView.as_view(template_name='index.html')),
     path('messages/', TemplateView.as_view(template_name='index.html')),
-    path('post/', TemplateView.as_view(template_name='index.html')),
+    path('post/', views.posts_list),
     path('post/:id', TemplateView.as_view(template_name='index.html')),
     path('api/sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('api/auth/login/', views.LoginAPI.as_view(), name='login'),
@@ -46,6 +49,8 @@ urlpatterns = [
     path('api/auth/', include('knox.urls')),
     path('api/current_user', views.curr_user)
     
+    #path('api/sign_up/', views.SignUpView.as_view(), name='sign_up'),
+    path('api/sign_up/', views.user_detail),
     #path('api/auth/', include('rest_auth.urls')),    
     #path('api/auth/register/', include('rest_auth.registration.urls')),
     # path(r'^', include('Purcle.urls')),

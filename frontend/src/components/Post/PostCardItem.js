@@ -15,15 +15,27 @@ import {
     Link
   } from "react-router-dom";
 
-function PostCardTitle(props) {
-    
+
+function Anon(props) {
+    if (props.anon) {
+        return (
+            <nobr>anonymous</nobr>
+        );
+    }
 
     return (
-        <Col style={{textAlign: "left", textDecoration: "none"}}  as={Link} to={{pathname: `/post/${props.id}`, query:{id: props.id}}}>
+        <Link to="/profile">{props.user}</Link>
+    );
+}
+function PostCardTitle(props) {
+    return (
+        <Col style={{textAlign: "left", textDecoration: "none"}} 
+            as={Link} to={{pathname: `/post/${props.id}`, query:{id: props.id}}}>
+            
             <h3 style={{fontSize:20}}> {props.title} </h3>
             <p style={{margin: 0}}>
                 {"by "}
-                <Link to="/profile">{props.user}</Link>
+                < Anon user={props.user} anon={props.anon}/>
                 {" in "} 
                 <Link to="/profile">{props.topic}</Link>
                 {" " + getRelativeTime(props.date)}
@@ -34,6 +46,9 @@ function PostCardTitle(props) {
 
 function PostCardScore(props) {
     var [score, setScore] = useState(0);
+
+    var [up_color, setUpColor] = useState("black");
+    var [down_color, setDownColor] = useState("black");
 
     function updateScore(id) {
         getScore(id)
@@ -56,9 +71,12 @@ function PostCardScore(props) {
                     .then(() => {
                         updateScore(props.id);
                     });
+                    up_color.localeCompare("black") === 0
+                    ? setUpColor("mediumslateblue"):setUpColor("black");
+                    setDownColor("black");
                 }}
             >
-                < KeyboardArrowUpIcon />
+                < KeyboardArrowUpIcon style={{color: up_color}}/>
             </IconButton>
 
             <p style={{margin: "0px"}}>{score}</p>
@@ -71,9 +89,12 @@ function PostCardScore(props) {
                     .then(() => {
                         updateScore(props.id);
                     });
+                    down_color.localeCompare("black") === 0
+                    ? setDownColor("mediumslateblue"):setDownColor("black");
+                    setUpColor("black");
                 }}
             >
-                < KeyboardArrowDownIcon />
+                < KeyboardArrowDownIcon style={{color: down_color}}/>
             </IconButton>
         </Col>
     );
@@ -99,6 +120,8 @@ function PostCardImg(props) {
 
 function PostCardItem(props) {
     const imgSize = 70;
+    console.log(props);
+    console.log(props.post)
 
     /* posts are formatted this way
     post = {
