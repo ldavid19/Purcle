@@ -45,21 +45,21 @@ async function put(type, query = "", data) { //PUT request
     return ret;
 }
 
+// async function post(type, id, data) { //POST request
+//     var ret = [];
+
+//     await axios.post('/api/' + type + '/' + id, data)
+//         .then((res) => {
+//             ret = res;
+//         });
+
+//     return ret;
+// }
+
 async function post(type, id, data) { //POST request
     var ret = [];
 
-    await axios.post('/api/' + type + '/' + id, data)
-        .then((res) => {
-            ret = res;
-        });
-
-    return ret;
-}
-
-async function post(type, data) { //POST request
-    var ret = [];
-
-    await axios.post('/api/' + type + '/', data, {
+    await axios.post('/api/' + type + '/' + id, data, {
         validateStatus: function (status) {
             return status < 500; // Resolve only if the status code is less than 500
         }
@@ -170,12 +170,16 @@ async function updateUser(id, data) {
 
 /* signup helpers */
 async function postUser(data) {
-    const ret = post("sign_up", data);
+    const ret = post("sign_up", '', data);
     console.log("result from post: " + ret);
     return ret;
 }
 
+async function postProfile(data) {
+    return post("profile_detail", 0, data);
+}
+
 export {
-    getRandPosts, getPost, getAllPosts, getUser, getScore, databaseLength,
-    makePost, upvote, downvote, updateUser, postUser
+    getRandPosts, getPost, getAllPosts, getUser, getScore, getAllTopics, databaseLength,
+    makePost, upvote, downvote, updateUser, postUser, postProfile,
 };
