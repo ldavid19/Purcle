@@ -6,10 +6,6 @@ import { Modal, Col, Row, Image } from "react-bootstrap";
 import { Button } from '@mui/material';
 
 import { makePost, databaseLength, getAllTopics } from "../../api/apiRequest.js";
-import axios from 'axios'
-
-axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-axios.defaults.xsrfCookieName = "csrftoken";
 
 function errorMessage(title, type, text, topic) {
     let message = "";
@@ -49,13 +45,15 @@ function NewPost(props) {
     const handleSubmit = () => {
         if (errorMessage(title, type, text, topic).length === 0) {
             var content;
-            if (type == "Text") {
+            if (type === "Text") {
                 content = text;
             } else {
                 content = "";
             }
+
+            /*
             var newPost = {
-                post_id: databaseLength(),
+                post_id: 0, //fix this to not be zero lol
                 post_topic: topic,
                 post_type: 0,
                 user_id: "user",
@@ -66,11 +64,13 @@ function NewPost(props) {
                 post_score: 0
             };
 
+            /*
             makePost(newPost)
             .then((res) => {
                 props.getPosts();
                 //getAllPosts();
             });
+            */
 
             setShow(false);
             setTitle("");
@@ -141,7 +141,7 @@ function NewPost(props) {
             .then((res) => {
                 let data = res.data;
 
-                let topic_list = []
+                let topic_list = [];
                 
                 data.map((topic) => {
                     let newTopic = {
@@ -152,17 +152,16 @@ function NewPost(props) {
                     topic_list.push(newTopic);
                 })
 
-                console.log(topic_list)
+                //console.log(topic_list)
 
-                console.log(res.data);
+                //console.log(res.data);
                 setTopics(topic_list);
-                console.log(topics);
+                //console.log(topics);
             })
             .catch(err => console.error(`Error: ${err}`));
     }
 
     useEffect(() => {
-        console.log("LOADED!! :))")
         getTopics();
     }, []);
 
