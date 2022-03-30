@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     
     'rest_framework.authtoken',
     'rest_auth',
-    'django.contrib.sites',
+    #'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

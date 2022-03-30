@@ -9,9 +9,7 @@ import { getRelativeTime } from '../../api/helper.js';
 
 
 import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
+    BrowserRouter,
     Link
   } from "react-router-dom";
 
@@ -35,7 +33,7 @@ function PostCardTitle(props) {
             <h3 style={{fontSize:20}}> {props.title} </h3>
             <p style={{margin: 0}}>
                 {"by "}
-                < Anon user={props.user} anon={props.anon}/>
+                < Anon user={props.user} anon={props.anon} />
                 {" in "} 
                 <Link to="/profile">{props.topic}</Link>
                 {" " + getRelativeTime(props.date)}
@@ -119,9 +117,8 @@ function PostCardImg(props) {
 }
 
 function PostCardItem(props) {
-    const imgSize = 70;
-    console.log(props);
-    console.log(props.post)
+    //console.log(props);
+    //console.log(props.post)
 
     /* posts are formatted this way
     post = {

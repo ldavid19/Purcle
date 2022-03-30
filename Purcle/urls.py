@@ -30,7 +30,7 @@ urlpatterns = [
     path('following/', TemplateView.as_view(template_name='index.html')),
     path('profile/', TemplateView.as_view(template_name='index.html')),
     re_path(r'^api/profile/(?P<pk>[0-9]+)$', views.profile_detail),
-    re_path(r'^api/post$', views.posts_list),
+    re_path(r'^api/post/((?P<pk>[0-9a-zA-Z_]+)?)$', views.posts_list), #captures alphanumeric and underscore, and makes argument optional
     re_path(r'^api/topic$', views.topic_list),
     re_path(r'^api/topic/(?P<pk>[0-9]+)$', views.topic_detail), # id is char not int
     path('login/', TemplateView.as_view(template_name='index.html')),

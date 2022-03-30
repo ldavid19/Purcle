@@ -6,10 +6,6 @@ import { Modal, Col, Row, Image } from "react-bootstrap";
 import { Button } from '@mui/material';
 
 import { makePost, databaseLength, getAllTopics } from "../../api/apiRequest.js";
-import axios from 'axios'
-
-axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-axios.defaults.xsrfCookieName = "csrftoken";
 
 function errorMessage(title, type, text, topic) {
     let message = "";
@@ -152,11 +148,11 @@ function NewPost(props) {
                     topic_list.push(newTopic);
                 })
 
-                console.log(topic_list)
+                //console.log(topic_list)
 
-                console.log(res.data);
+                //console.log(res.data);
                 setTopics(topic_list);
-                console.log(topics);
+                //console.log(topics);
             })
             .catch(err => console.error(`Error: ${err}`));
     }

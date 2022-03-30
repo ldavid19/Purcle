@@ -120,6 +120,47 @@ async function getNumPosts(limit, offset) {
 
 }
 
+async function getPostsFromTopic(topic) {
+    return get("post", topic);
+}
+
+async function getTimeline(userID) {
+    let user, topics;
+    let posts = [];
+    
+    await getUser(userID)
+        .then(res => {
+            user = formatUser(res.data);
+        })
+        .catch(err => console.error(`Error: ${err}`));
+
+    if (!user) {
+        return null;
+    }
+
+    topics = user.topics;
+    console.log(user)
+    console.log(topics)
+
+    for (let topic in topics) {
+        let postsFromTopic = [];
+
+        await getPostsFromTopic(topics[topic])
+            .then(res => {
+                postsFromTopic = res.data;
+            })
+            .catch(err => console.error(`Error: ${err}`));
+
+        console.log(postsFromTopic);
+
+        posts = posts.concat(postsFromTopic);
+    }
+
+    console.log(posts);
+
+    return posts;        
+}
+
 /* user helpers */
 async function getUser(id) {
     return get("profile", id);
@@ -178,6 +219,7 @@ async function postUser(data) {
 }
 
 export {
-    getRandPosts, getPost, getAllPosts, getUser, getScore, databaseLength, getAllTopics,
-    makePost, upvote, downvote, updateUser, postUser
+    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline,     //GET post functions
+    getUser, getScore, databaseLength, getAllTopics,                        //GET misc functions
+    makePost, upvote, downvote, updateUser, postUser,                        //POST misc functions
 };

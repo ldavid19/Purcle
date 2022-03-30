@@ -21,7 +21,7 @@ function PostCard(props) {
     
     useEffect(() => {
         var posts = Array.from(props.postList);
-        console.log(posts);
+        //console.log(posts);
 
         var postcards = posts.map((post) => (
             <PostCardItem 

@@ -1,4 +1,5 @@
 from os import lseek
+from pydoc_data.topics import topics
 from django.shortcuts import render
 from django.http.response import JsonResponse
 
@@ -80,14 +81,15 @@ def user_detail(request):
     
 
 @api_view(['GET', 'POST', 'DELETE'])
-def posts_list(request):
+def posts_list(request, pk=""):
     if request.method == 'GET':
+        print("args: " + pk)
 
-        post_list = Post.objects.all()
+        post_list = Post.objects.filter(post_topic=pk)
 
         posts_serializer = PostSerializer(post_list, many=True)
         return JsonResponse(posts_serializer.data, safe=False)
-#     # GET list of posts, POST a new post, DELETE all posts
+#  ``   # GET list of posts, POST a new post, DELETE all posts
  
 '''
 @api_view(['GET', 'PUT', 'DELETE'])
