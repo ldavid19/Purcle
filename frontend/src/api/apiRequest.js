@@ -83,6 +83,9 @@ async function post(type, id, data) { //POST request
             if (res.status === 400) {
                 console.log(res.data);
                 ret = res.data;
+            } else {
+                console.log(res);
+                ret = res.data;
             }
         }
         )
@@ -235,6 +238,11 @@ async function postUser(data) {
     return ret;
 }
 
+/* authentication helpers */
+async function login(data) {
+    return post("auth", "login/", data);
+}
+
 // async function postProfile(data) {
 //     return post("profile_detail", 0, data);
 // }
@@ -242,5 +250,5 @@ async function postUser(data) {
 export {
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline,     //GET post functions
     getUser, getScore, databaseLength, getAllTopics, getCurrUser,           //GET misc functions
-    makePost, upvote, downvote, updateUser, postUser,                       //POST misc functions
+    makePost, upvote, downvote, updateUser, postUser, login,                //POST misc functions
 };
