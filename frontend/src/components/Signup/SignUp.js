@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Card, ListGroup, ListGroupItem, Modal } from "react-bootstrap";
-import { postUser } from '../../api/apiRequest.js';
+import { postUser, postProfile } from '../../api/apiRequest.js';
 
 import { Button } from '@mui/material';
 
@@ -132,6 +132,7 @@ export default class SignUp extends Component {
                     formIsValid = false;
                 } else {
                     //alert("Form submitted");
+                    //postProfile();
                     window.location.href = "/profilesetup";
                 }
             }

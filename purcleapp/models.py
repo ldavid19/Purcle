@@ -3,16 +3,15 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
 
+
 User._meta.get_field('email').blank = False
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     user_email = models.EmailField(max_length=200, null=False)
-    #user_password = models.CharField(max_length=50, null=False)
     profile_name = models.CharField(max_length=100, null=True)
     first_name = models.CharField(max_length=50, null=True)
     last_name = models.CharField(max_length=50, null=True)
-    #created_date = models.TimeField(null=False)
     user_profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images', blank=True, null=True)
     user_bio = models.TextField(max_length=500)
     user_followers = ArrayField(models.CharField(max_length=200), blank=True)
@@ -27,13 +26,13 @@ class UserProfile(models.Model):
         return self.profile_name
 
     def get_id(self):
-        return self.user_id
+        return self.user
 
-    def get_password(self):
-        return self.user_password
+    # def get_password(self):
+    #     return self.user_password
 
-    def get_created_date(self):
-        return self.created_date
+    # def get_created_date(self):
+    #     return self.created_date
 
     def get_following_topic(self):
         return self.user_following_topic

@@ -11,6 +11,7 @@ import { formatPost, formatUser } from '../../api/helper.js';
 function Home() {
     const [posts, setPosts] = useState([]);
     const [user, setUser] = useState({});
+    const [uid, setUID] = useState(4); //current user id
 
     useEffect(() => {
         //getPosts();
@@ -19,7 +20,7 @@ function Home() {
     }, []);
 
     const getCurrentUser = () => {
-        getUser(1)
+        getUser(uid)
         .then((res) => {
             console.log(res.data);
             let usr = formatUser(res.data);
@@ -50,7 +51,7 @@ function Home() {
     }
 
     const getCurrentTimeline = () => {
-        getTimeline(1) //change this to currently logged in user
+        getTimeline(uid) //change this to currently logged in user
         .then((res) => {
             var post_list = [];
             var data = Array.from(res);
