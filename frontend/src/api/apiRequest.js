@@ -47,14 +47,12 @@ async function put(type, id, data, token) { //PUT request
     var ret = [];
 
     await axios.put('/api/' + type + '/' + id, data, {Authorization: 'Token ' + token})
-async function put(type, query = "", data) { //PUT request
-    var ret = [];
 
-    if (query != "") {
-        query = "/" + query;
-    }
+    // if (query != "") {
+    //     query = "/" + query;
+    // }
 
-    await axios.put('/api/' + type + query, data)
+    // await axios.put('/api/' + type + query, data)
         .then((res) => {
             ret = res;
         });
@@ -62,23 +60,21 @@ async function put(type, query = "", data) { //PUT request
     return ret;
 }
 
-/*
+// async function post(type, id, data) { //POST request
+//     var ret = [];
+
+//     await axios.post('/api/' + type + '/' + id, data)
+//         .then((res) => {
+//             ret = res;
+//         });
+
+//     return ret;
+// }
+
 async function post(type, id, data) { //POST request
     var ret = [];
 
-    await axios.post('/api/' + type + '/' + id, data)
-        .then((res) => {
-            ret = res;
-        });
-
-    return ret;
-}
-*/
-
-async function post(type, data) { //POST request
-    var ret = [];
-
-    await axios.post('/api/' + type + '/', data, {
+    await axios.post('/api/' + type + '/' + id, data, {
         validateStatus: function (status) {
             return status < 500; // Resolve only if the status code is less than 500
         }
@@ -191,21 +187,18 @@ async function updateUser(id, data, token) {
     return put("profile", id, unformatUser(data), token);
 }
 
-export { getRandPosts, getPost, getAllPosts, getUser, getScore, databaseLength, 
-        makePost, upvote, downvote, updateUser, getCurrUser };
-/* user helpers */ //MOVE LATER THX
-async function updateUser(id, data) {
-    return put("profile", id, unformatUser(data));
-}
-
 /* signup helpers */
 async function postUser(data) {
-    const ret = post("sign_up", data);
+    const ret = post("sign_up", '', data);
     console.log("result from post: " + ret);
     return ret;
 }
 
+// async function postProfile(data) {
+//     return post("profile_detail", 0, data);
+// }
+
 export {
-    getRandPosts, getPost, getAllPosts, getUser, getScore, databaseLength, getAllTopics,
-    makePost, upvote, downvote, updateUser, postUser
+    getRandPosts, getPost, getAllPosts, getUser, getScore, databaseLength, getAllTopics, getCurrUser,
+    makePost, upvote, downvote, updateUser, postUser,
 };

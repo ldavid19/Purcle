@@ -84,6 +84,37 @@ def profile_update(request, pk):
 #     queryset = get_user_model().objects.all()
 #     serializer_class = UserSerializer
 
+@api_view(['GET', 'POST', 'DELETE', 'PUT', 'PATCH'])
+def user_detail(request):
+    if request.method == 'POST':
+        user_data = JSONParser().parse(request)
+        print(user_data)
+        user_serializer = UserSerializer(data=user_data)
+        if user_serializer.is_valid():
+            user_serializer.save()
+            # profile_data = {
+            #     'profile_name': user_data['username'],
+            #     'user_email': user_data['email']
+            # }
+            # print(profile_data)
+            # user = User.objects.get(pk=user_serializer.data['id'])
+            # userprofile = UserProfile.objects.get(user=user)
+            # print(userprofile.get_id())
+            # user_profile_serializer = UserProfileSerializer(userprofile, data=profile_data)
+            # print(user_profile_serializer.data)
+            # if user_profile_serializer.is_valid(): 
+            #     user_profile_serializer.save()
+            # else:
+            #     print("user profile serializer failed")
+            # UserProfile.objects.create(profile_name=user_data['username'], user_email=user_data['email'], user_id=user)
+
+            return JsonResponse(user_serializer.data)
+        #print(user_serializer.errors)
+        message = ""
+        for error in user_serializer.errors:
+            message = user_serializer.errors[error][0].title()
+        return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
+    
 
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)

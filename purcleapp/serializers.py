@@ -3,6 +3,11 @@ from .models import *
 from django.contrib.auth import get_user_model
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    # def create(self, validated_data):
+    #     validated_data['users_followers_count'] = 0
+    #     validated_data['users_following_count'] = 0
+    #     return self.Meta.model.objects.create(validated_data)
+
     class Meta:
         model = UserProfile
         fields = '__all__'

@@ -33,6 +33,7 @@ urlpatterns = [
     path('following/', TemplateView.as_view(template_name='index.html')),
     re_path(r'^profile/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
     re_path(r'^api/profile/(?P<pk>[0-9]+)$', views.profile_detail),
+    #path('api/profile/', views.profile_detail),
     re_path(r'^api/profile_update/(?P<pk>[0-9]+)$', views.profile_update),
     re_path(r'^api/post$', views.posts_list),
     re_path(r'^api/topic$', views.topic_list),
@@ -47,7 +48,7 @@ urlpatterns = [
     #path('api/auth/register/', views.RegisterAPI.as_view(), name='register'),
     path('api/auth/logout/', knox_views.LogoutView.as_view(), name='logout'),
     path('api/auth/', include('knox.urls')),
-    path('api/current_user', views.curr_user)
+    path('api/current_user', views.curr_user),
     
     #path('api/sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('api/sign_up/', views.user_detail),
