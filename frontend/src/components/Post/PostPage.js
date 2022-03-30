@@ -113,7 +113,7 @@ function PostPage(props) {
         });
         
         //setPost(newPost);
-    }, [post]);
+    }, []); 
 
 
     return (

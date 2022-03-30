@@ -1,5 +1,6 @@
-import { ListGroup, Row, Col, Image, Ratio, Card } from 'react-bootstrap';
+import { ListGroup, Row, Col, Image, Ratio } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
+
 import { IconButton } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -7,13 +8,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { getScore, upvote, downvote } from "../../api/apiRequest.js";
 import { getRelativeTime } from '../../api/helper.js';
 
-
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    Link
-  } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 function Anon(props) {
@@ -27,6 +22,7 @@ function Anon(props) {
         <Link to="/profile">{props.user}</Link>
     );
 }
+
 function PostCardTitle(props) {
     return (
         <Col style={{textAlign: "left", textDecoration: "none"}} 
@@ -35,7 +31,7 @@ function PostCardTitle(props) {
             <h3 style={{fontSize:20}}> {props.title} </h3>
             <p style={{margin: 0}}>
                 {"by "}
-                < Anon user={props.user} anon={props.anon}/>
+                < Anon user={props.user} anon={props.anon} />
                 {" in "} 
                 <Link to="/profile">{props.topic}</Link>
                 {" " + getRelativeTime(props.date)}
@@ -68,9 +64,9 @@ function PostCardScore(props) {
                 size="small"
                 onClick={ function() {
                     upvote(props.id)
-                    .then(() => {
-                        updateScore(props.id);
-                    });
+                        .then(() => {
+                            updateScore(props.id);
+                        });
                     up_color.localeCompare("black") === 0
                     ? setUpColor("mediumslateblue"):setUpColor("black");
                     setDownColor("black");
@@ -86,9 +82,9 @@ function PostCardScore(props) {
                 size="small"
                 onClick={ function() {
                     downvote(props.id)
-                    .then(() => {
-                        updateScore(props.id);
-                    });
+                        .then(() => {
+                            updateScore(props.id);
+                        });
                     down_color.localeCompare("black") === 0
                     ? setDownColor("mediumslateblue"):setDownColor("black");
                     setUpColor("black");
@@ -119,9 +115,8 @@ function PostCardImg(props) {
 }
 
 function PostCardItem(props) {
-    const imgSize = 70;
-    console.log(props);
-    console.log(props.post)
+    //console.log(props);
+    //console.log(props.post)
 
     /* posts are formatted this way
     post = {
