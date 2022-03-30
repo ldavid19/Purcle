@@ -30,14 +30,29 @@ async function get(type, query = "") { //GET request
     return data;
 }
 
-async function put(type, query = "", data) { //PUT request
+async function getNoID(type) {
+    var data = [];
+
+    await axios.get('/api/' + type)
+        .then((res) => {
+            data = res;
+        });
+
+    console.log(data);
+
+    return data;
+}
+
+async function put(type, id, data, token) { //PUT request
     var ret = [];
 
-    if (query != "") {
-        query = "/" + query;
-    }
+    await axios.put('/api/' + type + '/' + id, data, {Authorization: 'Token ' + token})
 
-    await axios.put('/api/' + type + query, data)
+    // if (query != "") {
+    //     query = "/" + query;
+    // }
+
+    // await axios.put('/api/' + type + query, data)
         .then((res) => {
             ret = res;
         });
@@ -123,6 +138,10 @@ async function getUser(id) {
     return get("profile", id);
 }
 
+async function getCurrUser() {
+    return getNoID("current_user");
+}
+
 /* misc helpers */
 async function getScore(id) {
     return 0;
@@ -163,9 +182,9 @@ async function downvote(id) {
     //console.log("downvoted!")
 }
 
-/* user helpers */ //MOVE LATER THX
-async function updateUser(id, data) {
-    return put("profile", id, unformatUser(data));
+/* user helpers */
+async function updateUser(id, data, token) {
+    return put("profile", id, unformatUser(data), token);
 }
 
 /* signup helpers */
@@ -175,11 +194,11 @@ async function postUser(data) {
     return ret;
 }
 
-async function postProfile(data) {
-    return post("profile_detail", 0, data);
-}
+// async function postProfile(data) {
+//     return post("profile_detail", 0, data);
+// }
 
 export {
-    getRandPosts, getPost, getAllPosts, getUser, getScore, getAllTopics, databaseLength,
-    makePost, upvote, downvote, updateUser, postUser, postProfile,
+    getRandPosts, getPost, getAllPosts, getUser, getScore, databaseLength, getAllTopics, getCurrUser,
+    makePost, upvote, downvote, updateUser, postUser,
 };
