@@ -14,7 +14,6 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link,
   Outlet
 } from "react-router-dom";
 
@@ -30,7 +29,7 @@ function App() {
             <Route path="/" element={<Home/>}/>
             <Route path="/following" element={<Home/>}/>
             <Route path="/messages" element={<Home/>}/>
-            <Route path="/profile" element={<Profile id={0} />}/>
+            <Route path="/profile/:id" element={<Profile />}/>
             <Route path="/post/:id" element={<PostPage />}/>
             <Route path="*" element={<ErrorPage />}/>
             <Route path="/*/*" element={<ErrorPage />}/>

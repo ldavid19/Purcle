@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Card, ListGroup, ListGroupItem, Modal } from "react-bootstrap";
-import { postUser } from '../../api/apiRequest.js';
+import { Card, Modal } from "react-bootstrap";
+import { postUser, login } from '../../api/apiRequest.js';
 
 import { Button } from '@mui/material';
 
@@ -36,7 +36,7 @@ export default class SignUp extends Component {
                 !(
                     lastAtInd < lastDotInd &&
                     lastAtInd > 0 &&
-                    fields["email"].indexOf("@@") == -1 &&
+                    fields["email"].indexOf("@@") === -1 &&
                     lastDotInd > 2 &&
                     fields["email"].length - lastDotInd > 2
                 )
@@ -117,6 +117,12 @@ export default class SignUp extends Component {
                     console.log(ret);
 
                     for (let error in ret) {
+                        console.log(error + "\n");
+                        if (error === "email" || error === "id") {
+                            console.log("valid signup\n");
+                            break;
+                        }
+
                         if (ret[error] !== "This field may not be blank.") {
                             errorArr.push(ret[error]);
                         }
@@ -132,6 +138,15 @@ export default class SignUp extends Component {
                     formIsValid = false;
                 } else {
                     //alert("Form submitted");
+                    const data = {
+                        "username": fields["username"],
+                        "password": fields["password"]
+                    }
+                    let token = await login(data);
+                    //console.log("got token\n");
+                    //console.log(token["token"]);
+                    localStorage.setItem("token", token["token"]);
+                    //console.log(localStorage.getItem("token"));
                     window.location.href = "/profilesetup";
                 }
             }

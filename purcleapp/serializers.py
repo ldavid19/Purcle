@@ -3,6 +3,11 @@ from .models import *
 from django.contrib.auth import get_user_model
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    # def create(self, validated_data):
+    #     validated_data['users_followers_count'] = 0
+    #     validated_data['users_following_count'] = 0
+    #     return self.Meta.model.objects.create(validated_data)
+
     class Meta:
         model = UserProfile
         fields = '__all__'
@@ -80,4 +85,13 @@ class UserSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ('id',)
 
+# class RegisterSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ('id', 'username', 'email', 'password')
+#         extra_kwargs = {'password': {'write_only': True}}
 
+#     def create(self, validated_data):
+#         user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
+
+#         return user
