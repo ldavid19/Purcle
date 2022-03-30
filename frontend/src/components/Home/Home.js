@@ -5,8 +5,7 @@ import PostCard from '../Post/PostCard';
 
 import { Button } from '@mui/material';
 
-import { getRandPosts, getAllPosts, getPostsFromTopic, getTimeline, getUser } from '../../api/apiRequest.js';
-import { formatPost, formatUser } from '../../api/helper.js';
+import { getRandPosts, getAllPosts, getPostsFromTopic, getTimeline, getUser, getCurrUser } from '../../api/apiRequest.js';
 
 function Home() {
     const [posts, setPosts] = useState([]);
@@ -20,39 +19,28 @@ function Home() {
     }, []);
 
     const getCurrentUser = () => {
-        getUser(uid)
+        getCurrUser()
         .then((res) => {
+
+            /*
             console.log(res.data);
             let usr = formatUser(res.data);
             console.log(usr);
 
             setUser(usr);
+            */ 
+            //console.log("getting current user: ")
+            //console.log(res);
+            setUser(res);
         })
         .catch(err => console.error(`Error: ${err}`));
 
-    }
-
-    const getPosts = () => {
-        //getAllPosts()
-        getPostsFromTopic("purdue")
-        .then((res) => {
-            var post_list = [];
-            var data = Array.from(res.data);
-
-            data.map((post) => {
-                const formattedPost = formatPost(post);
-                console.log(formattedPost)
-                post_list.push(formattedPost);
-            }, setPosts(post_list));
-
-            //setPosts(res.data);
-        })
-        .catch(err => console.error(`Error: ${err}`));
     }
 
     const getCurrentTimeline = () => {
         getTimeline(uid) //change this to currently logged in user
         .then((res) => {
+            /*
             var post_list = [];
             var data = Array.from(res);
 
@@ -61,22 +49,30 @@ function Home() {
                 console.log(formattedPost)
                 post_list.push(formattedPost);
             }, setPosts(post_list));
+            */
+            //console.log("getting timeline: ")
+            //console.log(res);
+            setPosts(res);
         })
         .catch(err => console.error(`Error: ${err}`));
     }
 
+    /* for testing purposes */
     const getRandom = () => {
         getRandPosts()
         .then((res) => {
-            var post_list = [];
+            //var post_list = [];
 
+            /*
             res.map((post) => {
                 const formattedPost = formatPost(post);
                 console.log(formattedPost)
                 post_list.push(formattedPost);
             }, setPosts(post_list));
+            */
 
             console.log(res);
+            setPosts(res);
         })
         .catch(err => console.error(`Error: ${err}`));
     }

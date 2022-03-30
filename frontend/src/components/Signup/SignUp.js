@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, ListGroup, ListGroupItem, Modal } from "react-bootstrap";
+import { Card, Modal } from "react-bootstrap";
 import { postUser, login } from '../../api/apiRequest.js';
 
 import { Button } from '@mui/material';
@@ -36,7 +36,7 @@ export default class SignUp extends Component {
                 !(
                     lastAtInd < lastDotInd &&
                     lastAtInd > 0 &&
-                    fields["email"].indexOf("@@") == -1 &&
+                    fields["email"].indexOf("@@") === -1 &&
                     lastDotInd > 2 &&
                     fields["email"].length - lastDotInd > 2
                 )

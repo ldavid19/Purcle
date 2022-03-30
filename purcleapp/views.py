@@ -51,7 +51,7 @@ def profile_detail(request, pk):
             return JsonResponse(user_serializer.data, status=status.HTTP_201_CREATED) 
         return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    try: 
+    try:
         userprofile = UserProfile.objects.get(user=pk) 
     except UserProfile.DoesNotExist: 
         return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND)
@@ -116,17 +116,36 @@ def user_detail(request):
             message = user_serializer.errors[error][0].title()
         return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
     
-
+# returns multiple posts based on topic, if no argument specified, returns all posts
 @api_view(['GET', 'POST', 'DELETE'])
 def posts_list(request, pk=""):
     if request.method == 'GET':
-        print("args: " + pk)
+        print("getting posts from topic: " + pk)
 
-        post_list = Post.objects.filter(post_topic=pk)
+        if (pk == ""):
+            post_list = Post.objects.all()
+        else:
+            post_list = Post.objects.filter(post_topic=pk)
 
         posts_serializer = PostSerializer(post_list, many=True)
         return JsonResponse(posts_serializer.data, safe=False)
 #  ``   # GET list of posts, POST a new post, DELETE all posts
+
+@api_view(['GET'])
+def post_detail(request, pk):
+    try: 
+        post = Post.objects.get(pk=pk) 
+    except Post.DoesNotExist: 
+        return JsonResponse({'message': 'The post does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        print("requesting post #" + pk)
+
+        post_serializer = PostSerializer(post)
+        return JsonResponse(post_serializer.data, safe=False)
+
+
+
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
 

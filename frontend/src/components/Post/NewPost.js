@@ -45,13 +45,15 @@ function NewPost(props) {
     const handleSubmit = () => {
         if (errorMessage(title, type, text, topic).length === 0) {
             var content;
-            if (type == "Text") {
+            if (type === "Text") {
                 content = text;
             } else {
                 content = "";
             }
+
+            /*
             var newPost = {
-                post_id: databaseLength(),
+                post_id: 0, //fix this to not be zero lol
                 post_topic: topic,
                 post_type: 0,
                 user_id: "user",
@@ -62,11 +64,13 @@ function NewPost(props) {
                 post_score: 0
             };
 
+            /*
             makePost(newPost)
             .then((res) => {
                 props.getPosts();
                 //getAllPosts();
             });
+            */
 
             setShow(false);
             setTitle("");
@@ -137,7 +141,7 @@ function NewPost(props) {
             .then((res) => {
                 let data = res.data;
 
-                let topic_list = []
+                let topic_list = [];
                 
                 data.map((topic) => {
                     let newTopic = {
@@ -158,7 +162,6 @@ function NewPost(props) {
     }
 
     useEffect(() => {
-        console.log("LOADED!! :))")
         getTopics();
     }, []);
 

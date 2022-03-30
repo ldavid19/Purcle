@@ -120,7 +120,7 @@ function formatPost(post) {
 
 function formatUser(user) {
     // the data is formatted very inconsistently throughout each component so this function fixes that
-    console.log(user);
+    //console.log(user);
     
     //assume user pulled from server is formatted this way:
     /* user = {
@@ -168,7 +168,7 @@ function formatUser(user) {
  */
 function unformatUser(user) {
     // the data is formatted very inconsistently throughout each component so this function fixes that
-    console.log(user);
+    //console.log(user);
     
     //assume user pulled from server is formatted this way:
     /* user = {
