@@ -83,6 +83,9 @@ async function post(type, id, data) { //POST request
             if (res.status === 400) {
                 console.log(res.data);
                 ret = res.data;
+            } else {
+                console.log(res);
+                ret = res.data;
             }
         }
         )
@@ -194,11 +197,16 @@ async function postUser(data) {
     return ret;
 }
 
+/* authentication helpers */
+async function login(data) {
+    return post("auth", "login/", data);
+}
+
 // async function postProfile(data) {
 //     return post("profile_detail", 0, data);
 // }
 
 export {
     getRandPosts, getPost, getAllPosts, getUser, getScore, databaseLength, getAllTopics, getCurrUser,
-    makePost, upvote, downvote, updateUser, postUser,
+    makePost, upvote, downvote, updateUser, postUser, login,
 };
