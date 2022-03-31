@@ -25,13 +25,6 @@ import {
   Link
 } from "react-router-dom";
 
-const defaultOptions = [];
-for (let i = 0; i < 10; i++) {
-  defaultOptions.push(`option ${i}`);
-  defaultOptions.push(`suggesstion ${i}`);
-  defaultOptions.push(`advice ${i}`);
-}
-
 function NavigationBar() {
 
   const [show, setShow] = useState(false);
@@ -70,10 +63,9 @@ function NavigationBar() {
         getTopics();
     }, []);
 
-  const [options, setOptions] = useState([]);
   const onInputChange = (event) => {
     setOptions(
-      defaultOptions.filter((option) => option.includes(event.target.value))
+      topics.filter((option) => option.includes(event.target.value))
     );
   };
 
