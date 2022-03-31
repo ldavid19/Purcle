@@ -30,7 +30,7 @@ urlpatterns = [
     path('signup/', TemplateView.as_view(template_name='index.html')),
     #path('login/', TemplateView.as_view(template_name='index.html')),
     path('following/', TemplateView.as_view(template_name='index.html')),
-    #re_path(r'^profile/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^profile/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
     re_path(r'^api/profile/(?P<pk>[0-9]+)$', views.profile_detail),
     re_path(r'^api/posts/((?P<pk>[0-9a-zA-Z_]+)?)$', views.posts_list), # grabs multiple posts based on topic
     re_path(r'^api/post/((?P<pk>[0-9a-zA-Z_]+)?)$', views.post_detail), # grabs single post based on id
@@ -44,7 +44,6 @@ urlpatterns = [
     path('messages/', TemplateView.as_view(template_name='index.html')),
     #path('post/', views.posts_list),
     path('post/:id', TemplateView.as_view(template_name='index.html')),
-    re_path(r'^profile/((?P<pk>[0-9a-zA-Z_]+)?)$', views.post_detail), # grabs single post based on id
     #path('profile/:id', TemplateView.as_view(template_name='index.html')),
     #path('api/sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('api/auth/login/', views.LoginAPI.as_view(), name='login'),
@@ -55,7 +54,6 @@ urlpatterns = [
     
     #path('api/sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('api/sign_up/', views.user_detail),
-    #path('api/auth/', include('rest_auth.urls')),    
     #path('api/auth/register/', include('rest_auth.registration.urls')),
     # path(r'^', include('Purcle.urls')),
 ]
