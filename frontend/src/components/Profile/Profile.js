@@ -5,7 +5,7 @@ import { Modal } from "react-bootstrap";
 import { Button } from '@mui/material';
 import { useParams } from "react-router-dom";
 
-import { getRandPosts, getUser, updateUser, getCurrUser } from '../../api/apiRequest.js';
+import { getRandPosts, getPostsFromUser, getUser, updateUser, getCurrUser } from '../../api/apiRequest.js';
 import { formatUser, unformatUser } from '../../api/helper';
 
 /*
@@ -175,6 +175,7 @@ function Profile(props) {
     }
 
     const getNewPosts = () => {
+        // getPostsFromUser(id)
         getRandPosts()
             .then((res) => {
                 setPosts(res);

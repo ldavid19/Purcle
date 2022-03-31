@@ -143,6 +143,25 @@ async function getPostsFromTopic(topic) {
     return data;
 }
 
+
+async function getPostsFromUser(user_id) {
+    let data = [];
+
+    await get("user_posts", user_id)
+        .then((res) => {
+            console.log(res);
+            let arr = Array.from(res);
+
+            arr.map((post) => {
+                console.log("pushed!")
+                data.push(formatPost(post))
+            });
+            console.log(data);
+        });
+
+    return data;
+}
+
 async function getTimeline(userID) {
     console.log("what the fuck")
     let user, topics;
@@ -252,7 +271,7 @@ async function login(username, password) {
 // }
 
 export {
-    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline,     //GET post functions
+    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, getPostsFromUser,     //GET post functions
     getUser, getScore, getAllTopics, getCurrUser,           //GET misc functions
     upvote, downvote, updateUser, postUser, login,                //POST misc functions
 };

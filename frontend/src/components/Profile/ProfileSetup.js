@@ -19,7 +19,7 @@ function ProfileSetup(props) {
         following_count: 9,
         private: true,
         first: "what",
-        last: "thefuc",
+        last: "heelo$#$",
         email: "hellotherre@yahoo.com"
     }
 

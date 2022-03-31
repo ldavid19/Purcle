@@ -131,6 +131,19 @@ def posts_list(request, pk=""):
         return JsonResponse(posts_serializer.data, safe=False)
 #  ``   # GET list of posts, POST a new post, DELETE all posts
 
+# returns multiple posts based on user, returns all posts
+@api_view(['GET', 'POST', 'DELETE'])
+def user_posts_list(request, pk=""):
+    if request.method == 'GET':
+        print("getting posts from user: " + pk)
+
+        post_list = Post.objects.filter(user_id=pk)
+
+        posts_serializer = PostSerializer(post_list, many=True)
+        return JsonResponse(posts_serializer.data, safe=False)
+#  ``   # GET list of posts, POST a new post, DELETE all posts
+
+
 @api_view(['GET'])
 def post_detail(request, pk):
     try: 
