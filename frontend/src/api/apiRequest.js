@@ -10,7 +10,10 @@ axios.defaults.xsrfCookieName = "csrftoken";
 async function get(type, query = "") { //GET request
     var data = [];
 
-    if (query != "") {
+    //console.log("query: " + query)
+
+    if (query !== "") {
+        //console.log("what");
         query = "/" + query;
     }
 
@@ -27,25 +30,12 @@ async function get(type, query = "") { //GET request
     return data;
 }
 
-async function getNoID(type) {
-    var data = [];
-
-    await axios.get('/api/' + type)
-        .then((res) => {
-            data = res;
-        });
-
-    console.log(data);
-
-    return data;
-}
-
 async function put(type, id, data, token) { //PUT request
     var ret = [];
-    console.log("token " + token)
+    //console.log("token " + token)
     await axios.put('/api/' + type + '/' + id, data, {headers:{Authorization: "Token " + token}})
         .catch(err => {
-            console.log("err: " + err);
+            //console.log("err: " + err);
             if (err.status === 400 || err.status === 401) {
                 ret = {"ERROR": "ERROR"};
             }
@@ -59,10 +49,10 @@ async function put(type, id, data, token) { //PUT request
 
 async function patch(type, id, data, token) { //PUT request
     var ret = [];
-    console.log("token " + token)
+    //console.log("token " + token)
     await axios.patch('/api/' + type + '/' + id, data, {headers:{Authorization: "Token " + token}})
         .catch(err => {
-            console.log("err: " + err);
+            //console.log("err: " + err);
             if (err.status === 400 || err.status === 401) {
                 ret = {"ERROR": "ERROR"};
             }
@@ -89,10 +79,10 @@ async function post(type, id, data) { //POST request
     })
         .then(res => {
             if (res.status === 400) {
-                console.log(res.data);
+                //console.log(res.data);
                 ret = res.data;
             } else {
-                console.log(res);
+                //console.log(res);
                 ret = res.data;
             }
         }
@@ -102,7 +92,7 @@ async function post(type, id, data) { //POST request
     //     console.log(err.toJSON());
     // })
 
-    console.log("post function done\n");
+    //console.log("post function done\n");
 
     return ret;
 }
@@ -147,13 +137,15 @@ async function getAllPosts() {
 
     await get("posts")
         .then((res) => {
-            console.log(res);
+            //console.log(res);
             let arr = Array.from(res);
 
             arr.map((post) => {
                 data.push(formatPost(post))
             });
         });
+
+    data.sort((a, b) => b.date - a.date);
 
     return data;
 }
@@ -163,21 +155,23 @@ async function getPostsFromTopic(topic) {
 
     await get("posts", topic)
         .then((res) => {
-            console.log(res);
+            //console.log(res);
             let arr = Array.from(res);
 
             arr.map((post) => {
-                console.log("pushed!")
+                //console.log("pushed!")
                 data.push(formatPost(post))
             });
-            console.log(data);
+            //console.log(data);
         });
+
+    data.sort((a, b) => b.date - a.date);
 
     return data;
 }
 
 async function getTimeline(userID) {
-    console.log("what the fuck")
+    //console.log("getting timeline: " + userID)
     let user, topics;
     let posts = [];
     
@@ -188,12 +182,18 @@ async function getTimeline(userID) {
         .catch(err => console.error(`Error: ${err}`));
 
     if (!user) {
+        console.log("user not found");
         return null;
     }
 
     topics = user.topics;
-    console.log(user)
-    console.log(topics)
+    //console.log(user)
+    //console.log(topics)
+
+    if (!topics) {
+        console.log("user does not follow any topics!");
+        return null;
+    }
 
     for (let topic in topics) {
         let postsFromTopic = [];
@@ -204,12 +204,13 @@ async function getTimeline(userID) {
             })
             .catch(err => console.error(`Error: ${err}`));
 
-        console.log(postsFromTopic);
+        //console.log(postsFromTopic);
 
         posts = posts.concat(postsFromTopic);
     }
 
-    console.log(posts);
+    //console.log(posts);
+    posts.sort((a, b) => b.date - a.date);
 
     return posts;        
 }
@@ -220,7 +221,7 @@ async function getUser(id) {
 
     await get("profile", id)
         .then((res) => {
-            console.log(res);
+            //console.log(res);
             data = formatUser(res);
         })
 
