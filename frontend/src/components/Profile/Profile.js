@@ -8,11 +8,77 @@ import { useParams } from "react-router-dom";
 import { getRandPosts, getUser, updateUser, getCurrUser } from '../../api/apiRequest.js';
 import { formatUser, unformatUser } from '../../api/helper';
 
+/*
 import axios from 'axios'
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
+*/
 
+function ConfirmationModal(props) {
+    console.log("poop");
+
+    return (
+        <>
+            <Modal show={props.show} onHide={props.handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete Account</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Are you sure about deleting your account?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={props.handleClose}>
+                        No
+                    </Button>
+                    <Button variant="primary" onClick={props.handleDelete} color="error">
+                        Yes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    )
+
+}
+
+function UpdateProfileModal(props) {
+    return (
+        <Modal show={props.show} onHide={props.handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Update Profile</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+
+                <form>
+                    <textarea
+                        name="bio"
+                        placeholder="New Bio"
+                        style={{ width: "465px" }}
+                        onChange={props.handleUpdateUser}
+                    />
+                    <label>Upload New Profile Picture</label>
+                    <input
+                        type="file"
+                    />
+                </form>
+                <br></br>
+                <br></br>
+                <Button onClick={props.handleShowConfirmation} color="error">
+                    Delete Account
+                </Button>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <p>{props.error}</p>
+                <Button variant="primary" onClick={props.handleSubmitUpdate}>
+                    Update
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    )
+}
+
+function CloseConfirmationModal() {
+
+}
 
 function Profile(props) {
     console.log(props)
@@ -57,6 +123,7 @@ function Profile(props) {
     const [error, setError] = React.useState("");
     const [posts, setPosts] = useState([]);
     const [show, setShow] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const [tempUser, setTempUser] = useState(nullUser);
     const [update, setUpdate] = useState(false);
 
@@ -122,13 +189,22 @@ function Profile(props) {
     }
     */
 
+    /* handler helper functions */
+    const handleOpenConfirmation = () => {
+        setShowConfirmation(true);
+    }
+
+    const handleCloseConfirmation = () => {
+        setShowConfirmation(false);
+    }
+
+    const handleShow = () => {
+        setShow(true);
+    }
+
     const handleClose = () => {
         setShow(false);
     }
-    const handleShow = () => {
-
-        setShow(true);
-    };
 
     const confirmCanUpdate = () => {
         getCurrUser().then(res => {
@@ -152,8 +228,8 @@ function Profile(props) {
                 setUser(res);
             })
             .catch(err => console.error(`Error: ${err}`));
-            
-        
+
+
         /*
         axios.get('/api/profile/1')
             .then(res => {
@@ -163,8 +239,7 @@ function Profile(props) {
                 setUser(usr);
             })
         */
-        
-            
+
     }
 
     const setUserApi = () => {
@@ -207,7 +282,6 @@ function Profile(props) {
         getUserApi();
     }, []);
 
-
     return (
         <div style={{ maxWidth: "550px", margin: "0px auto" }}>
             <div style={{
@@ -241,33 +315,19 @@ function Profile(props) {
                     <div className="btn #64b5f6 blue darken-1">
                         {update && <span onClick={handleShow}>Update Profile</span>}
 
-                        <Modal show={show} onHide={handleClose}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Update Profile</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-
-                                <form>
-                                    <textarea
-                                        name="bio"
-                                        placeholder="New Bio"
-                                        style={{ width: "465px" }}
-                                        onChange={handleUpdateUser}
-                                    />
-                                    <label>Upload New Profile Picture</label>
-                                    <input
-                                        type="file"
-                                    />
-                                </form>
-
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <p>{error}</p>
-                                <Button variant="primary" onClick={handleSubmitUpdate}>
-                                    Update
-                                </Button>
-                            </Modal.Footer>
-                        </Modal>
+                        <UpdateProfileModal 
+                            show={show}
+                            handleClose={handleClose}
+                            handleShowConfirmation={handleOpenConfirmation}
+                            handleSubmitUpdate={handleSubmitUpdate}
+                            handleUpdateUser={handleUpdateUser}
+                            error={error}
+                        />
+                        <ConfirmationModal 
+                            show={showConfirmation} 
+                            handleClose={handleCloseConfirmation} 
+                            handleDelete={deleteProfile}
+                        />
 
                         {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
                     </div>
@@ -302,7 +362,7 @@ function Profile(props) {
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>   */}
             </div>
         </div>
-        
+
     );
 }
 
