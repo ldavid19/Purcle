@@ -56,17 +56,19 @@ function PostPage(props) {
         score: 0
     }
 
-    const [post, setPost] = useState(nullPost);
     const { id } = useParams();
     const navigate = useNavigate();
+
+    const [post, setPost] = useState(nullPost);
 
     const [showTestComment, setShowTestComment] = useState(false);
     const [testCommentText, setTestCommentText] = useState("");
     const [commentText, setCommentText] = React.useState("");
+    const [anonCheck, setAnonCheck] = React.useState(false);
+
     const handleCommentTextChange = ev => {
         setCommentText(ev.target.value);
     };
-    const [anonCheck, setAnonCheck] = React.useState(false);
     const handleAnonCheckChange = () => {
         setAnonCheck(!anonCheck);
     }

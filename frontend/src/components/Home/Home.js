@@ -21,6 +21,8 @@ function Home() {
     const getCurrentUser = () => {
         getCurrUser()
         .then((res) => {
+            console.log("curr user");
+            console.log(res);
 
             /*
             console.log(res.data);
@@ -38,7 +40,7 @@ function Home() {
     }
 
     const getCurrentTimeline = () => {
-        getTimeline(uid) //change this to currently logged in user
+        getTimeline(user.id) //change this to currently logged in user
         .then((res) => {
             /*
             var post_list = [];
