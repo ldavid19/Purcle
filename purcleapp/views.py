@@ -61,20 +61,19 @@ def profile_detail(request, pk):
         return JsonResponse(user_profile_serializer.data)
 
 @api_view(['PUT', 'PATCH'])
-@permission_classes((IsAuthenticated, ))
+#@permission_classes((IsAuthenticated, ))
 def profile_update(request, pk):
     try: 
         userprofile = UserProfile.objects.get(user=pk) 
     except UserProfile.DoesNotExist: 
         return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'PUT':
-        print("this is a put request")
-        print(request)
+    if request.method == 'PATCH':
+        
         user_data = JSONParser().parse(request)
-        print(user_data)
-        print('--------')
-        user_serializer = UserProfileSerializer(userprofile, data=user_data) 
+        #print(user_data)
+
+        user_serializer = UserProfileSerializer(userprofile, data=user_data, partial=True) 
         if user_serializer.is_valid(): 
             user_serializer.save() 
             return JsonResponse(user_serializer.data)
