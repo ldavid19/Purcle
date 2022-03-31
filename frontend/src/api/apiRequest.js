@@ -15,7 +15,7 @@ async function get(type, query = "") { //GET request
     }
 
     const url = '/api/' + type + query;
-    //console.log(url);
+    console.log("get: " + url);
 
     await axios.get(url)
         .then((res) => {
@@ -54,7 +54,12 @@ async function put(type, id, data, token) { //PUT request
 async function post(type, id, data) { //POST request
     var ret = [];
 
-    await axios.post('/api/' + type + '/' + id, data, {
+    if (id != "") {
+        type = type + "/";
+    }
+
+    console.log("post: /api/" + type + id);
+    await axios.post('/api/' + type + id, data, {
         validateStatus: function (status) {
             return status < 500; // Resolve only if the status code is less than 500
         }
@@ -79,16 +84,16 @@ async function post(type, id, data) { //POST request
     return ret;
 }
 
-async function post(type, data) { //POST request
-    var ret = [];
+// async function post(type, data) { //POST request
+//     var ret = [];
 
-    await axios.post('/api/' + type, data)
-        .then((res) => {
-            ret = res;
-        });
+//     await axios.post('/api/' + type, data)
+//         .then((res) => {
+//             ret = res;
+//         });
 
-    return ret;
-}
+//     return ret;
+// }
 
 /* GET helper functions */
 /* post helpers */
@@ -215,11 +220,23 @@ async function getScore(id) {
     return 0;
 }
 
+// async function getAllTopics() {
+//     console.log(get("topic"));
+//     return get("topic");
+// }
 async function getAllTopics() {
-    return get("topic");
+    let data = [];
+
+    await get("topic")
+        .then((res) => {
+            console.log(res);
+            data = res;
+        });
+    return data;
 }
 
 async function getTopic(id) {
+    console.log("getTopic returns: " + get("topic", id));
     return get("topic", id);
 }
 
@@ -227,11 +244,22 @@ async function getTopic(id) {
 /* post helpers */
 
 async function makePost(post) {
-    return post("post", post);
+    let ret;
+    console.log("attempting to make a post");
+
+    await post("post", "", post)
+        .then(res => {
+            console.log("this hits");
+            ret = res;
+        })
+        .catch(err => console.error(`Error: ${err}`));
+        console.log("this hits");
+    return ret;
 }
 
 async function makeTopic(data) {
-    return post("topic", data);
+    console.log(data);
+    return post("topic", "", data);
 }
 
 function incrementScore(id, offset) {

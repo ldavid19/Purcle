@@ -5,15 +5,11 @@ import Creatable from 'react-select/creatable';
 import { Modal, Col, Row, Image } from "react-bootstrap";
 import { Button } from '@mui/material';
 
-<<<<<<< HEAD
-import { makePost, databaseLength, getAllTopics, makeTopic, getTopic } from "../../api/apiRequest.js";
+import { makePost, getAllTopics, makeTopic, getTopic, getCurrUser } from "../../api/apiRequest.js";
 import axios from 'axios'
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
-=======
-import { makePost, databaseLength, getAllTopics } from "../../api/apiRequest.js";
->>>>>>> main
 
 function errorMessage(title, type, text, topic) {
     let message = "";
@@ -61,47 +57,66 @@ function NewPost(props) {
                 content = "";
             }
 
-            if (newTopic) {
-                console.log("trying to create a new topic");
-                var createdTopic = {
-                    topic_id: topic.label,
-                    topic_num_followers: 0
-                };
-                makeTopic(createdTopic);
-            }
-
             var type_int = type.localeCompare("Image") === 0 ? 1 : 0;
             var content_str = type.localeCompare("Image") === 0 ? image : text;
-            var topic_data;
-            /*
-            getTopic(topic.label)
-                .then((res) => {
-                    topic_data = res.data;
-                })
-            */
-            var newPost = {
-                //DO STUFF HERE XXXX
-                //MAKE SURE YOU LEAVE A COMMENT ABOUT ADDING
-                //THE NEW POST TO THE CREATOR'S POST LIST
-                //IF THAT'S EVEN A THING IDK
-                //post_topic: topic_data,
-                id: null,
-                post_topic: {topic_id: topic.label, topic_num_followers: topic.value},
-                post_type: type_int,
-                user_id: null, //needs changed to currentuser XXXX
-                post_is_anonymous: checked,
-                post_title: title,
-                post_content: content_str,
-                post_time: null //idk if this is right XXXX
-            };
-            makePost(newPost);
-            /*
-            makePost(newPost)
-            .then((res) => {
-                props.getPosts();
-                //getAllPosts();
-            });
-            */
+
+            var newPost;
+            var u_id;
+
+            if (newTopic) {
+                getCurrUser()
+                    .then(res_u => {
+                        console.log(res_u);
+                        u_id = res_u.id;
+                        console.log("trying to create a new topic");
+                        var createdTopic = {
+                            topic_id: topic.label,
+                            topic_num_followers: 0
+                        };
+                        makeTopic(createdTopic)
+                            .then(res_t => {
+                                newPost = {
+                                    id: 99,
+                                    //post_topic: {topic_id: topic.label, topic_num_followers: topic.value},
+                                    post_topic: res_t.topic_topic,
+                                    post_type: type_int,
+                                    //user_id: res_u.id, XXXX
+                                    user_id: 0,
+                                    post_is_anonymous: checked,
+                                    post_title: title,
+                                    post_content: content_str,
+                                    post_time: new Date(Date.now()) //idk if this is right XXXX
+                                };
+                                console.log(newPost);
+                                makePost(newPost)
+                                .catch(err => console.error(`Error: ${err}`));
+                            })
+                            .catch(err => console.error(`Error: ${err}`));
+                    })
+                    .catch(err => console.error(`Error: ${err}`));
+            } else {
+                getCurrUser()
+                    .then(res_u => {
+                        console.log(res_u);
+                        u_id = res_u.id;
+                        newPost = {
+                            id: 99,
+                            //post_topic: {topic_id: topic.label, topic_num_followers: topic.value},
+                            post_topic: topic.label,
+                            post_type: type_int,
+                            //user_id: res_u.id, XXXX
+                            user_id: 0,
+                            post_is_anonymous: checked,
+                            post_title: title,
+                            post_content: content_str,
+                            post_time: new Date(Date.now()) //idk if this is right XXXX
+                        };
+                        console.log(newPost);
+                        makePost(newPost)
+                        .catch(err => console.error(`Error: ${err}`));
+                    })
+                    .catch(err => console.error(`Error: ${err}`));
+            }
 
             setShow(false);
             setTitle("");
@@ -173,29 +188,35 @@ function NewPost(props) {
     const getTopics = () => {
         getAllTopics()
             .then((res) => {
-                let data = res.data;
+                let data = res;
+                console.log(res);
 
                 let topic_list = [];
                 
-                data.map((topic) => {
+                data.map((t) => {
                     let newTopic = {
-                        label: topic.topic_id,
-                        value: topic.topic_num_followers
+                        label: t.topic_id,
+                        value: t.topic_num_followers
                     }
 
                     topic_list.push(newTopic);
                 })
 
-                //console.log(topic_list)
-
+                console.log("this hits1");
+                console.log(topic_list);
+                console.log("this hits2");
                 //console.log(res.data);
+                console.log("this hits3");
                 setTopics(topic_list);
-                //console.log(topics);
+                console.log("this hits4");
+                console.log(topics);
+                console.log("this hits5");
             })
             .catch(err => console.error(`Error: ${err}`));
     }
 
     useEffect(() => {
+        console.log("useEffect runs");
         getTopics();
     }, []);
 
