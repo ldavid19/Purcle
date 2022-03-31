@@ -29,15 +29,9 @@ function ProfileSetup(props) {
     }
 
     const nullUser = {
-        username: "User not really found",
-        pfp: placeholder,
         bio: "",
-        follower_count: 0,
-        following_count: 0,
-        private: true,
         first: "",
         last: "",
-        email: ""
     }
 
 
@@ -50,27 +44,28 @@ function ProfileSetup(props) {
 
     const hitSubmit = (e) => {
         alert("Form submitted");
-        // window.location.href = "/";
+        window.location.href = "/";
         
     }
 
-    const confirmCanUpdate = () => {
+    const setUserwithId = () => {
         getCurrUser().then(res => {
             console.log("confirm can update" + res)
             const curr = res.curr_user;
-            canUpdate(id, curr);
+            setUserApi(curr);
+            // canUpdate(id, curr);
         }).catch(err => console.error(`Error: ${err}`));
     }
 
-    const canUpdate = (usrID, currID) => {
-        console.log("viewing id: " + usrID);
-        console.log("current id: " + currID);
-        if (currID == usrID) {
-            setUpdate(true);
-        } else {
-            setUpdate(false);
-        }
-    }
+    // const canUpdate = (usrID, currID) => {
+    //     console.log("viewing id: " + usrID);
+    //     console.log("current id: " + currID);
+    //     if (currID == usrID) {
+    //         setUpdate(true);
+    //     } else {
+    //         setUpdate(false);
+    //     }
+    // }
 
     const getUserApi = () => {        
         
@@ -101,7 +96,7 @@ function ProfileSetup(props) {
 
     }
     
-    const setUserApi = () => {
+    const setUserApi = (id) => {
         //change testUser to updated user object
         //const updatedUser = unformatUser(testUser);
     
@@ -127,8 +122,8 @@ function ProfileSetup(props) {
     const handleUpdateUser = (event) => {
         console.log(event.target.name);
         console.log(event.target.value);
-        setUser({
-             ...user,
+        setTempUser({
+            ...tempUser,
             [event.target.name]: event.target.value,
         });
          console.log(user);
@@ -136,10 +131,10 @@ function ProfileSetup(props) {
 
    
 
-    useEffect(() => {
-        confirmCanUpdate();
-        getUserApi();
-    }, []);
+    // useEffect(() => {
+    //     confirmCanUpdate();
+    //     getUserApi();
+    // }, []);
 
     function errorMessage(bio, firstname, lastname) {
         console.log("errorMessage")
@@ -186,15 +181,15 @@ function ProfileSetup(props) {
     }
 
     const handleSubmitUpdate = (event) => {
-        console.log("submit hit");
-        let err = errorMessage(user.bio, user.first, user.last);
+        console.log("submit hit, temp user", tempUser);
+        let err = errorMessage(tempUser.bio, tempUser.first, tempUser.last);
         setError(err);
         if (err !== "") {
             alert(err);
         }
         else {
-            setUserApi();
-            setUser(nullUser);
+            setUserwithId();
+            // setUser(nullUser);
             hitSubmit();
         }
     }
