@@ -208,8 +208,9 @@ function Profile(props) {
 
     const confirmCanUpdate = () => {
         getCurrUser().then(res => {
-            const curr = res.data;
-            canUpdate(id, curr.curr_user);
+            console.log(res)
+            const curr = res.curr_user;
+            canUpdate(id, curr);
         }).catch(err => console.error(`Error: ${err}`));
     }
 
@@ -249,7 +250,7 @@ function Profile(props) {
         console.log("put user----------");
         console.log(tempUser);
         console.log("------------------");
-        updateUser(1, tempUser, localStorage.getItem('token')).then(res => {
+        updateUser(id, tempUser, localStorage.getItem('token')).then(res => {
             const usr = formatUser(res.data);
             setUser(usr);
         })
@@ -326,7 +327,6 @@ function Profile(props) {
                         <ConfirmationModal 
                             show={showConfirmation} 
                             handleClose={handleCloseConfirmation} 
-                            handleDelete={deleteProfile}
                         />
 
                         {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}

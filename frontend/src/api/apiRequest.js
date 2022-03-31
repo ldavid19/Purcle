@@ -190,14 +190,7 @@ async function getUser(id) {
 }
 
 async function getCurrUser() {
-    let data = [];
-
-    await get("current_user")
-        .then((res) => {
-            data = formatUser(res);
-        });
-
-    return data;
+    return get("current_user");
 }
 
 /* misc helpers */
@@ -230,7 +223,7 @@ async function downvote(id) {
 
 /* user helpers */
 async function updateUser(id, data, token) {
-    return put("profile", id, unformatUser(data), token);
+    return put("profile_update", id, unformatUser(data), token);
 }
 
 /* signup helpers */
