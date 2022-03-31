@@ -44,7 +44,8 @@ urlpatterns = [
     path('messages/', TemplateView.as_view(template_name='index.html')),
     #path('post/', views.posts_list),
     path('post/:id', TemplateView.as_view(template_name='index.html')),
-    path('profile/:id', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^profile/((?P<pk>[0-9a-zA-Z_]+)?)$', views.post_detail), # grabs single post based on id
+    #path('profile/:id', TemplateView.as_view(template_name='index.html')),
     #path('api/sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('api/auth/login/', views.LoginAPI.as_view(), name='login'),
     #path('api/auth/register/', views.RegisterAPI.as_view(), name='register'),
