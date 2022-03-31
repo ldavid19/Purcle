@@ -37,7 +37,7 @@ from rest_framework.decorators import permission_classes
 #     #path(r'^api/posts/(?P<pk>[0-9]+)$', views.posts_detail),
 #     #path(r'^api/posts/published$', views.posts_list_published),
 #     path(r'^api/profile/(?P<pk>[0-9]+)$', views.profile_detail)
-# ]
+
 
 @api_view(['GET', 'POST', 'DELETE'])
 def profile_detail(request, pk):
@@ -64,7 +64,7 @@ def profile_detail(request, pk):
 @permission_classes((IsAuthenticated, ))
 def profile_update(request, pk):
     try: 
-        userprofile = UserProfile.objects.get(pk=pk) 
+        userprofile = UserProfile.objects.get(user=pk) 
     except UserProfile.DoesNotExist: 
         return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
