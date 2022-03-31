@@ -10,10 +10,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 async function get(type, query = "") { //GET request
     var data = [];
 
-    //console.log("query: " + query)
-
     if (query !== "") {
-        //console.log("what");
         query = "/" + query;
     }
 
@@ -25,7 +22,7 @@ async function get(type, query = "") { //GET request
             data = res.data;
         });
 
-    //console.log(data);
+    console.log(data);
 
     return data;
 }
@@ -79,19 +76,16 @@ async function post(type, id, data) { //POST request
     })
         .then(res => {
             if (res.status === 400) {
-                //console.log(res.data);
+                console.log(res.data);
                 ret = res.data;
             } else {
-                //console.log(res);
+                console.log(res);
                 ret = res.data;
             }
         }
         )
-    // .catch(err => {
-    //     ret = err.message;
-    //     console.log(err.toJSON());
-    // })
 
+        console.log(ret);
     //console.log("post function done\n");
 
     return ret;
@@ -129,6 +123,7 @@ async function getPost(id) {
             data = formatPost(res);
         })
 
+    console.log(data);
     return data;
 }
 
@@ -137,7 +132,7 @@ async function getAllPosts() {
 
     await get("posts")
         .then((res) => {
-            //console.log(res);
+            console.log(res);
             let arr = Array.from(res);
 
             arr.map((post) => {
@@ -155,7 +150,7 @@ async function getPostsFromTopic(topic) {
 
     await get("posts", topic)
         .then((res) => {
-            //console.log(res);
+            console.log(res);
             let arr = Array.from(res);
 
             arr.map((post) => {
@@ -171,7 +166,7 @@ async function getPostsFromTopic(topic) {
 }
 
 async function getTimeline(userID) {
-    //console.log("getting timeline: " + userID)
+    console.log("getting timeline: " + userID)
     let user, topics;
     let posts = [];
     
@@ -221,7 +216,7 @@ async function getUser(id) {
 
     await get("profile", id)
         .then((res) => {
-            //console.log(res);
+            console.log(res);
             data = formatUser(res);
         })
 
@@ -229,17 +224,8 @@ async function getUser(id) {
 }
 
 async function getCurrUser() {
-    let data = [];
-
-    await get("current_user")
-        .then((res) => {
-            data = formatUser(res);
-        });
-
-        console.log(data);
-    return data;
-    //console.log(get("current_user"));
-    //return get("current_user");
+    console.log(get("current_user"));
+    return get("current_user");
 }
 
 /* misc helpers */
@@ -247,10 +233,6 @@ async function getScore(id) {
     return 0;
 }
 
-// async function getAllTopics() {
-//     console.log(get("topic"));
-//     return get("topic");
-// }
 async function getAllTopics() {
     let data = [];
 
@@ -263,7 +245,7 @@ async function getAllTopics() {
 }
 
 async function getTopic(id) {
-    console.log("getTopic returns: " + get("topic", id));
+    //console.log("getTopic returns: " + get("topic", id));
     return get("topic", id);
 }
 
@@ -272,15 +254,14 @@ async function getTopic(id) {
 
 async function makePost(data) {
     let ret = [];
-    console.log("attempting to make a post");
+    //console.log("attempting to make a post");
 
     await post("post", "", data)
         .then((res) => {
-            console.log("this hits");
+            console.log(res);
             ret = res;
         })
         .catch(err => console.error(`Error: ${err}`));
-        console.log("this hits");
     return ret;
 }
 
@@ -311,12 +292,17 @@ async function updateUser(id, data, token) {
 /* signup helpers */
 async function postUser(data) {
     const ret = post("sign_up", '', data);
-    console.log("result from post: " + ret);
+    //console.log("result from post: " + ret);
     return ret;
 }
 
 /* authentication helpers */
-async function login(data) {
+async function login(username, password) {
+    const data = {
+        "username": username,
+        "password": password
+    }
+    console.log(data);
     return post("auth", "login/", data);
 }
 

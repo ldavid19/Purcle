@@ -161,6 +161,8 @@ class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
+        print("from views.py LoginAPI post():")
+        print(request.data)
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
@@ -169,7 +171,7 @@ class LoginAPI(KnoxLoginView):
 
 def curr_user(request):
     current_user = request.user
-    print("current_user.id:")
+    print("from views.py LoginAPI curr_user():")
     print(current_user.id)
     return JsonResponse({'curr_user': current_user.id})
 # class RegisterAPI(generics.GenericAPIView):
@@ -258,7 +260,7 @@ def post_list(request):
 
     if request.method == 'POST':
         post_data = JSONParser().parse(request)
-        print("here!")
+        print("from views.py post_list POST:")
         print(post_data)
         post_serializer = PostSerializer(data=post_data)
         if post_serializer.is_valid():
