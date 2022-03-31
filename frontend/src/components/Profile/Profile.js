@@ -76,6 +76,10 @@ function UpdateProfileModal(props) {
     )
 }
 
+function deleteProfile() {
+    console.log("deleteeee");
+}
+
 function CloseConfirmationModal() {
 
 }
