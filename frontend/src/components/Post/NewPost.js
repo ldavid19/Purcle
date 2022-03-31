@@ -65,55 +65,52 @@ function NewPost(props) {
 
             if (newTopic) {
                 getCurrUser()
-                    .then(res_u => {
+                    .then((res_u) => {
                         console.log(res_u);
-                        u_id = res_u.id;
                         console.log("trying to create a new topic");
                         var createdTopic = {
                             topic_id: topic.label,
                             topic_num_followers: 0
                         };
                         makeTopic(createdTopic)
-                            .then(res_t => {
+                            .then((res_t) => {
                                 newPost = {
                                     id: 99,
                                     //post_topic: {topic_id: topic.label, topic_num_followers: topic.value},
-                                    post_topic: res_t.topic_topic,
+                                    //post_topic: res_t.topic_id,
+                                    post_topic_id: topic.label,
                                     post_type: type_int,
-                                    //user_id: res_u.id, XXXX
-                                    user_id: 0,
+                                    user_id_id: res_u.curr_user,
                                     post_is_anonymous: checked,
                                     post_title: title,
                                     post_content: content_str,
                                     post_time: new Date(Date.now()) //idk if this is right XXXX
                                 };
                                 console.log(newPost);
-                                makePost(newPost)
-                                .catch(err => console.error(`Error: ${err}`));
+                                makePost(newPost);
+                                //.catch(err => console.error(`Error: ${err}`));
                             })
                             .catch(err => console.error(`Error: ${err}`));
                     })
                     .catch(err => console.error(`Error: ${err}`));
             } else {
                 getCurrUser()
-                    .then(res_u => {
+                    .then((res_u) => {
                         console.log(res_u);
-                        u_id = res_u.id;
                         newPost = {
                             id: 99,
                             //post_topic: {topic_id: topic.label, topic_num_followers: topic.value},
-                            post_topic: topic.label,
+                            post_topic_id: topic.label,
                             post_type: type_int,
-                            //user_id: res_u.id, XXXX
-                            user_id: 0,
+                            user_id_id: res_u.curr_user,
                             post_is_anonymous: checked,
                             post_title: title,
                             post_content: content_str,
                             post_time: new Date(Date.now()) //idk if this is right XXXX
                         };
                         console.log(newPost);
-                        makePost(newPost)
-                        .catch(err => console.error(`Error: ${err}`));
+                        makePost(newPost);
+                        //.catch(err => console.error(`Error: ${err}`));
                     })
                     .catch(err => console.error(`Error: ${err}`));
             }
@@ -201,16 +198,8 @@ function NewPost(props) {
 
                     topic_list.push(newTopic);
                 })
-
-                console.log("this hits1");
-                console.log(topic_list);
-                console.log("this hits2");
-                //console.log(res.data);
-                console.log("this hits3");
                 setTopics(topic_list);
-                console.log("this hits4");
                 console.log(topics);
-                console.log("this hits5");
             })
             .catch(err => console.error(`Error: ${err}`));
     }
