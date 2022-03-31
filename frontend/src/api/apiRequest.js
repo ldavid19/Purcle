@@ -44,6 +44,11 @@ async function put(type, id, data, token) { //PUT request
     var ret = [];
 
     await axios.put('/api/' + type + '/' + id, data, {Authorization: 'Token ' + token})
+        .catch(err => {
+            if (err.status === 400) {
+                ret = {"ERROR": "ERROR"};
+            }
+        })
         .then((res) => {
             ret = res;
         });
@@ -241,7 +246,11 @@ async function postUser(data) {
 }
 
 /* authentication helpers */
-async function login(data) {
+async function login(username, password) {
+    const data = {
+        "username": username,
+        "password": password
+    }
     return post("auth", "login/", data);
 }
 
