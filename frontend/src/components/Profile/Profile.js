@@ -1,9 +1,10 @@
-import { Container, Row } from 'react-bootstrap';
+import { Container, Row, Modal } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
-import PostCard from '../Post/PostCard';
-import { Modal } from "react-bootstrap";
+import { useParams, useNavigate } from "react-router-dom";
+
 import { Button } from '@mui/material';
-import { useParams } from "react-router-dom";
+
+import PostCard from '../Post/PostCard';
 
 import { getRandPosts, getUser, updateUser, getCurrUser } from '../../api/apiRequest.js';
 import { formatUser, unformatUser } from '../../api/helper';
@@ -89,7 +90,8 @@ function Profile(props) {
     placeholder = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
 
 
-    const { id } = useParams()
+    const { id } = useParams();
+    const navigate = useNavigate();
 
     const nullUser = {
         username: "User not really found",
@@ -185,15 +187,11 @@ function Profile(props) {
             .catch(err => console.error(`Error: ${err}`));
     }
 
-    /*
-    const getNewUser = () => {
-        getUser()
-            .then((res) => {
-                setUser(res);
-            })
-            .catch(err => console.error(`Error: ${err}`));
+    //redirects user to an error page, then reloads page to ensure that screen is not stuck on nothing 
+    const errorHandler = (e) => {
+        navigate('/error', { replace: true });
+        window.location.reload();
     }
-    */
 
     /* handler helper functions */
     const handleOpenConfirmation = () => {
@@ -203,7 +201,6 @@ function Profile(props) {
     const handleCloseConfirmation = () => {
         setShowConfirmation(false);
     }
-
     const handleShow = () => {
         setShow(true);
     }
@@ -360,9 +357,6 @@ function Profile(props) {
                        )
                    })
                } */}
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture" />
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture" />
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture" />
                 {/* <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  

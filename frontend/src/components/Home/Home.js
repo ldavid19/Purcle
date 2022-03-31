@@ -1,40 +1,39 @@
 import { Container, Row } from 'react-bootstrap';
 import React, { useState, useEffect }  from 'react';
-import NewPost from "../Post/NewPost.js";
-import PostCard from '../Post/PostCard';
+
+import { Link } from 'react-router-dom';
 
 import { Button } from '@mui/material';
 
-import { getRandPosts, getAllPosts, getPostsFromTopic, getTimeline, getUser, getCurrUser } from '../../api/apiRequest.js';
+import NewPost from "../Post/NewPost.js";
+import PostCard from '../Post/PostCard';
+
+import { getRandPosts, getAllPosts, getTimeline, getCurrUser } from '../../api/apiRequest.js';
 
 function Home() {
     const [posts, setPosts] = useState([]);
     const [user, setUser] = useState({});
-    const [uid, setUID] = useState(4); //current user id
+    const [uid, setUID] = useState(0); //current user id
 
     useEffect(() => {
         //getPosts();
-        getCurrentUser();
-        getCurrentTimeline();
+        /*getCurrentUser().then((res) => {
+            getCurrentTimeline();
+        });
+        */
+        startup();
     }, []);
 
-    const getCurrentUser = () => {
+    const startup = () => {
         getCurrUser()
         .then((res) => {
+            let id = res.curr_user;
 
-            /*
-            console.log(res.data);
-            let usr = formatUser(res.data);
-            console.log(usr);
-
-            setUser(usr);
-            */ 
-            //console.log("getting current user: ")
-            //console.log(res);
-            setUser(res);
+            getTimeline(id)
+            .then((res) => {
+                setPosts(res);
+            })
         })
-        .catch(err => console.error(`Error: ${err}`));
-
     }
 
     const getCurrentTimeline = () => {
@@ -52,6 +51,7 @@ function Home() {
             */
             //console.log("getting timeline: ")
             //console.log(res);
+            console.log(res);
             setPosts(res);
         })
         .catch(err => console.error(`Error: ${err}`));
@@ -87,11 +87,19 @@ function Home() {
                 <PostCard postList={posts}/> 
             </Row>
 
+            <Link to="/login">
+                <Button >
+                    Not logged in? Log in here.
+                </Button>
+            </Link>
+            
+            {/*
             <Button onClick={() => {
                 getRandom();
             }}>
                 reload
             </Button>
+            */}
         </Container>
     );
 }
