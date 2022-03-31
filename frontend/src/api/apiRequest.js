@@ -6,9 +6,6 @@ import { createRandPost, createRandUser } from "./testing.js";
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
-var allPosts = [];
-var allTopics = [];
-
 /* General functions */
 async function get(type, query = "") { //GET request
     var data = [];
@@ -22,10 +19,10 @@ async function get(type, query = "") { //GET request
 
     await axios.get(url)
         .then((res) => {
-            data = res;
+            data = res.data;
         });
 
-    console.log(data);
+    //console.log(data);
 
     return data;
 }
@@ -58,17 +55,6 @@ async function put(type, id, data, token) { //PUT request
 
     return ret;
 }
-
-// async function post(type, id, data) { //POST request
-//     var ret = [];
-
-//     await axios.post('/api/' + type + '/' + id, data)
-//         .then((res) => {
-//             ret = res;
-//         });
-
-//     return ret;
-// }
 
 async function post(type, id, data) { //POST request
     var ret = [];
@@ -106,51 +92,122 @@ async function getRandPosts() {
 
     for (var i = 0; i < 100; i++) {
         const post = createRandPost(i);
-        res.push(post);
+        res.push(formatPost(post));
     }
-
-    allPosts = res;
 
     return res;
 }
 
 async function getPost(id) {
-    return get("post");
+    let data = [];
+
+    await get("post", id)
+        .then((res) => {
+            data = formatPost(res);
+        })
+
+    return data;
 }
 
 async function getAllPosts() {
-    console.log(allPosts);
-    return get("post");
+    let data = [];
+
+    await get("posts")
+        .then((res) => {
+            console.log(res);
+            let arr = Array.from(res);
+
+            arr.map((post) => {
+                data.push(formatPost(post))
+            });
+        });
+
+    return data;
 }
 
-/*
- * retrieve a limited number posts from database
- * with an offset argument so when we want to pull
- * more posts we don't grab the same ones
- * 
- * limit = number of posts to retrieve
- * offset = number of posts to skip over
- */
-async function getNumPosts(limit, offset) {
+async function getPostsFromTopic(topic) {
+    let data = [];
 
+    await get("posts", topic)
+        .then((res) => {
+            console.log(res);
+            let arr = Array.from(res);
+
+            arr.map((post) => {
+                console.log("pushed!")
+                data.push(formatPost(post))
+            });
+            console.log(data);
+        });
+
+    return data;
+}
+
+async function getTimeline(userID) {
+    console.log("what the fuck")
+    let user, topics;
+    let posts = [];
+    
+    await getUser(userID)
+        .then(res => {
+            user = res//formatUser(res.data);
+        })
+        .catch(err => console.error(`Error: ${err}`));
+
+    if (!user) {
+        return null;
+    }
+
+    topics = user.topics;
+    console.log(user)
+    console.log(topics)
+
+    for (let topic in topics) {
+        let postsFromTopic = [];
+
+        await getPostsFromTopic(topics[topic])
+            .then(res => {
+                postsFromTopic = res;
+            })
+            .catch(err => console.error(`Error: ${err}`));
+
+        console.log(postsFromTopic);
+
+        posts = posts.concat(postsFromTopic);
+    }
+
+    console.log(posts);
+
+    return posts;        
 }
 
 /* user helpers */
 async function getUser(id) {
-    return get("profile", id);
+    let data = [];
+
+    await get("profile", id)
+        .then((res) => {
+            console.log(res);
+            data = formatUser(res);
+        })
+
+    return data;
 }
 
 async function getCurrUser() {
-    return getNoID("current_user");
+    let data = [];
+
+    await get("current_user")
+        .then((res) => {
+            data = formatUser(res);
+        });
+
+    return data;
 }
 
 /* misc helpers */
 async function getScore(id) {
     return 0;
-}
-
-function databaseLength() {
-    return allPosts.length;
 }
 
 async function getAllTopics() {
@@ -162,16 +219,8 @@ async function getAllTopics() {
 
 /* POST helper functions */
 /* post helpers */
-async function makePost(post) {
-    allPosts.push(post);
-}
-
-async function makeTopic(topic) {
-    allTopics.push(topic);
-}
-
 function incrementScore(id, offset) {
-    allPosts[id].score += offset;
+    //allPosts[id].score += offset;
 }
 
 async function upvote(id) {
@@ -210,6 +259,7 @@ async function login(username, password) {
 // }
 
 export {
-    getRandPosts, getPost, getAllPosts, getUser, getScore, databaseLength, getAllTopics, getCurrUser,
-    makePost, upvote, downvote, updateUser, postUser, login,
+    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline,     //GET post functions
+    getUser, getScore, getAllTopics, getCurrUser,           //GET misc functions
+    upvote, downvote, updateUser, postUser, login,                //POST misc functions
 };
