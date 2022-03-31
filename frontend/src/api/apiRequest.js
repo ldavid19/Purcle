@@ -43,9 +43,27 @@ async function getNoID(type) {
 async function put(type, id, data, token) { //PUT request
     var ret = [];
     console.log("token " + token)
-    await axios.put('/api/' + type + '/' + id, data, {Authorization: 'Token ' + token})
+    await axios.put('/api/' + type + '/' + id, data, {headers:{Authorization: "Token " + token}})
         .catch(err => {
-            if (err.status === 400) {
+            console.log("err: " + err);
+            if (err.status === 400 || err.status === 401) {
+                ret = {"ERROR": "ERROR"};
+            }
+        })
+        .then((res) => {
+            ret = res;
+        });
+
+    return ret;
+}
+
+async function patch(type, id, data, token) { //PUT request
+    var ret = [];
+    console.log("token " + token)
+    await axios.patch('/api/' + type + '/' + id, data, {headers:{Authorization: "Token " + token}})
+        .catch(err => {
+            console.log("err: " + err);
+            if (err.status === 400 || err.status === 401) {
                 ret = {"ERROR": "ERROR"};
             }
         })
@@ -247,7 +265,7 @@ async function downvote(id) {
 
 /* user helpers */
 async function updateUser(id, data, token) {
-    return put("profile_update", id, unformatUser(data), token);
+    return patch("profile_update", id, unformatUser(data), token);
 }
 
 /* signup helpers */
@@ -266,6 +284,27 @@ async function login(username, password) {
     return post("auth", "login/", data);
 }
 
+async function logout(token) {
+    const data = {};
+
+    var ret = [];
+
+    await axios.post('/api/auth/logout/', data, {headers:{Authorization: "Token " + token}})
+        .then(res => {
+            if (res.status === 400) {
+                console.log(res.data);
+                ret = res.data;
+            } else {
+                console.log(res);
+                ret = res.data;
+            }
+        }
+        );
+
+    console.log("logout done\n");
+    return ret;
+}
+
 // async function postProfile(data) {
 //     return post("profile_detail", 0, data);
 // }
@@ -273,5 +312,5 @@ async function login(username, password) {
 export {
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, getPostsFromUser,     //GET post functions
     getUser, getScore, getAllTopics, getCurrUser,           //GET misc functions
-    upvote, downvote, updateUser, postUser, login,                //POST misc functions
+    upvote, downvote, updateUser, postUser, login, logout,               //POST misc functions
 };
