@@ -43,6 +43,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    
+    'rest_framework.authtoken',
+    'rest_auth',
+    #'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'rest_auth.registration',
+    'knox',
     'corsheaders',
 ]
 
@@ -158,4 +167,11 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend/build/static')
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        #'rest_framework.authentication.BasicAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
+        'knox.auth.TokenAuthentication',
+    )
+}
 

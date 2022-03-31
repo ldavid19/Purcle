@@ -1,6 +1,8 @@
-import { ListGroup } from 'react-bootstrap';
+import { ListGroup, Spinner, Col } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 import PostCardItem from './PostCardItem';
+
+import LinearProgress from '@mui/material/LinearProgress';
 
 function PostCard(props) {
     const [list, setList] = useState([]);
@@ -20,7 +22,12 @@ function PostCard(props) {
     }*/
     
     useEffect(() => {
+        if (!props.postList) {
+            return
+        }
+
         var posts = Array.from(props.postList);
+        //console.log(posts);
 
         var postcards = posts.map((post) => (
             <PostCardItem 
@@ -32,11 +39,27 @@ function PostCard(props) {
         setList(postcards);
     }, [props.postList])
 
-    //check if post list not retrieved yet
+    //if postList is null means cannot be retrieved
+    if (!props.postList) {
+        return (
+            <p>Unfortunately, your timeline cannot be retrived at the moment. Please check back at a later time.</p>
+        )
+    }
+
+    //while postList is being retrieved show loading spinner
     if (props.postList.length <= 0) {
         return (
-            <h2>No posts retrieved :(</h2>
+            <LinearProgress />
+        );
+        /*
+        return (
+            <Col>
+                <Spinner animation="border" role="status" variant='primary' style={{justifyContent: "center"}}>
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
+            </Col>
         )
+        */
     }
 
     return (

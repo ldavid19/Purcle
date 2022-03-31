@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from 'react';
 import Select from 'react-select';
 import Creatable from 'react-select/creatable';
 import { Modal, Col, Row, Image } from "react-bootstrap";
 import { Button } from '@mui/material';
 
-import { makePost, databaseLength, getAllPosts } from "../../api/apiRequest";
+import { makePost, databaseLength, getAllTopics } from "../../api/apiRequest.js";
 
 function errorMessage(title, type, text, topic) {
     let message = "";
-    if (topic === null || topic.label === null) {
+    if (topic === null || topic.value === null) {
         message = message + "Please choose topic.\n";
     } else if (topic.label.length < 1) {
         message = message + "Please choose topic.\n";
@@ -45,13 +45,15 @@ function NewPost(props) {
     const handleSubmit = () => {
         if (errorMessage(title, type, text, topic).length === 0) {
             var content;
-            if (type == "Text") {
+            if (type === "Text") {
                 content = text;
             } else {
                 content = "";
             }
+
+            /*
             var newPost = {
-                post_id: databaseLength(),
+                post_id: 0, //fix this to not be zero lol
                 post_topic: topic,
                 post_type: 0,
                 user_id: "user",
@@ -62,11 +64,13 @@ function NewPost(props) {
                 post_score: 0
             };
 
+            /*
             makePost(newPost)
             .then((res) => {
                 props.getPosts();
                 //getAllPosts();
             });
+            */
 
             setShow(false);
             setTitle("");
@@ -129,23 +133,43 @@ function NewPost(props) {
         if (ev.__isNew__ === true) {
             ev.value = 0;
         }
-        //topics.sort(function(a, b){return b.value-a.value});
     }
 
-    var topics = [
-        {label: 'birding', value: 999},
-        {label: 'cooking', value: 700},
-        {label: 'botany', value: 85},
-        {label: 'birds', value: 69},
-        {label: 'cs', value: 5},
-        {label: 'purdue', value: 1},
-    ]
+    const [topics, setTopics] = useState([]);
+    const getTopics = () => {
+        getAllTopics()
+            .then((res) => {
+                let data = res.data;
+
+                let topic_list = [];
+                
+                data.map((topic) => {
+                    let newTopic = {
+                        label: topic.topic_id,
+                        value: topic.topic_num_followers
+                    }
+
+                    topic_list.push(newTopic);
+                })
+
+                //console.log(topic_list)
+
+                //console.log(res.data);
+                setTopics(topic_list);
+                //console.log(topics);
+            })
+            .catch(err => console.error(`Error: ${err}`));
+    }
+
+    useEffect(() => {
+        getTopics();
+    }, []);
 
     const formatOptionLabel = ({ label, value }) => (
         <Row>
-            <Col>{label}</Col>
+            <Col>{label.toLowerCase()}</Col>
             <Col></Col>
-            <Col>{value}</Col>
+            <Col>{topics.some(e => e.label === label) ? value : 0} followers</Col>
         </Row>
     );
 
@@ -162,7 +186,7 @@ function NewPost(props) {
                 <Row>
                     <Creatable
                         value={topic}
-                        options={topics}
+                        options={topics.sort(function(a, b){return b.value-a.value})}
                         onChange={handleTopicChange}
                         placeholder="Choose Topic"
                         formatOptionLabel={formatOptionLabel}

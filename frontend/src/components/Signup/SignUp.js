@@ -1,11 +1,8 @@
 import React, { Component } from "react";
-import { Card } from "react-bootstrap";
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    Link
-  } from "react-router-dom";
+import { Card, Modal } from "react-bootstrap";
+import { postUser, login } from '../../api/apiRequest.js';
+
+import { Button } from '@mui/material';
 
 export default class SignUp extends Component {
     constructor(props) {
@@ -14,10 +11,9 @@ export default class SignUp extends Component {
         this.state = {
             fields: {},
             errors: {},
-            windows: {"error":false, "valid":false},
-            errormsg: "",
-            users: JSON.parse(localStorage.getItem('users')) || [],
-            emails: JSON.parse(localStorage.getItem('emails')) || [],
+            windows: { "error": false, "valid": false },
+            errorArr: [],
+            showModal: false
         };
     }
 
@@ -28,8 +24,8 @@ export default class SignUp extends Component {
 
         //email
         if (!fields["email"]) {
-            formIsValid = false;
-            errors["email"] = "Email cannot be empty";
+            //formIsValid = false;
+            errors["email"] = "Email cannot be empty.";
         }
 
         if (typeof fields["email"] !== "undefined") {
@@ -40,106 +36,131 @@ export default class SignUp extends Component {
                 !(
                     lastAtInd < lastDotInd &&
                     lastAtInd > 0 &&
-                    fields["email"].indexOf("@@") == -1 &&
+                    fields["email"].indexOf("@@") === -1 &&
                     lastDotInd > 2 &&
                     fields["email"].length - lastDotInd > 2
                 )
             ) {
-                formIsValid = false;
-                errors["email"] = "Email is not valid";
-            } //TODO: check for uniqueness
-            //else if (this.state.emails.findIndex(fields["email"]) !== -1) {
                 //formIsValid = false;
-                //errors["email"] = "Email is already in use"
-            //}
+                errors["email"] = "Email is not valid.";
+            } //TODO: check for uniqueness
         }
 
         //username
         if (!fields["username"]) {
-            formIsValid = false;
-            errors["username"] = "Username cannot be empty";
+            //formIsValid = false;
+            errors["username"] = "Username cannot be empty.";
         }
 
         if (typeof fields["username"] !== "undefined") {
             if (fields["username"].length < 1) {
-                formIsValid = false;
-                errors["username"] = "Username is too short";
-            } else if (fields["username"].length > 20) {
-                formIsValid = false;
-                errors["username"] = "Username is too long";
-            } else if (!/^([A-Za-z0-9\-_.]+)$/.test(fields["username"])) {
-                formIsValid = false;
-                errors["username"] = "Username contains invalid characters";
-            } //TODO: check for uniqueness
-            //else if (this.state.users.findIndex(fields["username"]) !== -1) {
                 //formIsValid = false;
-                //errors["username"] = "Username is already in use";
-            //}
+                errors["username"] = "Username is too short.";
+            } else if (fields["username"].length > 20) {
+                //formIsValid = false;
+                errors["username"] = "Username is too long.";
+            } else if (!/^([A-Za-z0-9\-_.]+)$/.test(fields["username"])) {
+                //formIsValid = false;
+                errors["username"] = "Username contains invalid characters.";
+            } //TODO: check for uniqueness
         }
 
         //password
         if (!fields["password"]) {
-            formIsValid = false;
-            errors["password"] = "Password cannot be empty";
+            //formIsValid = false;
+            errors["password"] = "Password cannot be empty.";
         }
 
         if (typeof fields["password"] !== "undefined") {
             if (fields["password"].length < 8) {
-                formIsValid = false;
-                errors["password"] = "Password is too short";
+                //formIsValid = false;
+                errors["password"] = "Password is too short.";
             } else if (fields["password"].length > 50) {
-                formIsValid = false;
-                errors["password"] = "Password is too long";
+                //formIsValid = false;
+                errors["password"] = "Password is too long.";
             } //TODO: handling special characters in passwords like escaped chars
         }
 
         if (!fields["confirm"]) {
-            formIsValid = false;
-            errors["comfirm"] = "Confirm password cannot be empty"
+            //formIsValid = false;
+            errors["comfirm"] = "Confirm password cannot be empty."
         }
 
         if (typeof fields["password"] !== "undefined" && typeof fields["confirm"] !== "undefined") {
             if (fields["password"] !== fields["confirm"]) {
-                formIsValid = false;
-                errors["confirm"] = "Passwords do not match";
+                //formIsValid = false;
+                errors["confirm"] = "Passwords do not match.";
             }
         }
-        
-        this.setState({ errors: errors }, 
-            function() {
+
+        this.setState({ errors: errors },
+            async function () {
                 let errors = this.state.errors;
-                let errorStr = "";
+                let fields = this.state.fields;
+                let errorArr = [];
+
                 for (let error in errors) {
-                    errorStr = errorStr + errors[error] + "\n";
+                    errorArr.push(errors[error]);
                 }
 
-                if (errorStr !== "") {
-                    alert(errorStr);
+                console.log("frontend verification\n");
+
+                if (errorArr.length === 0) {
+                    const data = {
+                        email: fields["email"],
+                        username: fields["username"],
+                        password1: fields["password"],
+                        password2: fields["confirm"]
+                    }
+                    const ret = await postUser(data);
+
+                    console.log(ret);
+
+                    for (let error in ret) {
+                        console.log(error + "\n");
+                        if (error === "email" || error === "id") {
+                            console.log("valid signup\n");
+                            break;
+                        }
+
+                        if (ret[error] !== "This field may not be blank.") {
+                            errorArr.push(ret[error]);
+                        }
+                    }
+                    console.log("backend verification\n")
+                    console.log(ret);
+                }
+
+                if (errorArr.length !== 0) {
+                    //alert(errorStr);
+                    this.setState({errorArr: errorArr});
+                    this.handleShow();
+                    formIsValid = false;
+                } else {
+                    //alert("Form submitted");
+                    const data = {
+                        "username": fields["username"],
+                        "password": fields["password"]
+                    }
+                    let token = await login(data);
+                    //console.log("got token\n");
+                    //console.log(token["token"]);
+                    localStorage.setItem("token", token["token"]);
+                    //console.log(localStorage.getItem("token"));
+                    window.location.href = "/profilesetup";
                 }
             }
         );
+
+        console.log(formIsValid + "\n");
         return formIsValid;
     }
 
     hitSubmit(e) {
-        let errors = this.state.errors;
+        //let fields = this.state.fields;
         e.preventDefault();
 
-        if (this.handleValidation()) {
-            alert("Form submitted");
-            /*let emails = this.state.emails;
-            let users = this.state.users;
-            emails.push(this.state.fields["email"]);
-            users.push(this.state.fields["username"]);
-            this.setState({ emails: emails, users: users}, 
-                function() {
-                    localStorage.setItem('emails', JSON.stringify(this.state.emails));
-                    localStorage.setItem('users', JSON.stringify(this.state.users));
-                }
-            );*/
-            
-            window.location.href = "/profilesetup";
-        }
+        this.handleValidation();
     }
 
     handleChange(field, e) {
@@ -148,23 +169,48 @@ export default class SignUp extends Component {
         this.setState({ fields });
     }
 
+    /* modal helper functions */
+    handleShow = () => {
+        /*this.setState({ errormsg: errorMsg });*/
+        this.setState({ showModal: true });
+    }
+
+    handleClose = () => {
+        this.setState({ showModal: false });
+    }
+
+
+    AlertModal = () => {
+        let errorList = this.state.errorArr;
+
+        console.log(errorList);
+
+        return (
+            <Modal show={this.state.showModal} onHide={this.handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Error!</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+
+                    {errorList.map((error) => (
+                        <p>{error}</p>
+                    ))}
+
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="contained" onClick={this.handleClose}>
+                        OK
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        )
+    }
+
     render() {
         return (
             <div className="SignUp">
-                {/*<Modal show={this.state.windows["error"]} onHide={handleClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Error</Modal.Title>
-                    </Modal.Header>
-                    
-                    <Modal.Body> this.state.errormsg </Modal.Body>
-                    
-                    <Modal.Footer>
-                        <Button variant="primary" onClick={handleClose}>
-                            Ok
-                        </Button>
-                    </Modal.Footer>
-                </Modal>*/}
-                <Card className="SignUpCard" style={{ width: '18rem'}}>
+                <this.AlertModal />
+                <Card className="SignUpCard" style={{ width: '18rem' }}>
                     <form onSubmit={this.hitSubmit.bind(this)}>
                         <h3>Sign Up</h3>
                         <div className="form-group">
@@ -183,6 +229,7 @@ export default class SignUp extends Component {
                             <label>Confirm Password</label>
                             <input refs="confirm" type="password" className="form-control" placeholder="Re-enter password" onChange={this.handleChange.bind(this, "confirm")} value={this.state.fields["confirm"]} />
                         </div>
+                        
                         <button className="btn btn-primary btn-block">Sign Up</button>
 
                         <div className="forgot-password">

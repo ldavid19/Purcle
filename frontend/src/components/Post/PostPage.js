@@ -6,6 +6,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getPost } from '../../api/apiRequest';
 import { getRelativeTime } from '../../api/helper';
 
+import { Button } from '@mui/material';
+
 function Content(props) {
     //if props.type == true then is image 
     if (props.type) {
@@ -58,6 +60,38 @@ function PostPage(props) {
     const { id } = useParams();
     const navigate = useNavigate();
 
+    const [showTestComment, setShowTestComment] = useState(false);
+    const [testCommentText, setTestCommentText] = useState("");
+    const [commentText, setCommentText] = React.useState("");
+    const handleCommentTextChange = ev => {
+        setCommentText(ev.target.value);
+    };
+    const [anonCheck, setAnonCheck] = React.useState(false);
+    const handleAnonCheckChange = () => {
+        setAnonCheck(!anonCheck);
+    }
+
+    const handleSubmit = () => {
+        var newComment = {
+            //comment_id: databaseLength(),
+            user_id: "user",
+            comment_content: commentText,
+            comment_created_date: new Date(Date.now()),
+            comment_is_anonymous: anonCheck
+        };
+        /*
+        makeComment(newComment)
+        .then((res) => {
+            props.getComments();
+            //getAllComments();
+        });
+        */
+        setShowTestComment(true);
+        setAnonCheck(false);
+        setTestCommentText(commentText);
+        setCommentText("");
+    }
+
     //redirects user to an error page, then reloads page to ensure that screen is not stuck on nothing 
     const errorHandler = (e) => {
         navigate('/error', { replace: true });
@@ -79,7 +113,7 @@ function PostPage(props) {
         });
         
         //setPost(newPost);
-    }, [post]);
+    }, []); 
 
 
     return (
@@ -97,6 +131,52 @@ function PostPage(props) {
 
                 <Content style={{textAlign: "center"}} type={post.type} content={post.content}/>
             </Card>
+
+            <Card>
+                <h1></h1>
+                <textarea
+                    name="commentText"
+                    placeholder=" New Comment"
+                    value={commentText || ""}
+                    onChange={handleCommentTextChange}
+                    maxLength="500"
+                    rows={2}
+                />
+                <label>
+                    Anonymous{' '}
+                    <input type="checkbox" 
+                    checked={anonCheck}
+                    onChange={handleAnonCheckChange}/>
+                </label>
+                {
+                    commentText.length > 0 ?
+                        <Button variant="primary" onClick={handleSubmit}>
+                            Post
+                        </Button>
+                    :
+                        <Button variant="primary">
+                            Post
+                        </Button>
+                }
+            </Card>
+            {showTestComment ?
+                <Card style = {{textAlign: "left"}}>
+                    {testCommentText}
+                    {
+                        anonCheck ? 
+                            <body>by Anonymous time ago</body>
+                            :
+                            <body>
+                                by{' '}
+                                <Link to="/profile">{"user"}</Link>
+                                {' '}time ago
+                            </body>
+                    }
+                </Card>
+                :
+                <body></body>
+            }
+
         </Container>
     )
     
