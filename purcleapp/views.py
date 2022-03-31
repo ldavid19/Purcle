@@ -255,6 +255,15 @@ def topic_detail(request, pk):
         print(topic_serializer.errors)
         return JsonResponse(topic_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['GET', 'POST', 'DELETE', 'PUT'])
+def user_list(request):
+    if request.method == 'GET':
+        users = UserProfile.objects.all()
+
+
+        user_list_serializer = UserListSerializer(users, many=True)
+        return JsonResponse(user_list_serializer.data, safe=False)
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
 def post_list(request):
     # if request.method == 'GET':

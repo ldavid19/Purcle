@@ -57,6 +57,7 @@
   position: absolute;
   top: 50px;
   left: 0;
+  max-width: 200px;
 }
 
 #results {
@@ -64,6 +65,8 @@
   width: inherit;
   overflow-y: scroll;
   height: 20em;
+  max-width: 200px;
+  text-align: left;
 }
 
 #search-bar {

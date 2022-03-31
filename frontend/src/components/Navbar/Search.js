@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../App.css';
+import '../../App.css'
 
 function Search(props) {
     const { options, onInputChange } = props;
     const ulRef = useRef();
     const inputRef = useRef();
-    
+
     useEffect(() => {
       inputRef.current.addEventListener('click', (event) => {
         event.stopPropagation();
@@ -48,5 +48,4 @@ function Search(props) {
     );
   };
 
-
-  export default Search
+export default Search
