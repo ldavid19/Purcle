@@ -140,7 +140,9 @@ function PostPage(props) {
                         {username}
                     </Link>
                     {" in "} 
-                    <a href="#">{post.topic}</a> 
+                    <Link to={{pathname: `/topic/${post.topic}`, query:{id: post.topic}}}>
+                        {post.topic}
+                    </Link>
                     {" " + getRelativeTime(post.date)}
                 </p>
 

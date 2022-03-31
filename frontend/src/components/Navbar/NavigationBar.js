@@ -158,7 +158,7 @@ function NavigationBar() {
 
       <Navbar.Brand as={Link} to={"/"}>Purcle</Navbar.Brand>
       <Nav className="me-auto">
-        <Nav.Link as={Link} to={"/following"}>Following</Nav.Link>
+        <Nav.Link as={Link} to={"/topic"}>Following</Nav.Link>
         <Nav.Link as={Link} to={"/messages"}>Messages</Nav.Link>
       </Nav>
 
