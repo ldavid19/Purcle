@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Card, ListGroup, ListGroupItem, Modal } from "react-bootstrap";
 import { postUser, login } from '../../api/apiRequest.js';
-
 import { Button } from '@mui/material';
 
 export default class SignUp extends Component {
@@ -138,11 +137,11 @@ export default class SignUp extends Component {
                     formIsValid = false;
                 } else {
                     //alert("Form submitted");
-                    const data = {
-                        "username": fields["username"],
-                        "password": fields["password"]
-                    }
-                    let token = await login(data);
+                    // const data = {
+                    //     "username": fields["username"],
+                    //     "password": fields["password"]
+                    // }
+                    let token = await login(fields["username"], fields["password"]);
                     //console.log("got token\n");
                     //console.log(token["token"]);
                     localStorage.setItem("token", token["token"]);
