@@ -10,6 +10,8 @@ import { formatUser, unformatUser } from '../../api/helper';
 
 import { Modal } from "react-bootstrap";
 
+import { logout } from '../../api/apiRequest.js';
+
 import { InputBase, IconButton, TextField } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -41,6 +43,13 @@ function NavigationBar() {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const handleLogout = async () => {
+    await logout(localStorage.getItem("token"));
+    localStorage.removeItem("token");
+    console.log(localStorage.getItem("token"));
+    window.location.href = "/login";
+  }
 
   const getLink = () => {
     return "profile/" + uid;
@@ -95,7 +104,7 @@ function NavigationBar() {
               <Button variant="secondary" onClick={handleClose}>
                 No
               </Button>
-              <Button variant="primary" as={Link} to={"/login"}>
+              <Button variant="primary" onClick={handleLogout}>
                 Yes
               </Button>
             </Modal.Footer>
