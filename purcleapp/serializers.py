@@ -30,6 +30,14 @@ class TopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
         fields = '__all__'
+
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = (
+            'user',
+            'profile_name'
+        )
         
 class UserSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(write_only=True)
