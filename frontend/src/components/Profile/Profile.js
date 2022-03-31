@@ -1,9 +1,10 @@
-import { Container, Row } from 'react-bootstrap';
+import { Container, Row, Modal } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
-import PostCard from '../Post/PostCard';
-import { Modal } from "react-bootstrap";
+import { useParams, useNavigate } from "react-router-dom";
+
 import { Button } from '@mui/material';
-import { useParams } from "react-router-dom";
+
+import PostCard from '../Post/PostCard';
 
 import { getRandPosts, getUser, updateUser, getCurrUser } from '../../api/apiRequest.js';
 import { formatUser, unformatUser } from '../../api/helper';
@@ -16,7 +17,6 @@ axios.defaults.xsrfCookieName = "csrftoken";
 */
 
 function ConfirmationModal(props) {
-    console.log("Entered Confirmation Popup Modal");
 
     return (
         <>
@@ -76,6 +76,10 @@ function UpdateProfileModal(props) {
     )
 }
 
+function deleteProfile() {
+    console.log("deleteeee");
+}
+
 function CloseConfirmationModal() {
 
 }
@@ -90,7 +94,8 @@ function Profile(props) {
     placeholder = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
 
 
-    const { id } = useParams()
+    const { id } = useParams();
+    const navigate = useNavigate();
 
     const nullUser = {
         username: "User not really found",
@@ -98,6 +103,8 @@ function Profile(props) {
         bio: "",
         follower_count: 0,
         following_count: 0,
+        followers: [],
+        following: [],
         private: true,
         first: "",
         last: "",
@@ -111,6 +118,8 @@ function Profile(props) {
         bio: "i hate ap bio",
         follower_count: 6,
         following_count: 9,
+        followers: [],
+        following: [],
         private: true,
         first: "what",
         last: "thefuc",
@@ -150,7 +159,6 @@ function Profile(props) {
         console.log(event.target.name);
         console.log(event.target.value);
         setTempUser({
-            ...user,
             [event.target.name]: event.target.value,
         });
     }
@@ -183,15 +191,11 @@ function Profile(props) {
             .catch(err => console.error(`Error: ${err}`));
     }
 
-    /*
-    const getNewUser = () => {
-        getUser()
-            .then((res) => {
-                setUser(res);
-            })
-            .catch(err => console.error(`Error: ${err}`));
+    //redirects user to an error page, then reloads page to ensure that screen is not stuck on nothing 
+    const errorHandler = (e) => {
+        navigate('/error', { replace: true });
+        window.location.reload();
     }
-    */
 
     /* handler helper functions */
     const handleOpenConfirmation = () => {
@@ -201,7 +205,6 @@ function Profile(props) {
     const handleCloseConfirmation = () => {
         setShowConfirmation(false);
     }
-
     const handleShow = () => {
         setShow(true);
     }
@@ -212,14 +215,13 @@ function Profile(props) {
 
     const confirmCanUpdate = () => {
         getCurrUser().then(res => {
-            const curr = res.data;
-            canUpdate(id, curr.curr_user);
+            console.log(res)
+            const curr = res.curr_user;
+            canUpdate(id, curr);
         }).catch(err => console.error(`Error: ${err}`));
     }
 
-    const getUserApi = () => {
-        console.log("help")
-        
+    const getUserApi = () => {        
         
         getUser(id)
             .then(res => {
@@ -252,8 +254,11 @@ function Profile(props) {
 
         console.log("put user----------");
         console.log(tempUser);
+        console.log(localStorage.getItem('token'));
         console.log("------------------");
-        updateUser(1, tempUser, localStorage.getItem('token')).then(res => {
+        
+        updateUser(id, tempUser, localStorage.getItem('token')).then(res => {
+            console.log("response: " + res)
             const usr = formatUser(res.data);
             setUser(usr);
         })
@@ -330,7 +335,6 @@ function Profile(props) {
                         <ConfirmationModal 
                             show={showConfirmation} 
                             handleClose={handleCloseConfirmation} 
-                            handleDelete={deleteProfile}
                         />
 
                         {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
@@ -357,9 +361,6 @@ function Profile(props) {
                        )
                    })
                } */}
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture" />
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture" />
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture" />
                 {/* <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  

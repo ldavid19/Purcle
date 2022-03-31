@@ -3,7 +3,7 @@ import { Container, Card, Image } from 'react-bootstrap';
 
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
-import { getPost } from '../../api/apiRequest';
+import { getPost, getUser } from '../../api/apiRequest';
 import { getRelativeTime } from '../../api/helper';
 
 import { Button } from '@mui/material';
@@ -56,20 +56,23 @@ function PostPage(props) {
         score: 0
     }
 
-    const [post, setPost] = useState(nullPost);
     const { id } = useParams();
     const navigate = useNavigate();
 
+    const [post, setPost] = useState(nullPost);
+    const [username, setUsername] = useState("");
     const [showTestComment, setShowTestComment] = useState(false);
     const [testCommentText, setTestCommentText] = useState("");
     const [commentText, setCommentText] = React.useState("");
+    const [anonCheck, setAnonCheck] = React.useState(false);
+
     const handleCommentTextChange = ev => {
         setCommentText(ev.target.value);
     };
-    const [anonCheck, setAnonCheck] = React.useState(false);
     const handleAnonCheckChange = () => {
         setAnonCheck(!anonCheck);
     }
+    const [anon, setAnon] = React.useState(false);
 
     const handleSubmit = () => {
         var newComment = {
@@ -86,10 +89,11 @@ function PostPage(props) {
             //getAllComments();
         });
         */
-        setShowTestComment(true);
+        setAnon(anonCheck);
         setAnonCheck(false);
         setTestCommentText(commentText);
         setCommentText("");
+        setShowTestComment(true);
     }
 
     //redirects user to an error page, then reloads page to ensure that screen is not stuck on nothing 
@@ -100,17 +104,26 @@ function PostPage(props) {
     
     useEffect(() => {
 
-        console.log(props)
+        console.log(id)
         
         getPost(id)
-        .then((res) => {
-            setPost(res);
-            console.log(res);
-        })
-        .catch(err => {
-            console.error(`Error: ${err}`);
-            errorHandler();
-        });
+            .then((res) => {
+                let userid = res.user;
+                console.log(res);
+
+                getUser(userid)
+                .then((res) => {
+                    let name = res.username;
+                    console.log(res);
+                    setUsername(name);
+                })
+
+                setPost(res);
+            })
+            .catch(err => {
+                console.error(`Error: ${err}`);
+                //errorHandler();
+            });
         
         //setPost(newPost);
     }, []); 
@@ -121,13 +134,17 @@ function PostPage(props) {
             <Card>
                 <h1>{post.title}</h1>
 
-                <p style={{margin: 0}}>
-                    {"by "}
-                    <Link to="/profile">{post.user}</Link>
+                <p style={{/*margin: 0*/}}>
+                    {"posted by "}
+                    <Link to={{pathname: `/profile/${post.user}`, query:{id: post.user}}}>
+                        {username}
+                    </Link>
                     {" in "} 
                     <a href="#">{post.topic}</a> 
                     {" " + getRelativeTime(post.date)}
                 </p>
+
+                <p></p>
 
                 <Content style={{textAlign: "center"}} type={post.type} content={post.content}/>
             </Card>
@@ -163,7 +180,7 @@ function PostPage(props) {
                 <Card style = {{textAlign: "left"}}>
                     {testCommentText}
                     {
-                        anonCheck ? 
+                        anon ? 
                             <body>by Anonymous time ago</body>
                             :
                             <body>

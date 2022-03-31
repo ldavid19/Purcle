@@ -12,20 +12,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = '__all__'
 
-class PostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields = (
-            'id',
-            'post_topic',
-            'post_type',
-            'user_id',
-            'post_is_anonymous',
-            'post_title',
-            'post_content',
-            'post_time'
-        )
-
 class TopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
@@ -38,6 +24,10 @@ class UserListSerializer(serializers.ModelSerializer):
             'user',
             'profile_name'
         )
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(write_only=True)

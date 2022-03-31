@@ -25,6 +25,7 @@ from knox.views import LoginView as KnoxLoginView
 from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from django.contrib.auth import login
+from django.contrib.auth import logout
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
@@ -37,7 +38,7 @@ from rest_framework.decorators import permission_classes
 #     #path(r'^api/posts/(?P<pk>[0-9]+)$', views.posts_detail),
 #     #path(r'^api/posts/published$', views.posts_list_published),
 #     path(r'^api/profile/(?P<pk>[0-9]+)$', views.profile_detail)
-# ]
+
 
 @api_view(['GET', 'POST', 'DELETE'])
 def profile_detail(request, pk):
@@ -60,21 +61,31 @@ def profile_detail(request, pk):
         user_profile_serializer = UserProfileSerializer(userprofile) 
         return JsonResponse(user_profile_serializer.data)
 
-@api_view(['PUT', 'PATCH'])
-@permission_classes((IsAuthenticated, ))
-def profile_update(request, pk):
-    try: 
+@api_view(['GET', 'POST', 'DELETE'])
+def profile_id(request, pk):
+    try:
         userprofile = UserProfile.objects.get(pk=pk) 
     except UserProfile.DoesNotExist: 
         return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'PUT':
-        print("this is a put request")
-        print(request)
+    if request.method == 'GET': 
+        user_profile_serializer = UserProfileSerializer(userprofile) 
+        return JsonResponse(user_profile_serializer.data)
+
+@api_view(['PUT', 'PATCH'])
+#@permission_classes((IsAuthenticated, ))
+def profile_update(request, pk):
+    try: 
+        userprofile = UserProfile.objects.get(user=pk) 
+    except UserProfile.DoesNotExist: 
+        return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PATCH':
+        
         user_data = JSONParser().parse(request)
-        print(user_data)
-        print('--------')
-        user_serializer = UserProfileSerializer(userprofile, data=user_data) 
+        #print(user_data)
+
+        user_serializer = UserProfileSerializer(userprofile, data=user_data, partial=True) 
         if user_serializer.is_valid(): 
             user_serializer.save() 
             return JsonResponse(user_serializer.data)
@@ -150,15 +161,18 @@ class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
+        print("from views.py LoginAPI post():")
+        print(request.data)
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         login(request, user)
         return super(LoginAPI, self).post(request, format=None)
 
-
 def curr_user(request):
     current_user = request.user
+    print("from views.py LoginAPI curr_user():")
+    print(current_user.id)
     return JsonResponse({'curr_user': current_user.id})
 # class RegisterAPI(generics.GenericAPIView):
 #     serializer_class = RegisterSerializer
@@ -201,12 +215,16 @@ def topic_list(request):
     if request.method == 'GET':
         topics = Topic.objects.all()
 
-        # topic_id = request.GET.get('topic_id', None)
-        # if topic_id is not None:
-        #     topics = topics.filter(topic_id__icontains=topic_id)
-
         topics_serializer = TopicSerializer(topics, many=True)
         return JsonResponse(topics_serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        topic_data = JSONParser().parse(request)
+        topic_serializer = TopicSerializer(data=topic_data)
+        if topic_serializer.is_valid():
+            topic_serializer.save()
+            return JsonResponse(topic_serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(topic_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
 def topic_detail(request, pk):
@@ -232,6 +250,7 @@ def topic_detail(request, pk):
         print(topic_serializer.errors)
         return JsonResponse(topic_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+<<<<<<< HEAD
 
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
 def user_list(request):
@@ -241,3 +260,33 @@ def user_list(request):
 
         user_list_serializer = UserListSerializer(users, many=True)
         return JsonResponse(user_list_serializer.data, safe=False)
+=======
+@api_view(['GET', 'POST', 'DELETE', 'PUT'])
+def post_list(request):
+    # if request.method == 'GET':
+    #     topics = Topic.objects.all()
+
+    #     topics_serializer = TopicSerializer(topics, many=True)
+    #     return JsonResponse(topics_serializer.data, safe=False)
+
+    if request.method == 'POST':
+        post_data = JSONParser().parse(request)
+        print("from views.py post_list POST:")
+        print(post_data)
+        post_serializer = PostSerializer(data=post_data)
+        if post_serializer.is_valid():
+            post_serializer.save()
+            return JsonResponse(post_serializer.data)
+        message = ""
+        for error in post_serializer.errors:
+            message = post_serializer.errors[error][0].title()
+        return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
+
+    # if request.method == 'POST':
+    #     post_data = JSONParser().parse(request)
+    #     post_serializer = PostSerializer(data=post_data)
+    #     if post_serializer.is_valid():
+    #         post_serializer.save()
+    #         return JsonResponse(post_serializer.data, status=status.HTTP_201_CREATED)
+    #     return JsonResponse(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+>>>>>>> 9e42d90206a2d356c7cb36030567c82649b7a436
