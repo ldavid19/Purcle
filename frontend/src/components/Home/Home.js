@@ -27,6 +27,7 @@ function Home() {
     const startup = () => {
         getCurrUser()
         .then((res) => {
+            console.log(res);
             let id = res.curr_user;
 
             getTimeline(id)

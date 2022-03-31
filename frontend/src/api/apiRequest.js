@@ -10,22 +10,19 @@ axios.defaults.xsrfCookieName = "csrftoken";
 async function get(type, query = "") { //GET request
     var data = [];
 
-    //console.log("query: " + query)
-
     if (query !== "") {
-        //console.log("what");
         query = "/" + query;
     }
 
     const url = '/api/' + type + query;
-    //console.log(url);
+    console.log("get: " + url);
 
     await axios.get(url)
         .then((res) => {
             data = res.data;
         });
 
-    //console.log(data);
+    console.log(data);
 
     return data;
 }
@@ -67,31 +64,43 @@ async function patch(type, id, data, token) { //PUT request
 async function post(type, id, data) { //POST request
     var ret = [];
 
-    await axios.post('/api/' + type + '/' + id, data, {
+    if (id != "") {
+        type = type + "/";
+    }
+
+    console.log("post: /api/" + type + id);
+    await axios.post('/api/' + type + id, data, {
         validateStatus: function (status) {
             return status < 500; // Resolve only if the status code is less than 500
         }
     })
         .then(res => {
             if (res.status === 400) {
-                //console.log(res.data);
+                console.log(res.data);
                 ret = res.data;
             } else {
-                //console.log(res);
+                console.log(res);
                 ret = res.data;
             }
         }
         )
-    // .catch(err => {
-    //     ret = err.message;
-    //     console.log(err.toJSON());
-    // })
 
+        console.log(ret);
     //console.log("post function done\n");
 
     return ret;
 }
 
+// async function post(type, data) { //POST request
+//     var ret = [];
+
+//     await axios.post('/api/' + type, data)
+//         .then((res) => {
+//             ret = res;
+//         });
+
+//     return ret;
+// }
 
 /* GET helper functions */
 /* post helpers */
@@ -114,6 +123,7 @@ async function getPost(id) {
             data = formatPost(res);
         })
 
+    console.log(data);
     return data;
 }
 
@@ -122,7 +132,7 @@ async function getAllPosts() {
 
     await get("posts")
         .then((res) => {
-            //console.log(res);
+            console.log(res);
             let arr = Array.from(res);
 
             arr.map((post) => {
@@ -140,7 +150,7 @@ async function getPostsFromTopic(topic) {
 
     await get("posts", topic)
         .then((res) => {
-            //console.log(res);
+            console.log(res);
             let arr = Array.from(res);
 
             arr.map((post) => {
@@ -156,7 +166,7 @@ async function getPostsFromTopic(topic) {
 }
 
 async function getTimeline(userID) {
-    //console.log("getting timeline: " + userID)
+    console.log("getting timeline: " + userID)
     let user, topics;
     let posts = [];
     
@@ -206,7 +216,7 @@ async function getUser(id) {
 
     await get("profile", id)
         .then((res) => {
-            //console.log(res);
+            console.log(res);
             data = formatUser(res);
         })
 
@@ -214,6 +224,7 @@ async function getUser(id) {
 }
 
 async function getCurrUser() {
+    console.log(get("current_user"));
     return get("current_user");
 }
 
@@ -223,14 +234,42 @@ async function getScore(id) {
 }
 
 async function getAllTopics() {
-    //console.log(allTopics);
-    //return allTopics;
-    return get("topic");
+    let data = [];
+
+    await get("topic")
+        .then((res) => {
+            console.log(res);
+            data = res;
+        });
+    return data;
 }
 
+async function getTopic(id) {
+    //console.log("getTopic returns: " + get("topic", id));
+    return get("topic", id);
+}
 
 /* POST helper functions */
 /* post helpers */
+
+async function makePost(data) {
+    let ret = [];
+    //console.log("attempting to make a post");
+
+    await post("post", "", data)
+        .then((res) => {
+            console.log(res);
+            ret = res;
+        })
+        .catch(err => console.error(`Error: ${err}`));
+    return ret;
+}
+
+async function makeTopic(data) {
+    console.log(data);
+    return post("topic", "", data);
+}
+
 function incrementScore(id, offset) {
     //allPosts[id].score += offset;
 }
@@ -253,7 +292,7 @@ async function updateUser(id, data, token) {
 /* signup helpers */
 async function postUser(data) {
     const ret = post("sign_up", '', data);
-    console.log("result from post: " + ret);
+    //console.log("result from post: " + ret);
     return ret;
 }
 
@@ -263,6 +302,7 @@ async function login(username, password) {
         "username": username,
         "password": password
     }
+    console.log(data);
     return post("auth", "login/", data);
 }
 
@@ -293,6 +333,6 @@ async function logout(token) {
 
 export {
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline,     //GET post functions
-    getUser, getScore, getAllTopics, getCurrUser,          //GET misc functions
-    upvote, downvote, updateUser, postUser, login, logout,               //POST misc functions
-};
+    getUser, getScore, getAllTopics, getCurrUser, getTopic,           //GET misc functions
+    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout,             //POST misc functions
+};  //always leave a comma on the last entry
