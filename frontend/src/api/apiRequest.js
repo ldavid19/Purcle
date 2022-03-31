@@ -249,6 +249,11 @@ async function getTopic(id) {
     return get("topic", id);
 }
 
+async function getUsers() {
+    return get("userlist");
+}
+
+
 /* POST helper functions */
 /* post helpers */
 
@@ -333,6 +338,6 @@ async function logout(token) {
 
 export {
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline,     //GET post functions
-    getUser, getScore, getAllTopics, getCurrUser, getTopic,           //GET misc functions
+    getUser, getScore, getAllTopics, getCurrUser, getTopic, getUsers,          //GET misc functions
     upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout,             //POST misc functions
 };  //always leave a comma on the last entry

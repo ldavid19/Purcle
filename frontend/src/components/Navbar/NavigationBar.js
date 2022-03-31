@@ -3,14 +3,14 @@ import { Navbar } from "react-bootstrap";
 import { NavDropdown } from "react-bootstrap";
 import { Form, FormControl, Button } from "react-bootstrap";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-import { getRandPosts, getUser, updateUser, getCurrUser } from '../../api/apiRequest.js';
+import { getRandPosts, getUser, updateUser, getCurrUser, getUsers, getAllPosts } from '../../api/apiRequest.js';
 import { formatUser, unformatUser } from '../../api/helper';
 
 import { Modal } from "react-bootstrap";
 
-import { logout } from '../../api/apiRequest.js';
+import { logout, getAllTopics } from '../../api/apiRequest.js';
 
 import { InputBase, IconButton, TextField } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
@@ -20,8 +20,7 @@ import Divider from '@mui/material/Divider';
 import MenuIcon from '@mui/icons-material/Menu';
 import DirectionsIcon from '@mui/icons-material/Directions';
 
-import Search from "./Search";
-import getAllTopics from "../../api/apiRequest.js";
+import Search from './Search.js';
 
 import {
   BrowserRouter as Router,
@@ -29,6 +28,13 @@ import {
   Route,
   Link
 } from "react-router-dom";
+
+const defaultOptions = [];
+for (let i = 0; i < 10; i++) {
+  defaultOptions.push(`something ${i}`);
+  defaultOptions.push(`poop ${i}`);
+  defaultOptions.push(`chicken ${i}`);
+}
 
 function NavigationBar() {
 
@@ -38,38 +44,82 @@ function NavigationBar() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+
   //Obtain all topics from list
   const [topics, setTopics] = useState([]);
-    const getTopics = () => {
-        getAllTopics()
-            .then((res) => {
-                let data = res;
+  const getTopics = () => {
+    getAllTopics()
+      .then((res) => {
+        let data = res;
 
-                let topic_list = [];
-                
-                data.map((topic) => {
-                    let newTopic = {
-                        label: topic.topic_id,
-                        value: topic.topic_num_followers
-                    }
+        let topic_list = [];
 
-                    topic_list.push(newTopic);
-                })
+        data.map((topic) => {
+          let newTopic = topic.topic_id
+          topic_list.push(newTopic);
+        })
 
-                //console.log(topic_list)
+        //console.log(topic_list)
 
-                //console.log(res.data);
-                setTopics(topic_list);
-                //console.log(topics);
-            })
-            .catch(err => console.error(`Error: ${err}`));
-    }
+        //console.log(res.data);
+        setTopics(topic_list);
+        //console.log(topics);
+      })
+      .catch(err => console.error(`Error: ${err}`));
+  }
 
-    useEffect(() => {
-        getTopics();
-    }, []);
+  //Obtain all Users from list
+  const [users, setUsers] = useState([]);
+  const getAllUsers = () => {
+    getUsers()
+      .then((res) => {
+        let data = res;
+        console.log(data);
+        let user_list = [];
 
-<<<<<<< HEAD
+        data.map((user) => {
+          let newUser = user.profile_name;
+          user_list.push(newUser);
+        })
+
+        //console.log(topic_list)
+
+        //console.log(res.data);
+        setUsers(user_list);
+        //console.log(topics);
+      })
+      .catch(err => console.error(`Error: ${err}`));
+  }
+
+  //Obtain all posts.
+  const [posts, setPosts] = useState([]);
+  const getPosts = () => {
+    getAllPosts()
+      .then((res) => {
+        let data = res;
+
+        let post_list = [];
+
+        data.map((post) => {
+          let newPost = post.title;
+          post_list.push(newPost);
+        })
+
+        //console.log(topic_list)
+
+        //console.log(res.data);
+        setPosts(post_list);
+        //console.log(topics);
+      })
+      .catch(err => console.error(`Error: ${err}`));
+  }
+
+  useEffect(() => {
+    getTopics();
+    getAllUsers();
+    getPosts();
+  }, []);
+
   const handleLogout = async () => {
     await logout(localStorage.getItem("token"));
     localStorage.removeItem("token");
@@ -87,20 +137,24 @@ function NavigationBar() {
       const curr = res.curr_user;
       setUID(curr);
     }).catch(err => console.error(`Error: ${err}`));
-}, []);
+  }, []);
+
+  const list1 = topics.concat(users);
+  const searchList = list1.concat(posts);
 
   const [options, setOptions] = useState([]);
-=======
->>>>>>> 02649acf76972310e9bdd292c70815a7c1585934
   const onInputChange = (event) => {
+    console.log(topics);
+    console.log(users);
+    console.log(posts);
     setOptions(
-      topics.filter((option) => option.includes(event.target.value))
+      searchList.filter((searchInput) => searchInput.includes(event.target.value))
     );
   };
 
 
   return (
-    <Navbar bg="dark" variant="dark" sticky="top" style={{padding: "10px 25px", overflow: "visible", maxHeight:"60px"}}>
+    <Navbar bg="dark" variant="dark" sticky="top" style={{ padding: "10px 25px", overflow: "visible", maxHeight: "60px" }}>
 
       <Navbar.Brand as={Link} to={"/"}>Purcle</Navbar.Brand>
       <Nav className="me-auto">
@@ -109,7 +163,7 @@ function NavigationBar() {
       </Nav>
 
 
-      <Search options={options} onInputChange={onInputChange}/>
+      <Search options={options} onInputChange={onInputChange} />
 
 
       <NavDropdown align="end" title="Profile" id="collasible-nav-dropdown" >

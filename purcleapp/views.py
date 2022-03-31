@@ -250,7 +250,6 @@ def topic_detail(request, pk):
         print(topic_serializer.errors)
         return JsonResponse(topic_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-<<<<<<< HEAD
 
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
 def user_list(request):
@@ -260,7 +259,6 @@ def user_list(request):
 
         user_list_serializer = UserListSerializer(users, many=True)
         return JsonResponse(user_list_serializer.data, safe=False)
-=======
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
 def post_list(request):
     # if request.method == 'GET':
@@ -289,4 +287,3 @@ def post_list(request):
     #         post_serializer.save()
     #         return JsonResponse(post_serializer.data, status=status.HTTP_201_CREATED)
     #     return JsonResponse(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
->>>>>>> 9e42d90206a2d356c7cb36030567c82649b7a436

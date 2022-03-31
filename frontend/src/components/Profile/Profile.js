@@ -6,7 +6,7 @@ import { Button } from '@mui/material';
 
 import PostCard from '../Post/PostCard';
 
-import { getRandPosts, getUser, updateUser, getCurrUser } from '../../api/apiRequest.js';
+import { getRandPosts, getUser, updateUser, getCurrUser, logout } from '../../api/apiRequest.js';
 import { formatUser, unformatUser } from '../../api/helper';
 
 /*
@@ -17,6 +17,12 @@ axios.defaults.xsrfCookieName = "csrftoken";
 */
 
 function ConfirmationModal(props) {
+    const handleLogout = async () => {
+        await logout(localStorage.getItem("token"));
+        localStorage.removeItem("token");
+        console.log(localStorage.getItem("token"));
+        window.location.href = "/login";
+    }
 
     return (
         <>
@@ -29,7 +35,7 @@ function ConfirmationModal(props) {
                     <Button variant="secondary" onClick={props.handleClose}>
                         No
                     </Button>
-                    <Button variant="primary" onClick={props.handleDelete} color="error">
+                    <Button variant="primary" onClick={handleLogout} color="error">
                         Yes
                     </Button>
                 </Modal.Footer>
@@ -76,16 +82,8 @@ function UpdateProfileModal(props) {
     )
 }
 
-function deleteProfile() {
-    console.log("deleteeee");
-}
-
 function CloseConfirmationModal() {
 
-}
-
-function deleteProfile() {
-    console.log("Haven't been implemented yet.");
 }
 
 function Profile(props) {
@@ -221,8 +219,8 @@ function Profile(props) {
         }).catch(err => console.error(`Error: ${err}`));
     }
 
-    const getUserApi = () => {        
-        
+    const getUserApi = () => {
+
         getUser(id)
             .then(res => {
                 /*
@@ -256,7 +254,7 @@ function Profile(props) {
         console.log(tempUser);
         console.log(localStorage.getItem('token'));
         console.log("------------------");
-        
+
         updateUser(id, tempUser, localStorage.getItem('token')).then(res => {
             console.log("response: " + res)
             const usr = formatUser(res.data);
@@ -324,7 +322,7 @@ function Profile(props) {
                     <div className="btn #64b5f6 blue darken-1">
                         {update && <span onClick={handleShow}>Update Profile</span>}
 
-                        <UpdateProfileModal 
+                        <UpdateProfileModal
                             show={show}
                             handleClose={handleClose}
                             handleShowConfirmation={handleOpenConfirmation}
@@ -332,9 +330,9 @@ function Profile(props) {
                             handleUpdateUser={handleUpdateUser}
                             error={error}
                         />
-                        <ConfirmationModal 
-                            show={showConfirmation} 
-                            handleClose={handleCloseConfirmation} 
+                        <ConfirmationModal
+                            show={showConfirmation}
+                            handleClose={handleCloseConfirmation}
                         />
 
                         {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}

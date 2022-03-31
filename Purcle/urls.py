@@ -59,4 +59,7 @@ urlpatterns = [
     path('api/sign_up/', views.user_detail),
     #path('api/auth/register/', include('rest_auth.registration.urls')),
     # path(r'^', include('Purcle.urls')),
+
+    # user list link
+    path('api/userlist/', views.user_list),
 ]
