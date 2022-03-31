@@ -227,7 +227,7 @@ async function getUser(id) {
             console.log(res);
             data = formatUser(res);
         })
-
+    console.log("getuser" + data);
     return data;
 }
 
