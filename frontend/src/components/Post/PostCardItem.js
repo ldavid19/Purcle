@@ -36,7 +36,9 @@ function PostCardTitle(props) {
                 {"by "}
                 < Anon username={props.username} anon={props.anon} user_id={props.user_id}/>
                 {" in "} 
-                <Link to="/profile">{props.topic}</Link>
+                <Link to={{pathname: `/topic/${props.topic}`, query:{id: props.topic}}}>
+                    {props.topic}
+                </Link>
                 {" " + getRelativeTime(props.date)}
             </p>
         </Col>

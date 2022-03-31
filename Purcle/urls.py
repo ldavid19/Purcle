@@ -39,7 +39,7 @@ urlpatterns = [
     re_path(r'^api/profile_update/(?P<pk>[0-9]+)$', views.profile_update),
     #re_path(r'^api/post$', views.posts_list),
     re_path(r'^api/topic$', views.topic_list),  
-    re_path(r'^api/topic/(?P<pk>[0-9]+)$', views.topic_detail), # id is char not int
+    re_path(r'^api/topic/((?P<pk>[0-9a-zA-Z_]+)?)$', views.topic_detail), # id is char not int
     path('login/', TemplateView.as_view(template_name='index.html')),
     path('profilesetup/', TemplateView.as_view(template_name='index.html')),
     path('messages/', TemplateView.as_view(template_name='index.html')),

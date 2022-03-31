@@ -220,16 +220,16 @@ def topic_list(request):
 
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
 def topic_detail(request, pk):
-    print(request)
-    print(pk)
+    print("getting topic: " + pk)
+
     try: 
         topic = Topic.objects.get(pk=pk) 
     except Topic.DoesNotExist: 
         return JsonResponse({'message': 'The topic does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET': 
-        topic_serializer = Topic(topic) 
-        return JsonResponse(topic_serializer.data)
+        topic_serializer = TopicSerializer(topic) 
+        return JsonResponse(topic_serializer.data, safe=False)
 
     elif request.method == 'PUT':
         print("this is a put request for a topic")

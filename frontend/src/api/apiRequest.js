@@ -217,15 +217,20 @@ async function getCurrUser() {
     return get("current_user");
 }
 
-/* misc helpers */
-async function getScore(id) {
-    return 0;
-}
-
+/* topic helpers */
 async function getAllTopics() {
     //console.log(allTopics);
     //return allTopics;
     return get("topic");
+}
+
+async function getTopicInfo(topic) {
+    return get("topic", topic);
+}
+
+/* misc helpers */
+async function getScore(id) {
+    return 0;
 }
 
 
@@ -293,6 +298,6 @@ async function logout(token) {
 
 export {
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline,     //GET post functions
-    getUser, getScore, getAllTopics, getCurrUser,          //GET misc functions
+    getUser, getScore, getAllTopics, getTopicInfo, getCurrUser,         //GET misc functions
     upvote, downvote, updateUser, postUser, login, logout,               //POST misc functions
 };
