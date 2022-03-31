@@ -16,6 +16,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import DirectionsIcon from '@mui/icons-material/Directions';
 
 import Search from "./Search";
+import getAllTopics from "../../api/apiRequest.js";
 
 import {
   BrowserRouter as Router,
@@ -37,6 +38,37 @@ function NavigationBar() {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  //Obtain all topics from list
+  const [topics, setTopics] = useState([]);
+    const getTopics = () => {
+        getAllTopics()
+            .then((res) => {
+                let data = res.data;
+
+                let topic_list = [];
+                
+                data.map((topic) => {
+                    let newTopic = {
+                        label: topic.topic_id,
+                        value: topic.topic_num_followers
+                    }
+
+                    topic_list.push(newTopic);
+                })
+
+                //console.log(topic_list)
+
+                //console.log(res.data);
+                setTopics(topic_list);
+                //console.log(topics);
+            })
+            .catch(err => console.error(`Error: ${err}`));
+    }
+
+    useEffect(() => {
+        getTopics();
+    }, []);
 
   const [options, setOptions] = useState([]);
   const onInputChange = (event) => {
