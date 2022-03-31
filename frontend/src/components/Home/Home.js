@@ -1,11 +1,14 @@
 import { Container, Row } from 'react-bootstrap';
 import React, { useState, useEffect }  from 'react';
-import NewPost from "../Post/NewPost.js";
-import PostCard from '../Post/PostCard';
+
+import { Link } from 'react-router-dom';
 
 import { Button } from '@mui/material';
 
-import { getRandPosts, getAllPosts, getPostsFromTopic, getTimeline, getUser, getCurrUser } from '../../api/apiRequest.js';
+import NewPost from "../Post/NewPost.js";
+import PostCard from '../Post/PostCard';
+
+import { getRandPosts, getAllPosts, getTimeline, getCurrUser } from '../../api/apiRequest.js';
 
 function Home() {
     const [posts, setPosts] = useState([]);
@@ -31,29 +34,6 @@ function Home() {
                 setPosts(res);
             })
         })
-    }
-
-    const getCurrentUser = () => {
-        getCurrUser()
-        .then((res) => {
-            console.log("curr user");
-            console.log(res);
-
-            /*
-            console.log(res.data);
-            let usr = formatUser(res.data);
-            console.log(usr);
-
-            setUser(usr);
-            */ 
-            //console.log("getting current user: ")
-            //console.log(res);
-            let id = res.curr_user;
-            console.log(id);
-            setUID(id);
-        })
-        .catch(err => console.error(`Error: ${err}`));
-
     }
 
     const getCurrentTimeline = () => {
@@ -107,11 +87,19 @@ function Home() {
                 <PostCard postList={posts}/> 
             </Row>
 
+            <Link to="/login">
+                <Button >
+                    Not logged in? Log in here.
+                </Button>
+            </Link>
+            
+            {/*
             <Button onClick={() => {
                 getRandom();
             }}>
                 reload
             </Button>
+            */}
         </Container>
     );
 }

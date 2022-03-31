@@ -3,7 +3,7 @@ import { Container, Card, Image } from 'react-bootstrap';
 
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
-import { getPost } from '../../api/apiRequest';
+import { getPost, getUser } from '../../api/apiRequest';
 import { getRelativeTime } from '../../api/helper';
 
 import { Button } from '@mui/material';
@@ -60,7 +60,7 @@ function PostPage(props) {
     const navigate = useNavigate();
 
     const [post, setPost] = useState(nullPost);
-
+    const [username, setUsername] = useState("");
     const [showTestComment, setShowTestComment] = useState(false);
     const [testCommentText, setTestCommentText] = useState("");
     const [commentText, setCommentText] = React.useState("");
@@ -102,17 +102,26 @@ function PostPage(props) {
     
     useEffect(() => {
 
-        console.log(props)
+        console.log(id)
         
         getPost(id)
-        .then((res) => {
-            setPost(res);
-            console.log(res);
-        })
-        .catch(err => {
-            console.error(`Error: ${err}`);
-            errorHandler();
-        });
+            .then((res) => {
+                let userid = res.user;
+                console.log(res);
+
+                getUser(userid)
+                .then((res) => {
+                    let name = res.username;
+                    console.log(res);
+                    setUsername(name);
+                })
+
+                setPost(res);
+            })
+            .catch(err => {
+                console.error(`Error: ${err}`);
+                //errorHandler();
+            });
         
         //setPost(newPost);
     }, []); 
@@ -123,13 +132,17 @@ function PostPage(props) {
             <Card>
                 <h1>{post.title}</h1>
 
-                <p style={{margin: 0}}>
-                    {"by "}
-                    <Link to="/profile">{post.user}</Link>
+                <p style={{/*margin: 0*/}}>
+                    {"posted by "}
+                    <Link to={{pathname: `/profile/${post.user}`, query:{id: post.user}}}>
+                        {username}
+                    </Link>
                     {" in "} 
                     <a href="#">{post.topic}</a> 
                     {" " + getRelativeTime(post.date)}
                 </p>
+
+                <p></p>
 
                 <Content style={{textAlign: "center"}} type={post.type} content={post.content}/>
             </Card>
