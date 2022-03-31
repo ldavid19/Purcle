@@ -28,7 +28,7 @@ function App() {
           {/* Put pages with navbar here */}
           <Route path="/" element={<LayoutsWithNavbar />}>
             <Route path="/" element={<Home/>}/>
-            <Route path="/following" element={<Home/>}/>
+            <Route path="/topic" element={<Topic />}/>
             <Route path="/messages" element={<Home/>}/>
             <Route path="/profile/:id" element={<Profile />}/>
             <Route path="/topic/:id" element={<Topic />}/>

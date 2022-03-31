@@ -10,8 +10,7 @@ import { getUser } from '../../api/apiRequest';
 
 function PostCard(props) {
     const [list, setList] = useState([]);
-    //const [loadedUsers, setLoadedUsers] = useState({});
-    //console.log(props.postList)
+
     /* posts are formatted this way
     post = {
         id: post.post_id,

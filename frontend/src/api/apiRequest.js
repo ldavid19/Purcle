@@ -228,11 +228,7 @@ async function getCurrUser() {
     return get("current_user");
 }
 
-/* misc helpers */
-async function getScore(id) {
-    return 0;
-}
-
+/* topic helpers */
 async function getAllTopics() {
     let data = [];
 
@@ -242,6 +238,15 @@ async function getAllTopics() {
             data = res;
         });
     return data;
+}
+
+async function getTopicInfo(topic) {
+    return get("topic", topic);
+}
+
+/* misc helpers */
+async function getScore(id) {
+    return 0;
 }
 
 async function getTopic(id) {
@@ -333,6 +338,6 @@ async function logout(token) {
 
 export {
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline,     //GET post functions
-    getUser, getScore, getAllTopics, getCurrUser, getTopic,           //GET misc functions
-    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout,             //POST misc functions
+    getUser, getScore, getAllTopics, getTopicInfo, getCurrUser, getTopic        //GET misc functions
+    upvote, downvote, updateUser, postUser, login, logout,               //POST misc functions
 };  //always leave a comma on the last entry
