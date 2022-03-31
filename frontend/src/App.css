@@ -53,6 +53,23 @@
   margin: 1rem;
 }
 
+.Search {
+  position: absolute;
+  top: 50px;
+  left: 0;
+}
+
+#results {
+  position: absolute;
+  width: inherit;
+  overflow-y: scroll;
+  height: 20em;
+}
+
+#search-bar {
+  width: inherit;
+}
+
 .SignUpCard {
   padding: 1rem;
 }
