@@ -158,6 +158,8 @@ class LoginAPI(KnoxLoginView):
 
 def curr_user(request):
     current_user = request.user
+    print("current_user.id:")
+    print(current_user.id)
     return JsonResponse({'curr_user': current_user.id})
 # class RegisterAPI(generics.GenericAPIView):
 #     serializer_class = RegisterSerializer

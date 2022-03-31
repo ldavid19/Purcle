@@ -61,12 +61,11 @@ function NewPost(props) {
             var content_str = type.localeCompare("Image") === 0 ? image : text;
 
             var newPost;
-            var u_id;
 
             if (newTopic) {
                 getCurrUser()
-                    .then((res_u) => {
-                        console.log(res_u);
+                    .then((res_u1) => {
+                        console.log(res_u1);
                         console.log("trying to create a new topic");
                         var createdTopic = {
                             topic_id: topic.label,
@@ -75,16 +74,15 @@ function NewPost(props) {
                         makeTopic(createdTopic)
                             .then((res_t) => {
                                 newPost = {
-                                    id: 99,
-                                    //post_topic: {topic_id: topic.label, topic_num_followers: topic.value},
-                                    //post_topic: res_t.topic_id,
-                                    post_topic_id: topic.label,
+                                    id: undefined,
+                                    post_topic: topic.label,
                                     post_type: type_int,
-                                    user_id_id: res_u.curr_user,
+                                    user_id: res_u1.curr_user,
+                                    //user_id: 1,
                                     post_is_anonymous: checked,
                                     post_title: title,
                                     post_content: content_str,
-                                    post_time: new Date(Date.now()) //idk if this is right XXXX
+                                    post_time: undefined
                                 };
                                 console.log(newPost);
                                 makePost(newPost);
@@ -95,18 +93,18 @@ function NewPost(props) {
                     .catch(err => console.error(`Error: ${err}`));
             } else {
                 getCurrUser()
-                    .then((res_u) => {
-                        console.log(res_u);
+                    .then((res_u2) => {
+                        console.log(res_u2);
                         newPost = {
-                            id: 99,
-                            //post_topic: {topic_id: topic.label, topic_num_followers: topic.value},
-                            post_topic_id: topic.label,
+                            id: undefined,
+                            post_topic: topic.label,
                             post_type: type_int,
-                            user_id_id: res_u.curr_user,
+                            user_id: res_u2.curr_user,
+                            //user_id: 1,
                             post_is_anonymous: checked,
                             post_title: title,
                             post_content: content_str,
-                            post_time: new Date(Date.now()) //idk if this is right XXXX
+                            post_time: undefined
                         };
                         console.log(newPost);
                         makePost(newPost);

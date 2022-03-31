@@ -21,6 +21,7 @@ function Home() {
     const getCurrentUser = () => {
         getCurrUser()
         .then((res) => {
+            console.log(res);
 
             /*
             console.log(res.data);

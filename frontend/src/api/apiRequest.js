@@ -237,6 +237,8 @@ async function getCurrUser() {
 
         console.log(data);
     return data;
+    //console.log(get("current_user"));
+    //return get("current_user");
 }
 
 /* misc helpers */

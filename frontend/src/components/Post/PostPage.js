@@ -70,6 +70,7 @@ function PostPage(props) {
     const handleAnonCheckChange = () => {
         setAnonCheck(!anonCheck);
     }
+    const [anon, setAnon] = React.useState(false);
 
     const handleSubmit = () => {
         var newComment = {
@@ -86,10 +87,11 @@ function PostPage(props) {
             //getAllComments();
         });
         */
-        setShowTestComment(true);
+        setAnon(anonCheck);
         setAnonCheck(false);
         setTestCommentText(commentText);
         setCommentText("");
+        setShowTestComment(true);
     }
 
     //redirects user to an error page, then reloads page to ensure that screen is not stuck on nothing 
@@ -163,7 +165,7 @@ function PostPage(props) {
                 <Card style = {{textAlign: "left"}}>
                     {testCommentText}
                     {
-                        anonCheck ? 
+                        anon ? 
                             <body>by Anonymous time ago</body>
                             :
                             <body>
