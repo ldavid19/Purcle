@@ -2,9 +2,12 @@ import { Nav } from "react-bootstrap";
 import { Navbar } from "react-bootstrap";
 import { NavDropdown } from "react-bootstrap";
 import { Form, FormControl, Button } from "react-bootstrap";
-import React from 'react';
 
-import { useState } from "react";
+import React, { useState, useEffect } from 'react';
+
+import { getRandPosts, getUser, updateUser, getCurrUser } from '../../api/apiRequest.js';
+import { formatUser, unformatUser } from '../../api/helper';
+
 import { Modal } from "react-bootstrap";
 
 import { InputBase, IconButton, TextField } from "@mui/material";
@@ -15,6 +18,8 @@ import Divider from '@mui/material/Divider';
 import MenuIcon from '@mui/icons-material/Menu';
 import DirectionsIcon from '@mui/icons-material/Directions';
 
+import Search from "./Search";
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -22,15 +27,43 @@ import {
   Link
 } from "react-router-dom";
 
+const defaultOptions = [];
+for (let i = 0; i < 10; i++) {
+  defaultOptions.push(`option ${i}`);
+  defaultOptions.push(`suggesstion ${i}`);
+  defaultOptions.push(`advice ${i}`);
+}
+
 function NavigationBar() {
 
   const [show, setShow] = useState(false);
+  const [uid, setUID] = useState(0);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const getLink = () => {
+    return "profile/" + uid;
+  }
+
+  useEffect(() => {
+    getCurrUser().then(res => {
+      console.log(res)
+      const curr = res.curr_user;
+      setUID(curr);
+    }).catch(err => console.error(`Error: ${err}`));
+}, []);
+
+  const [options, setOptions] = useState([]);
+  const onInputChange = (event) => {
+    setOptions(
+      defaultOptions.filter((option) => option.includes(event.target.value))
+    );
+  };
+
+
   return (
-    <Navbar bg="dark" variant="dark" sticky="top" style={{padding: "10px 25px"}}>
+    <Navbar bg="dark" variant="dark" sticky="top" style={{padding: "10px 25px", overflow: "visible", maxHeight:"60px"}}>
 
       <Navbar.Brand as={Link} to={"/"}>Purcle</Navbar.Brand>
       <Nav className="me-auto">
@@ -39,26 +72,11 @@ function NavigationBar() {
       </Nav>
 
 
-      <Paper
-        component="form"
-        size="small"
-        sx={{  display: 'flex', alignItems: 'center'}}
-      >
-        <InputBase
-          sx={{ ml: 1, flex: 1 }}
-          placeholder="Search"
-          inputProps={{ 'aria-label': 'search' }}
-          size="small"
-        />
-        <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
-          <SearchIcon />
-        </IconButton>
-
-      </Paper>
+      <Search options={options} onInputChange={onInputChange}/>
 
 
       <NavDropdown align="end" title="Profile" id="collasible-nav-dropdown" >
-        <NavDropdown.Item as={Link} to={"/profile"}>Profile</NavDropdown.Item>
+        <NavDropdown.Item as={Link} to={getLink()}>Profile</NavDropdown.Item>
         <NavDropdown.Item href="#action/3.1">Followed Users</NavDropdown.Item>
         <NavDropdown.Item href="#action/3.2">Followed Topics</NavDropdown.Item>
 

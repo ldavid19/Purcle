@@ -42,8 +42,13 @@ async function getNoID(type) {
 
 async function put(type, id, data, token) { //PUT request
     var ret = [];
-
+    console.log("token " + token)
     await axios.put('/api/' + type + '/' + id, data, {Authorization: 'Token ' + token})
+        .catch(err => {
+            if (err.status === 400) {
+                ret = {"ERROR": "ERROR"};
+            }
+        })
         .then((res) => {
             ret = res;
         });
@@ -190,14 +195,7 @@ async function getUser(id) {
 }
 
 async function getCurrUser() {
-    let data = [];
-
-    await get("current_user")
-        .then((res) => {
-            data = formatUser(res);
-        });
-
-    return data;
+    return get("current_user");
 }
 
 /* misc helpers */
@@ -230,7 +228,7 @@ async function downvote(id) {
 
 /* user helpers */
 async function updateUser(id, data, token) {
-    return put("profile", id, unformatUser(data), token);
+    return put("profile_update", id, unformatUser(data), token);
 }
 
 /* signup helpers */
@@ -241,7 +239,11 @@ async function postUser(data) {
 }
 
 /* authentication helpers */
-async function login(data) {
+async function login(username, password) {
+    const data = {
+        "username": username,
+        "password": password
+    }
     return post("auth", "login/", data);
 }
 
