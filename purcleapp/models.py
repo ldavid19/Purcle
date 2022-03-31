@@ -98,7 +98,7 @@ class Post(models.Model):       # created by Nicole
                                                                                 # happen, but in case it does), the Post's
                                                                                 # Topic is set to null
     post_type = models.IntegerField()   # 0 being a text post, 1 being a photo post
-    user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)   # if the UserProfile is deleted, so will the Post
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)   # if the UserProfile is deleted, so will the Post
     post_is_anonymous = models.BooleanField()
     post_title = models.CharField(max_length=100)
     post_content = models.CharField(max_length=500) # either the text field for a text post, or the photo for a photo post

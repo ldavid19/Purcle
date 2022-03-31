@@ -61,6 +61,17 @@ def profile_detail(request, pk):
         user_profile_serializer = UserProfileSerializer(userprofile) 
         return JsonResponse(user_profile_serializer.data)
 
+@api_view(['GET', 'POST', 'DELETE'])
+def profile_id(request, pk):
+    try:
+        userprofile = UserProfile.objects.get(pk=pk) 
+    except UserProfile.DoesNotExist: 
+        return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET': 
+        user_profile_serializer = UserProfileSerializer(userprofile) 
+        return JsonResponse(user_profile_serializer.data)
+
 @api_view(['PUT', 'PATCH'])
 #@permission_classes((IsAuthenticated, ))
 def profile_update(request, pk):

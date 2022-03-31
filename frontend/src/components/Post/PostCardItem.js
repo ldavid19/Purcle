@@ -18,8 +18,11 @@ function Anon(props) {
         );
     }
 
+    //add props.id to link to profile
     return (
-        <Link to="/profile">{props.user}</Link>
+        <Link to={{pathname: `/profile/${props.user_id}`, query:{id: props.user_id}}}>
+            {props.username}
+        </Link>
     );
 }
 
@@ -31,7 +34,7 @@ function PostCardTitle(props) {
             <h3 style={{fontSize:20}}> {props.title} </h3>
             <p style={{margin: 0}}>
                 {"by "}
-                < Anon user={props.user} anon={props.anon} />
+                < Anon username={props.username} anon={props.anon} user_id={props.user_id}/>
                 {" in "} 
                 <Link to="/profile">{props.topic}</Link>
                 {" " + getRelativeTime(props.date)}
@@ -146,7 +149,8 @@ function PostCardItem(props) {
                 <PostCardTitle 
                     title={props.post.title} 
                     topic={props.post.topic} 
-                    user={props.post.user} 
+                    username={props.username} 
+                    user_id={props.post.user}
                     anon={props.post.anon}
                     date={props.post.date}
                     id={props.post.id}
