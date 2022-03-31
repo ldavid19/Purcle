@@ -265,6 +265,27 @@ async function login(username, password) {
     return post("auth", "login/", data);
 }
 
+async function logout(token) {
+    const data = {};
+
+    var ret = [];
+
+    await axios.post('/api/auth/logout/', data, {headers:{Authorization: "Token " + token}})
+        .then(res => {
+            if (res.status === 400) {
+                console.log(res.data);
+                ret = res.data;
+            } else {
+                console.log(res);
+                ret = res.data;
+            }
+        }
+        );
+
+    console.log("logout done\n");
+    return ret;
+}
+
 // async function postProfile(data) {
 //     return post("profile_detail", 0, data);
 // }
@@ -272,5 +293,5 @@ async function login(username, password) {
 export {
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline,     //GET post functions
     getUser, getScore, getAllTopics, getCurrUser,           //GET misc functions
-    upvote, downvote, updateUser, postUser, login,                //POST misc functions
+    upvote, downvote, updateUser, postUser, login, logout,               //POST misc functions
 };
