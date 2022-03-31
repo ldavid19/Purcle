@@ -139,7 +139,7 @@ function NewPost(props) {
     const getTopics = () => {
         getAllTopics()
             .then((res) => {
-                let data = res.data;
+                let data = res;
 
                 let topic_list = [];
                 

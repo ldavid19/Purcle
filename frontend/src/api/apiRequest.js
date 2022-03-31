@@ -10,12 +10,15 @@ axios.defaults.xsrfCookieName = "csrftoken";
 async function get(type, query = "") { //GET request
     var data = [];
 
-    if (query != "") {
+    console.log("query: " + query)
+
+    if (query !== "") {
+        console.log("what");
         query = "/" + query;
     }
 
     const url = '/api/' + type + query;
-    //console.log(url);
+    console.log(url);
 
     await axios.get(url)
         .then((res) => {
@@ -144,7 +147,7 @@ async function getPostsFromTopic(topic) {
 }
 
 async function getTimeline(userID) {
-    console.log("what the fuck")
+    console.log("what the fuck: " + userID)
     let user, topics;
     let posts = [];
     
@@ -155,12 +158,18 @@ async function getTimeline(userID) {
         .catch(err => console.error(`Error: ${err}`));
 
     if (!user) {
+        console.log("user not found");
         return null;
     }
 
     topics = user.topics;
     console.log(user)
     console.log(topics)
+
+    if (!topics) {
+        console.log("user does not follow any topics!");
+        return null;
+    }
 
     for (let topic in topics) {
         let postsFromTopic = [];

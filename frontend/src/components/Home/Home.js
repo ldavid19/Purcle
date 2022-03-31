@@ -10,13 +10,28 @@ import { getRandPosts, getAllPosts, getPostsFromTopic, getTimeline, getUser, get
 function Home() {
     const [posts, setPosts] = useState([]);
     const [user, setUser] = useState({});
-    const [uid, setUID] = useState(4); //current user id
+    const [uid, setUID] = useState(0); //current user id
 
     useEffect(() => {
         //getPosts();
-        getCurrentUser();
-        getCurrentTimeline();
+        /*getCurrentUser().then((res) => {
+            getCurrentTimeline();
+        });
+        */
+        startup();
     }, []);
+
+    const startup = () => {
+        getCurrUser()
+        .then((res) => {
+            let id = res.curr_user;
+
+            getTimeline(id)
+            .then((res) => {
+                setPosts(res);
+            })
+        })
+    }
 
     const getCurrentUser = () => {
         getCurrUser()
@@ -33,14 +48,16 @@ function Home() {
             */ 
             //console.log("getting current user: ")
             //console.log(res);
-            setUser(res);
+            let id = res.curr_user;
+            console.log(id);
+            setUID(id);
         })
         .catch(err => console.error(`Error: ${err}`));
 
     }
 
     const getCurrentTimeline = () => {
-        getTimeline(user.id) //change this to currently logged in user
+        getTimeline(uid) //change this to currently logged in user
         .then((res) => {
             /*
             var post_list = [];
@@ -54,6 +71,7 @@ function Home() {
             */
             //console.log("getting timeline: ")
             //console.log(res);
+            console.log(res);
             setPosts(res);
         })
         .catch(err => console.error(`Error: ${err}`));
