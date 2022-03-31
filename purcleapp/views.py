@@ -25,6 +25,7 @@ from knox.views import LoginView as KnoxLoginView
 from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from django.contrib.auth import login
+from django.contrib.auth import logout
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
@@ -61,20 +62,19 @@ def profile_detail(request, pk):
         return JsonResponse(user_profile_serializer.data)
 
 @api_view(['PUT', 'PATCH'])
-@permission_classes((IsAuthenticated, ))
+#@permission_classes((IsAuthenticated, ))
 def profile_update(request, pk):
     try: 
         userprofile = UserProfile.objects.get(user=pk) 
     except UserProfile.DoesNotExist: 
         return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'PUT':
-        print("this is a put request")
-        print(request)
+    if request.method == 'PATCH':
+        
         user_data = JSONParser().parse(request)
-        print(user_data)
-        print('--------')
-        user_serializer = UserProfileSerializer(userprofile, data=user_data) 
+        #print(user_data)
+
+        user_serializer = UserProfileSerializer(userprofile, data=user_data, partial=True) 
         if user_serializer.is_valid(): 
             user_serializer.save() 
             return JsonResponse(user_serializer.data)
@@ -155,7 +155,6 @@ class LoginAPI(KnoxLoginView):
         user = serializer.validated_data['user']
         login(request, user)
         return super(LoginAPI, self).post(request, format=None)
-
 
 def curr_user(request):
     current_user = request.user
