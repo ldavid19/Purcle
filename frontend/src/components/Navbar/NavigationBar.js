@@ -30,13 +30,6 @@ import {
   Link
 } from "react-router-dom";
 
-const defaultOptions = [];
-for (let i = 0; i < 10; i++) {
-  defaultOptions.push(`option ${i}`);
-  defaultOptions.push(`suggesstion ${i}`);
-  defaultOptions.push(`advice ${i}`);
-}
-
 function NavigationBar() {
 
   const [show, setShow] = useState(false);
@@ -76,6 +69,7 @@ function NavigationBar() {
         getTopics();
     }, []);
 
+<<<<<<< HEAD
   const handleLogout = async () => {
     await logout(localStorage.getItem("token"));
     localStorage.removeItem("token");
@@ -96,9 +90,11 @@ function NavigationBar() {
 }, []);
 
   const [options, setOptions] = useState([]);
+=======
+>>>>>>> 02649acf76972310e9bdd292c70815a7c1585934
   const onInputChange = (event) => {
     setOptions(
-      defaultOptions.filter((option) => option.includes(event.target.value))
+      topics.filter((option) => option.includes(event.target.value))
     );
   };
 
