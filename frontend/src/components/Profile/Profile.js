@@ -16,7 +16,6 @@ axios.defaults.xsrfCookieName = "csrftoken";
 */
 
 function ConfirmationModal(props) {
-    console.log("poop");
 
     return (
         <>

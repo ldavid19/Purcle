@@ -42,7 +42,7 @@ async function getNoID(type) {
 
 async function put(type, id, data, token) { //PUT request
     var ret = [];
-
+    console.log("token " + token)
     await axios.put('/api/' + type + '/' + id, data, {Authorization: 'Token ' + token})
         .catch(err => {
             if (err.status === 400) {
