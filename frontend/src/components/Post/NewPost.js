@@ -5,7 +5,11 @@ import Creatable from 'react-select/creatable';
 import { Modal, Col, Row, Image } from "react-bootstrap";
 import { Button } from '@mui/material';
 
-import { makePost, databaseLength, getAllTopics } from "../../api/apiRequest.js";
+import { makePost, getAllTopics, makeTopic, getTopic, getCurrUser } from "../../api/apiRequest.js";
+import axios from 'axios'
+
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
 
 function errorMessage(title, type, text, topic) {
     let message = "";
@@ -40,6 +44,8 @@ function NewPost(props) {
 
     const [show, setShow] = useState(false);
 
+    const [newTopic, setNewTopic] = useState(false);
+
     const [error, setError] = React.useState("");
 
     const handleSubmit = () => {
@@ -51,26 +57,61 @@ function NewPost(props) {
                 content = "";
             }
 
-            /*
-            var newPost = {
-                post_id: 0, //fix this to not be zero lol
-                post_topic: topic,
-                post_type: 0,
-                user_id: "user",
-                post_is_anonymous: checked,
-                post_title: title,
-                post_content: content,
-                post_time: new Date(Date.now()),
-                post_score: 0
-            };
+            var type_int = type.localeCompare("Image") === 0 ? 1 : 0;
+            var content_str = type.localeCompare("Image") === 0 ? image : text;
 
-            /*
-            makePost(newPost)
-            .then((res) => {
-                props.getPosts();
-                //getAllPosts();
-            });
-            */
+            var newPost;
+
+            if (newTopic) {
+                getCurrUser()
+                    .then((res_u1) => {
+                        console.log(res_u1);
+                        console.log("trying to create a new topic");
+                        var createdTopic = {
+                            topic_id: topic.label,
+                            topic_num_followers: 0
+                        };
+                        makeTopic(createdTopic)
+                            .then((res_t) => {
+                                newPost = {
+                                    id: undefined,
+                                    post_topic: topic.label,
+                                    post_type: type_int,
+                                    user_id: res_u1.curr_user,
+                                    //user_id: 1,
+                                    post_is_anonymous: checked,
+                                    post_title: title,
+                                    post_content: content_str,
+                                    post_time: undefined
+                                };
+                                console.log(newPost);
+                                makePost(newPost);
+                                //.catch(err => console.error(`Error: ${err}`));
+                            })
+                            .catch(err => console.error(`Error: ${err}`));
+                    })
+                    .catch(err => console.error(`Error: ${err}`));
+            } else {
+                getCurrUser()
+                    .then((res_u2) => {
+                        console.log(res_u2);
+                        newPost = {
+                            id: undefined,
+                            post_topic: topic.label,
+                            post_type: type_int,
+                            user_id: res_u2.curr_user,
+                            //user_id: 1,
+                            post_is_anonymous: checked,
+                            post_title: title,
+                            post_content: content_str,
+                            post_time: undefined
+                        };
+                        console.log(newPost);
+                        makePost(newPost);
+                        //.catch(err => console.error(`Error: ${err}`));
+                    })
+                    .catch(err => console.error(`Error: ${err}`));
+            }
 
             setShow(false);
             setTitle("");
@@ -132,6 +173,9 @@ function NewPost(props) {
         setTopic(ev);
         if (ev.__isNew__ === true) {
             ev.value = 0;
+            setNewTopic(true);
+        } else {
+            setNewTopic(false);
         }
     }
 
@@ -140,28 +184,26 @@ function NewPost(props) {
         getAllTopics()
             .then((res) => {
                 let data = res;
+                console.log(res);
 
                 let topic_list = [];
                 
-                data.map((topic) => {
+                data.map((t) => {
                     let newTopic = {
-                        label: topic.topic_id,
-                        value: topic.topic_num_followers
+                        label: t.topic_id,
+                        value: t.topic_num_followers
                     }
 
                     topic_list.push(newTopic);
                 })
-
-                //console.log(topic_list)
-
-                //console.log(res.data);
                 setTopics(topic_list);
-                //console.log(topics);
+                console.log(topics);
             })
             .catch(err => console.error(`Error: ${err}`));
     }
 
     useEffect(() => {
+        console.log("useEffect runs");
         getTopics();
     }, []);
 
