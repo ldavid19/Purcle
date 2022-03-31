@@ -99,6 +99,8 @@ function Profile(props) {
         bio: "",
         follower_count: 0,
         following_count: 0,
+        followers: [],
+        following: [],
         private: true,
         first: "",
         last: "",
@@ -112,6 +114,8 @@ function Profile(props) {
         bio: "i hate ap bio",
         follower_count: 6,
         following_count: 9,
+        followers: [],
+        following: [],
         private: true,
         first: "what",
         last: "thefuc",
@@ -151,7 +155,6 @@ function Profile(props) {
         console.log(event.target.name);
         console.log(event.target.value);
         setTempUser({
-            ...user,
             [event.target.name]: event.target.value,
         });
     }
@@ -214,9 +217,7 @@ function Profile(props) {
         }).catch(err => console.error(`Error: ${err}`));
     }
 
-    const getUserApi = () => {
-        console.log("help")
-        
+    const getUserApi = () => {        
         
         getUser(id)
             .then(res => {
@@ -249,8 +250,11 @@ function Profile(props) {
 
         console.log("put user----------");
         console.log(tempUser);
+        console.log(localStorage.getItem('token'));
         console.log("------------------");
+        
         updateUser(id, tempUser, localStorage.getItem('token')).then(res => {
+            console.log("response: " + res)
             const usr = formatUser(res.data);
             setUser(usr);
         })
