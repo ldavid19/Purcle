@@ -165,6 +165,25 @@ async function getPostsFromTopic(topic) {
     return data;
 }
 
+
+async function getPostsFromUser(user_id) {
+    let data = [];
+
+    await get("user_posts", user_id)
+        .then((res) => {
+            console.log(res);
+            let arr = Array.from(res);
+
+            arr.map((post) => {
+                console.log("pushed!")
+                data.push(formatPost(post))
+            });
+            console.log(data);
+        });
+
+    return data;
+}
+
 async function getTimeline(userID) {
     console.log("getting timeline: " + userID)
     let user, topics;
@@ -219,7 +238,7 @@ async function getUser(id) {
             console.log(res);
             data = formatUser(res);
         })
-
+    console.log("getuser" + data);
     return data;
 }
 
@@ -342,7 +361,14 @@ async function logout(token) {
 // }
 
 export {
+<<<<<<< HEAD
+    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, getPostsFromUser,     //GET post functions
+    getUser, getScore, getAllTopics, getCurrUser,           //GET misc functions
+    upvote, downvote, updateUser, postUser, login, logout,               //POST misc functions
+};
+=======
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline,     //GET post functions
     getUser, getScore, getAllTopics, getCurrUser, getTopicInfo, getTopic, getUsers,          //GET misc functions
     upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout,             //POST misc functions
 };  //always leave a comma on the last entry
+>>>>>>> dae2b415ea2560e0f5be5318f174985f8cf88dab
