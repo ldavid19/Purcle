@@ -67,34 +67,6 @@ function ProfileSetup(props) {
     //     }
     // }
 
-    const getUserApi = () => {        
-        
-        getUser(id)
-            .then(res => {
-                /*
-                const usr = formatUser(res.data);
-                setUser(usr);
-                console.log(usr);
-                */
-    
-                setUser(res);
-                console.log("set user:" + user);
-
-            })
-            .catch(err => console.error(`Error: ${err}`));
-
-
-        /*
-        axios.get('/api/profile/1')
-            .then(res => {
-                const usr = formatUser(res.data);
-                console.log(usr);
-                console.log(formatUser(usr))
-                setUser(usr);
-            })
-        */
-
-    }
     
     const setUserApi = (id) => {
         //change testUser to updated user object
