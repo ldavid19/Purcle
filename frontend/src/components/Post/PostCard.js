@@ -1,13 +1,16 @@
-import { ListGroup, Spinner, Col } from 'react-bootstrap';
+import { ListGroup } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
-import PostCardItem from './PostCardItem';
 
 import LinearProgress from '@mui/material/LinearProgress';
+
+import PostCardItem from './PostCardItem';
+
+import { getUser } from '../../api/apiRequest';
+
 
 function PostCard(props) {
     const [list, setList] = useState([]);
 
-    //console.log(props.postList)
     /* posts are formatted this way
     post = {
         id: post.post_id,
@@ -27,17 +30,88 @@ function PostCard(props) {
         }
 
         var posts = Array.from(props.postList);
+        var postcards = [];
+        //var users = [];
         //console.log(posts);
 
+        addUsernames(posts).then((res) => {
+            setList(res);
+        })
+
+        /*
         var postcards = posts.map((post) => (
             <PostCardItem 
                 key={post.id}
                 post={post}
+                userLookup={userLookup}
             />
         ));
+        */
 
-        setList(postcards);
+        //setList(postcards);
     }, [props.postList])
+
+    async function addUsernames(posts) {
+        let postcards = [];
+        let users = {};
+
+        for (let i in posts) {
+            let post = posts[i];
+
+            let { username, users } = await userLookup(post.user, users);
+            //console.log(username);
+            //console.log(users);
+
+            postcards.push(
+                <PostCardItem 
+                    key={post.id}
+                    post={post}
+                    username={username}
+                />
+            )
+        }
+
+        return postcards;
+    }
+
+    async function userLookup(id, users) {
+        //console.log("looking up user: " + id)
+        if (users && id in users) {
+            return {
+                username: users[id], 
+                users: users
+            }
+        }
+
+        if (!users) {
+            users = {};
+        }
+
+        let username;
+
+        console.log("googling user: " + id);
+
+        await getUser(id)
+            .then((res) => {
+                username = res.username;
+                //console.log(res);
+
+                /*
+                let userList = loadedUsers;
+                userList[id] = user.username;
+
+                setLoadedUsers(userList);
+                */
+                users[id] = username;
+            })
+
+        //console.log(username);
+
+        return {
+            username: username, 
+            users: users
+        };
+    }
 
     //if postList is null means cannot be retrieved
     if (!props.postList) {

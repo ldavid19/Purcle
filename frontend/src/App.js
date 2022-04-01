@@ -6,6 +6,7 @@ import SignUp from './components/Signup/SignUp';
 import Login from './components/Login/Login';
 import NavigationBar from './components/Navbar/NavigationBar';
 import Profile from './components/Profile/Profile.js'
+import Topic from './components/Home/Topic';
 import PostPage from './components/Post/PostPage';
 import ProfileSetup from './components/Profile/ProfileSetup';
 import ErrorPage from './components/ErrorPage';
@@ -27,9 +28,10 @@ function App() {
           {/* Put pages with navbar here */}
           <Route path="/" element={<LayoutsWithNavbar />}>
             <Route path="/" element={<Home/>}/>
-            <Route path="/following" element={<Home/>}/>
+            <Route path="/topic" element={<Topic />}/>
             <Route path="/messages" element={<Home/>}/>
             <Route path="/profile/:id" element={<Profile />}/>
+            <Route path="/topic/:id" element={<Topic />}/>
             <Route path="/post/:id" element={<PostPage />}/>
             <Route path="*" element={<ErrorPage />}/>
             <Route path="/*/*" element={<ErrorPage />}/>

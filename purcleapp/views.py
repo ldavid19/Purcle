@@ -61,6 +61,17 @@ def profile_detail(request, pk):
         user_profile_serializer = UserProfileSerializer(userprofile) 
         return JsonResponse(user_profile_serializer.data)
 
+@api_view(['GET', 'POST', 'DELETE'])
+def profile_id(request, pk):
+    try:
+        userprofile = UserProfile.objects.get(pk=pk) 
+    except UserProfile.DoesNotExist: 
+        return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET': 
+        user_profile_serializer = UserProfileSerializer(userprofile) 
+        return JsonResponse(user_profile_serializer.data)
+
 @api_view(['PUT', 'PATCH'])
 #@permission_classes((IsAuthenticated, ))
 def profile_update(request, pk):
@@ -127,6 +138,11 @@ def posts_list(request, pk=""):
         else:
             post_list = Post.objects.filter(post_topic=pk)
 
+        print(post_list)
+        if not post_list:
+            return JsonResponse({'message': 'The post does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+
         posts_serializer = PostSerializer(post_list, many=True)
         return JsonResponse(posts_serializer.data, safe=False)
 #  ``   # GET list of posts, POST a new post, DELETE all posts
@@ -163,6 +179,8 @@ class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
+        print("from views.py LoginAPI post():")
+        print(request.data)
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
@@ -171,6 +189,8 @@ class LoginAPI(KnoxLoginView):
 
 def curr_user(request):
     current_user = request.user
+    print("from views.py LoginAPI curr_user():")
+    print(current_user.id)
     return JsonResponse({'curr_user': current_user.id})
 # class RegisterAPI(generics.GenericAPIView):
 #     serializer_class = RegisterSerializer
@@ -213,25 +233,29 @@ def topic_list(request):
     if request.method == 'GET':
         topics = Topic.objects.all()
 
-        # topic_id = request.GET.get('topic_id', None)
-        # if topic_id is not None:
-        #     topics = topics.filter(topic_id__icontains=topic_id)
-
         topics_serializer = TopicSerializer(topics, many=True)
         return JsonResponse(topics_serializer.data, safe=False)
 
+    elif request.method == 'POST':
+        topic_data = JSONParser().parse(request)
+        topic_serializer = TopicSerializer(data=topic_data)
+        if topic_serializer.is_valid():
+            topic_serializer.save()
+            return JsonResponse(topic_serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(topic_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
 def topic_detail(request, pk):
-    print(request)
-    print(pk)
+    print("getting topic: " + pk)
+
     try: 
         topic = Topic.objects.get(pk=pk) 
     except Topic.DoesNotExist: 
         return JsonResponse({'message': 'The topic does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET': 
-        topic_serializer = Topic(topic) 
-        return JsonResponse(topic_serializer.data)
+        topic_serializer = TopicSerializer(topic) 
+        return JsonResponse(topic_serializer.data, safe=False)
 
     elif request.method == 'PUT':
         print("this is a put request for a topic")
@@ -243,3 +267,41 @@ def topic_detail(request, pk):
             return JsonResponse(topic_serializer.data)
         print(topic_serializer.errors)
         return JsonResponse(topic_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST', 'DELETE', 'PUT'])
+def user_list(request):
+    if request.method == 'GET':
+        users = UserProfile.objects.all()
+
+
+        user_list_serializer = UserListSerializer(users, many=True)
+        return JsonResponse(user_list_serializer.data, safe=False)
+@api_view(['GET', 'POST', 'DELETE', 'PUT'])
+def post_list(request):
+    # if request.method == 'GET':
+    #     topics = Topic.objects.all()
+
+    #     topics_serializer = TopicSerializer(topics, many=True)
+    #     return JsonResponse(topics_serializer.data, safe=False)
+
+    if request.method == 'POST':
+        post_data = JSONParser().parse(request)
+        print("from views.py post_list POST:")
+        print(post_data)
+        post_serializer = PostSerializer(data=post_data)
+        if post_serializer.is_valid():
+            post_serializer.save()
+            return JsonResponse(post_serializer.data)
+        message = ""
+        for error in post_serializer.errors:
+            message = post_serializer.errors[error][0].title()
+        return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
+
+    # if request.method == 'POST':
+    #     post_data = JSONParser().parse(request)
+    #     post_serializer = PostSerializer(data=post_data)
+    #     if post_serializer.is_valid():
+    #         post_serializer.save()
+    #         return JsonResponse(post_serializer.data, status=status.HTTP_201_CREATED)
+    #     return JsonResponse(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

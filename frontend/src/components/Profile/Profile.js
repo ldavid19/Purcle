@@ -1,11 +1,16 @@
-import { Container, Row } from 'react-bootstrap';
+import { Container, Row, Modal } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
-import PostCard from '../Post/PostCard';
-import { Modal } from "react-bootstrap";
-import { Button } from '@mui/material';
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
+import { Button } from '@mui/material';
+
+<<<<<<< HEAD
 import { getRandPosts, getPostsFromUser, getUser, updateUser, getCurrUser } from '../../api/apiRequest.js';
+=======
+import PostCard from '../Post/PostCard';
+
+import { getRandPosts, getUser, updateUser, getCurrUser, logout } from '../../api/apiRequest.js';
+>>>>>>> dae2b415ea2560e0f5be5318f174985f8cf88dab
 import { formatUser, unformatUser } from '../../api/helper';
 
 /*
@@ -16,6 +21,12 @@ axios.defaults.xsrfCookieName = "csrftoken";
 */
 
 function ConfirmationModal(props) {
+    const handleLogout = async () => {
+        await logout(localStorage.getItem("token"));
+        localStorage.removeItem("token");
+        console.log(localStorage.getItem("token"));
+        window.location.href = "/login";
+    }
 
     return (
         <>
@@ -28,7 +39,7 @@ function ConfirmationModal(props) {
                     <Button variant="secondary" onClick={props.handleClose}>
                         No
                     </Button>
-                    <Button variant="primary" onClick={props.handleDelete} color="error">
+                    <Button variant="primary" onClick={handleLogout} color="error">
                         Yes
                     </Button>
                 </Modal.Footer>
@@ -75,10 +86,6 @@ function UpdateProfileModal(props) {
     )
 }
 
-function deleteProfile() {
-    console.log("deleteeee");
-}
-
 function CloseConfirmationModal() {
 
 }
@@ -89,7 +96,8 @@ function Profile(props) {
     placeholder = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
 
 
-    const { id } = useParams()
+    const { id } = useParams();
+    const navigate = useNavigate();
 
     const nullUser = {
         username: "User not really found",
@@ -186,15 +194,11 @@ function Profile(props) {
             .catch(err => console.error(`Error: ${err}`));
     }
 
-    /*
-    const getNewUser = () => {
-        getUser()
-            .then((res) => {
-                setUser(res);
-            })
-            .catch(err => console.error(`Error: ${err}`));
+    //redirects user to an error page, then reloads page to ensure that screen is not stuck on nothing 
+    const errorHandler = (e) => {
+        navigate('/error', { replace: true });
+        window.location.reload();
     }
-    */
 
     /* handler helper functions */
     const handleOpenConfirmation = () => {
@@ -204,7 +208,6 @@ function Profile(props) {
     const handleCloseConfirmation = () => {
         setShowConfirmation(false);
     }
-
     const handleShow = () => {
         setShow(true);
     }
@@ -221,8 +224,8 @@ function Profile(props) {
         }).catch(err => console.error(`Error: ${err}`));
     }
 
-    const getUserApi = () => {        
-        
+    const getUserApi = () => {
+
         getUser(id)
             .then(res => {
                 /*
@@ -256,7 +259,7 @@ function Profile(props) {
         console.log(tempUser);
         console.log(localStorage.getItem('token'));
         console.log("------------------");
-        
+
         updateUser(id, tempUser, localStorage.getItem('token')).then(res => {
             console.log("response: " + res)
             const usr = formatUser(res.data);
@@ -324,7 +327,7 @@ function Profile(props) {
                     <div className="btn #64b5f6 blue darken-1">
                         {update && <span onClick={handleShow}>Update Profile</span>}
 
-                        <UpdateProfileModal 
+                        <UpdateProfileModal
                             show={show}
                             handleClose={handleClose}
                             handleShowConfirmation={handleOpenConfirmation}
@@ -332,9 +335,9 @@ function Profile(props) {
                             handleUpdateUser={handleUpdateUser}
                             error={error}
                         />
-                        <ConfirmationModal 
-                            show={showConfirmation} 
-                            handleClose={handleCloseConfirmation} 
+                        <ConfirmationModal
+                            show={showConfirmation}
+                            handleClose={handleCloseConfirmation}
                         />
 
                         {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
@@ -361,9 +364,6 @@ function Profile(props) {
                        )
                    })
                } */}
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture" />
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture" />
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture" />
                 {/* <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
                 <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
