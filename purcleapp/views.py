@@ -100,6 +100,7 @@ def profile_update(request, pk):
 def user_detail(request):
     if request.method == 'POST':
         user_data = JSONParser().parse(request)
+        print("inside user_detail")
         print(user_data)
         user_serializer = UserSerializer(data=user_data)
         if user_serializer.is_valid():
@@ -119,9 +120,10 @@ def user_detail(request):
             # else:
             #     print("user profile serializer failed")
             # UserProfile.objects.create(profile_name=user_data['username'], user_email=user_data['email'], user_id=user)
-
+            print("valid!")
             return JsonResponse(user_serializer.data)
         #print(user_serializer.errors)
+        print("invalid")
         message = ""
         for error in user_serializer.errors:
             message = user_serializer.errors[error][0].title()
@@ -186,6 +188,18 @@ class LoginAPI(KnoxLoginView):
         user = serializer.validated_data['user']
         login(request, user)
         return super(LoginAPI, self).post(request, format=None)
+
+@api_view(['GET', 'POST', 'DELETE'])
+def convert(request, pk=""):
+    if request.method == 'GET':
+        #userprofile = UserProfile.objects.filter(user_id=pk)
+        userprofile = UserProfile.objects.values_list('id', flat=True).get(user_id=pk)
+        print("\nquery:\n")
+        print(userprofile)
+        print("\n")
+        return JsonResponse({'curr_userprofile': userprofile})
+        #userprofile_serializer = UserProfileSerializer(userprofile)
+        #return JsonResponse(userprofile_serializer.data, safe=False)
 
 def curr_user(request):
     current_user = request.user
@@ -278,13 +292,9 @@ def user_list(request):
         user_list_serializer = UserListSerializer(users, many=True)
         return JsonResponse(user_list_serializer.data, safe=False)
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
+
 def post_list(request):
-    # if request.method == 'GET':
-    #     topics = Topic.objects.all()
-
-    #     topics_serializer = TopicSerializer(topics, many=True)
-    #     return JsonResponse(topics_serializer.data, safe=False)
-
+    
     if request.method == 'POST':
         post_data = JSONParser().parse(request)
         print("from views.py post_list POST:")
@@ -298,10 +308,52 @@ def post_list(request):
             message = post_serializer.errors[error][0].title()
         return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
 
-    # if request.method == 'POST':
-    #     post_data = JSONParser().parse(request)
-    #     post_serializer = PostSerializer(data=post_data)
-    #     if post_serializer.is_valid():
-    #         post_serializer.save()
-    #         return JsonResponse(post_serializer.data, status=status.HTTP_201_CREATED)
-    #     return JsonResponse(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# returns multiple comments based on post, returns all comments
+@api_view(['GET', 'POST', 'DELETE'])
+def post_comments_list(request, pk=""):
+    if request.method == 'GET':
+        print("getting comments from post: " + pk)
+
+        comments_list = Comment.objects.filter(post_id=pk)
+
+        comments_serializer = CommentSerializer(comments_list, many=True)
+        return JsonResponse(comments_serializer.data, safe=False)
+#  ``   # GET list of comments, POST a new comment, DELETE all comments
+
+# returns multiple comments based on user, returns all comments
+@api_view(['GET', 'POST', 'DELETE'])
+def user_comments_list(request, pk=""):
+    if request.method == 'GET':
+        print("getting comments from user: " + pk)
+        comments_list = Comment.objects.filter(user_id=pk)
+
+        comments_serializer = CommentSerializer(comments_list, many=True)
+        return JsonResponse(comments_serializer.data, safe=False)
+#  ``   # GET list of comments, POST a new comment, DELETE all comments
+
+# returns multiple comments based on user, returns all comments
+# only returns non-anonymous comments
+@api_view(['GET', 'POST', 'DELETE'])
+def user_nonanon_comments_list(request, pk=""):
+    if request.method == 'GET':
+        print("getting only non-anonymous comments from user: " + pk)
+        comments_list = Comment.objects.filter(user_id=pk, comment_is_anonymous=False)
+
+        comments_serializer = CommentSerializer(comments_list, many=True)
+        return JsonResponse(comments_serializer.data, safe=False)
+#  ``   # GET list of comments, POST a new comment, DELETE all comments
+
+def comment_detail(request):
+    
+    if request.method == 'POST':
+        comment_data = JSONParser().parse(request)
+        print("from views.py comment_list POST:")
+        print(comment_data)
+        comment_serializer = CommentSerializer(data=comment_data)
+        if comment_serializer.is_valid():
+            comment_serializer.save()
+            return JsonResponse(comment_serializer.data)
+        message = ""
+        for error in comment_serializer.errors:
+            message = comment_serializer.errors[error][0].title()
+        return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
