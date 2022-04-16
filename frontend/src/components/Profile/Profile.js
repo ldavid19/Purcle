@@ -4,13 +4,9 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import { Button } from '@mui/material';
 
-<<<<<<< HEAD
-import { getRandPosts, getPostsFromUser, getUser, updateUser, getCurrUser } from '../../api/apiRequest.js';
-=======
 import PostCard from '../Post/PostCard';
 
 import { getRandPosts, getUser, updateUser, getCurrUser, logout } from '../../api/apiRequest.js';
->>>>>>> dae2b415ea2560e0f5be5318f174985f8cf88dab
 import { formatUser, unformatUser } from '../../api/helper';
 
 /*
