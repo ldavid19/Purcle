@@ -168,6 +168,7 @@ function NavigationBar() {
 
       <NavDropdown align="end" title="Profile" id="collasible-nav-dropdown" >
         <NavDropdown.Item as={Link} to={getLink()}>Profile</NavDropdown.Item>
+        <NavDropdown.Item as={Link} to={'/inbox'}>Inbox</NavDropdown.Item>
         <NavDropdown.Item href="#action/3.1">Followed Users</NavDropdown.Item>
         <NavDropdown.Item href="#action/3.2">Followed Topics</NavDropdown.Item>
 

@@ -66,6 +66,8 @@ async function post(type, id, data) { //POST request
 
     if (id != "") {
         type = type + "/";
+    } else {
+        id = id + "/"
     }
 
     console.log("post: /api/" + type + id);
@@ -325,6 +327,19 @@ async function postUser(data) {
     return ret;
 }
 
+
+/* DM helpers */
+
+async function postThread(data) {
+    const ret = post("create-thread",'', data);
+    return ret;
+}
+
+async function getInbox() {
+    const ret = get("inbox");
+    return ret;
+}
+
 /* authentication helpers */
 async function login(username, password) {
     const data = {
@@ -361,14 +376,7 @@ async function logout(token) {
 // }
 
 export {
-<<<<<<< HEAD
-    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, getPostsFromUser,     //GET post functions
-    getUser, getScore, getAllTopics, getCurrUser,           //GET misc functions
-    upvote, downvote, updateUser, postUser, login, logout,               //POST misc functions
-};
-=======
-    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline,     //GET post functions
+    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, getInbox,     //GET post functions
     getUser, getScore, getAllTopics, getCurrUser, getTopicInfo, getTopic, getUsers,          //GET misc functions
-    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout,             //POST misc functions
+    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout, postThread            //POST misc functions
 };  //always leave a comma on the last entry
->>>>>>> dae2b415ea2560e0f5be5318f174985f8cf88dab
