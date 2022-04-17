@@ -340,6 +340,16 @@ async function getInbox() {
     return ret;
 }
 
+async function getContext(id) {
+    const ret = get("inbox", id);
+    return ret;
+}
+
+async function postMessage(receiver, message) {
+    const ret = post("create-message", receiver, message);
+    return ret;
+}
+
 /* authentication helpers */
 async function login(username, password) {
     const data = {
@@ -376,7 +386,7 @@ async function logout(token) {
 // }
 
 export {
-    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, getInbox,     //GET post functions
+    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, getInbox, getContext,     //GET post functions
     getUser, getScore, getAllTopics, getCurrUser, getTopicInfo, getTopic, getUsers,          //GET misc functions
-    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout, postThread            //POST misc functions
+    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout, postThread, postMessage            //POST misc functions
 };  //always leave a comma on the last entry

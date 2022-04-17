@@ -41,7 +41,8 @@ function Inbox() {
         let threads = await getInbox();
 
         threads.forEach(thread => {
-            arr.push(<ThreadItem receiver={thread.receivername}/>)
+
+            arr.push(<ThreadItem id={thread.id} sendername={thread.username} receivername={thread.receivername}/>)
         })
         return arr;
 

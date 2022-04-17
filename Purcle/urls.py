@@ -68,11 +68,12 @@ urlpatterns = [
 
     # DM paths
     path('inbox/', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^inbox/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
     path('api/inbox/', views.ListThreads.as_view(), name='inbox'),
 
     path('api/create-thread/', views.CreateThread.as_view(), name='create-thread'),
 
     re_path(r'^api/inbox/(?P<pk>[0-9]+)$', views.ThreadView.as_view(), name='thread'),
 
-    re_path(r'^api/profile/(?P<pk>[0-9]+)$/create-message', views.CreateMessage.as_view(), name='create-message'),
+    re_path(r'^api/create-message/(?P<pk>[0-9]+)$', views.CreateMessage.as_view(), name='create-message'),
 ]

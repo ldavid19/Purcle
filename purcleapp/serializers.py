@@ -107,6 +107,12 @@ class ThreadSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class MessageSerializer(serializers.ModelSerializer):
+
+    def get_username(self, obj):
+        return obj.sender_user.username
+
+    sender = serializers.SerializerMethodField("get_username")
+
     class Meta:
         model = MessageModel
         fields = '__all__'

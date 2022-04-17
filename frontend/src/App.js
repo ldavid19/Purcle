@@ -13,6 +13,7 @@ import ErrorPage from './components/ErrorPage';
 
 
 import Inbox from './components/Messaging/Inbox';
+import ThreadView from './components/Messaging/ThreadView'
 
 import {
   BrowserRouter as Router,
@@ -37,6 +38,7 @@ function App() {
             <Route path="/topic/:id" element={<Topic />}/>
             <Route path="/post/:id" element={<PostPage />}/>
             <Route path="/inbox" element={<Inbox />}/>
+            <Route path="/inbox/:id" element={<ThreadView />}/>
             <Route path="*" element={<ErrorPage />}/>
             <Route path="/*/*" element={<ErrorPage />}/>
           </Route>

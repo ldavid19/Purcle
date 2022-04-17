@@ -378,11 +378,11 @@ class CreateMessage(View):
         else:
             receiver = thread.receiver
 
-            message = MessageModel(thread = thread, sender_user = request.user, receiver_user = receiver, body = request.POST.get('message'),)
+        message = MessageModel(thread = thread, sender_user = request.user, receiver_user = receiver, body = JSONParser().parse(request)['body'],)
 
-            message.save()
+        message.save()
 
-            return redirect('thread', pk=pk)
+        return redirect('thread', pk=pk)
 
 
 class ThreadView(View):
