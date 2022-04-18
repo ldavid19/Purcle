@@ -17,6 +17,11 @@ class TopicSerializer(serializers.ModelSerializer):
         model = Topic
         fields = '__all__'
 
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = '__all__'
+
 class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
