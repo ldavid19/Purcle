@@ -159,7 +159,7 @@ function NavigationBar() {
       <Navbar.Brand as={Link} to={"/"}>Purcle</Navbar.Brand>
       <Nav className="me-auto">
         <Nav.Link as={Link} to={"/topic"}>Following</Nav.Link>
-        <Nav.Link as={Link} to={"/messages"}>Messages</Nav.Link>
+        <Nav.Link as={Link} to={'/inbox'}>Messages</Nav.Link>
       </Nav>
 
 
@@ -168,7 +168,6 @@ function NavigationBar() {
 
       <NavDropdown align="end" title="Profile" id="collasible-nav-dropdown" >
         <NavDropdown.Item as={Link} to={getLink()}>Profile</NavDropdown.Item>
-        <NavDropdown.Item as={Link} to={'/inbox'}>Inbox</NavDropdown.Item>
         <NavDropdown.Item href="#action/3.1">Followed Users</NavDropdown.Item>
         <NavDropdown.Item href="#action/3.2">Followed Topics</NavDropdown.Item>
 
