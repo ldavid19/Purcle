@@ -71,6 +71,7 @@ async function post(type, id, data) { //POST request
     console.log("post: /api/" + type + id);
     await axios.post('/api/' + type + id, data, {
         validateStatus: function (status) {
+            console.log("status < 500");
             return status < 500; // Resolve only if the status code is less than 500
         }
     })
@@ -158,7 +159,8 @@ async function getPostsFromTopic(topic) {
                 data.push(formatPost(post))
             });
             //console.log(data);
-        });
+        })
+        .catch(err => console.error(`Error: ${err}`));
 
     data.sort((a, b) => b.date - a.date);
 
@@ -245,6 +247,11 @@ async function getUser(id) {
 async function getCurrUser() {
     console.log(get("current_user"));
     return get("current_user");
+}
+
+async function convertToUserProfile(id) {
+    console.log("convertToUserProfile returns: " + get("convert", id));
+    return get("convert", id);
 }
 
 /* topic helpers */
@@ -356,12 +363,83 @@ async function logout(token) {
     return ret;
 }
 
+async function getCommentsfromPost(post_id) {
+    let data = [];
+
+    await get("post_comments", post_id)
+        .then((res) => {
+            console.log(res);
+            let arr = Array.from(res);
+
+            arr.map((comment) => {
+                //console.log("pushed!")
+                //data.push(formatPost(post))
+                data.push(comment)
+            });
+            console.log(data);
+        });
+
+    return data;
+}
+
+async function getCommentsfromUser(user_id) {
+    let data = [];
+
+    await get("user_comments", user_id)
+        .then((res) => {
+            console.log(res);
+            let arr = Array.from(res);
+
+            arr.map((comment) => {
+                //console.log("pushed!")
+                //data.push(formatPost(post))
+                data.push(comment)
+            });
+            console.log(data);
+        });
+
+    return data;
+}
+
+async function getNonanonCommentsfromUser(user_id) {
+    let data = [];
+
+    await get("user_nonanon_comments", user_id)
+        .then((res) => {
+            console.log(res);
+            let arr = Array.from(res);
+
+            arr.map((comment) => {
+                //console.log("pushed!")
+                //data.push(formatPost(post))
+                data.push(comment)
+            });
+            console.log(data);
+        });
+
+    return data;
+}
+
+async function makeComment(data) {
+    let ret = [];
+    //console.log("attempting to make a comment");
+
+    await post("comment", "", data)
+        .then((res) => {
+            console.log(res);
+            ret = res;
+        })
+        .catch(err => console.error(`Error: ${err}`));
+    return ret;
+}
+
 // async function postProfile(data) {
 //     return post("profile_detail", 0, data);
 // }
 
 export {
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, getPostsFromUser,     //GET post functions
-    getUser, getScore, getAllTopics, getCurrUser, getTopicInfo, getTopic, getUsers,          //GET misc functions
-    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout,             //POST misc functions
+    getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopic, getUsers,      //GET misc functions
+    getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, makeComment,      //misc comment functions
+    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout,            //POST misc functions
 };  //always leave a comma on the last entry

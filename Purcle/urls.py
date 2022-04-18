@@ -43,6 +43,11 @@ urlpatterns = [
     re_path(r'^api/topic$', views.topic_list),
     re_path(r'^api/topic/((?P<pk>[0-9a-zA-Z_]+)?)$', views.topic_detail), # id is char not int
     re_path(r'^api/post$', views.post_list),
+    re_path(r'^api/post_comments/((?P<pk>[0-9a-zA-Z_]+)?)$', views.post_comments_list), # grabs multiple comments based on post
+    re_path(r'^api/user_comments/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_comments_list), # grabs multiple comments based on user
+    re_path(r'^api/user_nonanon_comments/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_nonanon_comments_list), # grabs multiple comments based on user
+                                                                                                        # but only ones which aren't anonymous
+    re_path(r'^api/comment$', views.comment_detail),
     path('login/', TemplateView.as_view(template_name='index.html')),
     path('profilesetup/', TemplateView.as_view(template_name='index.html')),
     path('messages/', TemplateView.as_view(template_name='index.html')),
@@ -56,9 +61,10 @@ urlpatterns = [
     path('api/auth/logout/', knox_views.LogoutView.as_view(), name='logout'),
     path('api/auth/', include('knox.urls')),
     path('api/current_user', views.curr_user),
+    re_path(r'^api/convert/((?P<pk>[0-9a-zA-Z_]+)?)$', views.convert),
     
     #path('api/sign_up/', views.SignUpView.as_view(), name='sign_up'),
-    path('api/sign_up/', views.user_detail),
+    path('api/sign_up', views.user_detail),
     #path('api/auth/register/', include('rest_auth.registration.urls')),
     # path(r'^', include('Purcle.urls')),
 
