@@ -1,7 +1,10 @@
+from statistics import mode
 from typing_extensions import Self
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
+
+from django.utils import timezone
 
 
 User._meta.get_field('email').blank = False
@@ -14,12 +17,12 @@ class UserProfile(models.Model):
     last_name = models.CharField(max_length=50, null=True)
     user_profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images', blank=True, null=True)
     user_bio = models.TextField(max_length=500)
-    user_followers = ArrayField(models.CharField(max_length=200), blank=True)
-    user_following = ArrayField(models.CharField(max_length=200), blank=True)
+    user_followers = ArrayField(models.CharField(max_length=200), blank=True, null=True)
+    user_following = ArrayField(models.CharField(max_length=200), blank=True, null=True)
     user_followers_count = models.FloatField(default=0, null=False)
     user_following_count = models.FloatField(default=0, null=False)
-    user_following_topic = ArrayField(models.CharField(max_length=200), blank=True)
-    user_blocked = ArrayField(models.CharField(max_length=200), blank=True)
+    user_following_topic = ArrayField(models.CharField(max_length=200), blank=True, null=True)
+    user_blocked = ArrayField(models.CharField(max_length=200), blank=True, null=True)
     allow_only_followed_users = models.BooleanField(default=False)
 
     def __str__(self):
@@ -129,7 +132,7 @@ class Post(models.Model):       # created by Nicole
 # does not check if the user has already reacted to post
 class Reaction(models.Model):                 # created by Nicole
     # Reaction.id is created automatically
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)   # if the UserProfile is deleted, so will the Reaction
+    user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)   # if the UserProfile is deleted, so will the Reaction
     reaction_type = models.IntegerField()   # 0 for like, 1 for dislike
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)   # if the Post is deleted, so will the Reaction
 
@@ -167,3 +170,27 @@ class Comment(models.Model):                # created by Nicole
         return self.comment_is_anonymous
     # def get_comment_parent_id(self):
         # return self.comment_parrent_id
+
+
+class ThreadModel(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+')
+
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+')
+
+    has_unread = models.BooleanField(default=False)
+
+
+class MessageModel(models.Model):
+
+    thread = models.ForeignKey('ThreadModel', related_name='+', on_delete=models.CASCADE, blank=True, null=True)
+
+    sender_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+')
+
+    receiver_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+')
+
+    body = models.CharField(max_length=200)
+
+    date = models.DateTimeField(default=timezone.now)
+
+    is_read = models.BooleanField(default=False)

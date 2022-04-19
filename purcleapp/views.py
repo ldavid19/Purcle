@@ -1,7 +1,9 @@
+from email import message
 from os import lseek
 from pydoc_data.topics import topics
-from django.shortcuts import render
-from django.http.response import JsonResponse
+from django.dispatch import receiver
+from django.shortcuts import render, redirect
+from django.http.response import JsonResponse, HttpResponse
 
 from rest_framework.views import APIView
 from . models import *
@@ -30,7 +32,11 @@ from django.contrib.auth import logout
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 
+from django.views import View
 
+from django.db.models import Q
+
+from .forms import *
 # Create your views here.
 
 # urlpatterns = [S
@@ -157,17 +163,9 @@ def user_posts_list(request, pk=""):
 
         post_list = Post.objects.filter(user_id=pk)
 
-        posts_serializer = PostSerializer(post_list, many=True)
-        return JsonResponse(posts_serializer.data, safe=False)
-#  ``   # GET list of posts, POST a new post, DELETE all posts
+        if not post_list:
+            return JsonResponse({'message': 'User has no posts'}, status=status.HTTP_404_NOT_FOUND)
 
-# returns multiple posts based on user, returns all posts
-@api_view(['GET', 'POST', 'DELETE'])
-def interactions_detail(request, pk=""):
-    if request.method == 'GET':
-        print("getting posts from user: " + pk)
-
-        post_list = Post.objects.filter(user_id=pk)
 
         posts_serializer = PostSerializer(post_list, many=True)
         return JsonResponse(posts_serializer.data, safe=False)
@@ -243,7 +241,6 @@ def posts_detail(request, pk):
         post = Post.objects.get(pk=pk) 
     except Post.DoesNotExist: 
         return JsonResponse({'message': 'The post does not exist'}, status=status.HTTP_404_NOT_FOUND) 
-
     if request.method == 'GET': 
         user_profile_serializer = UserSerializer(userprofile) 
         return JsonResponse(user_profile_serializer.data)
@@ -320,6 +317,130 @@ def post_list(request):
             message = post_serializer.errors[error][0].title()
         return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
 
+
+    # if request.method == 'POST':
+    #     post_data = JSONParser().parse(request)
+    #     post_serializer = PostSerializer(data=post_data)
+    #     if post_serializer.is_valid():
+    #         post_serializer.save()
+    #         return JsonResponse(post_serializer.data, status=status.HTTP_201_CREATED)
+    #     return JsonResponse(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class CreateThread(View):
+    
+    # def get(self, request, *args, **kwargs):
+    #     form = ThreadForm()
+
+    #     context = {
+    #         'form': form
+    #     }
+
+    #     return HttpResponse(form.as_p())
+
+
+    def post(self, request, *args, **kwargs):
+        #form = ThreadForm(request.POST)
+
+
+        username = JSONParser().parse(request)['username']
+        print(username)
+
+        try:
+            receiver = User.objects.get(username=username)
+
+            if ThreadModel.objects.filter(user=request.user, receiver=receiver).exists():
+
+                thread = ThreadModel.objects.filter(user=request.user, receiver=receiver)[0]
+
+                return redirect('thread', pk=thread.pk)
+            elif ThreadModel.objects.filter(user=receiver, receiver=request.user).exists():
+                thread = ThreadModel.objects.filter(user=receiver, receiver=request.user)[0]
+                return redirect('thread', pk=thread.pk)
+
+            
+            sender_thread = ThreadModel(user=request.user, receiver=receiver)
+
+            sender_thread.save()
+            thread_pk = sender_thread.pk
+
+            return redirect('thread', pk=thread_pk)
+
+
+        except:
+            return redirect('create-thread')
+
+
+class ListThreads(View):
+    def get(self, request, *args, **kwargs):
+        threads = ThreadModel.objects.filter(Q(user=request.user) | Q(receiver=request.user))
+
+        threads_serializer = ThreadSerializer(threads, many=True)
+
+        print(threads_serializer.data)
+
+        return JsonResponse(threads_serializer.data, safe=False)
+
+
+class CreateMessage(View):
+    def post(self, request, pk, *args, **kwargs):
+        thread = ThreadModel.objects.get(pk=pk)
+
+        if thread.receiver == request.user:
+            receiver = thread.user
+        else:
+            receiver = thread.receiver
+
+        message = MessageModel(thread = thread, sender_user = request.user, receiver_user = receiver, body = JSONParser().parse(request)['body'],)
+
+        message.save()
+
+        return redirect('thread', pk=pk)
+
+
+class ThreadView(View):
+    def get(self, request, pk, *args, **kwargs):
+
+        thread = ThreadModel.objects.get(pk=pk)
+
+        thread_serializer = ThreadSerializer(thread)
+
+
+        message_list = MessageModel.objects.filter(thread__pk__contains = pk)
+
+        message_list_serializer = MessageSerializer(message_list, many = True)
+
+        context = {
+            'thread': thread_serializer.data,
+            'message_list': message_list_serializer.data,
+        }
+
+        return JsonResponse(context, safe=False)
+
+@api_view(['GET', 'POST', 'DELETE'])
+def user_reactions_list(request, pk=""):
+    if request.method == 'GET':
+        print("getting reactions from user: " + pk)
+        reactions_list = Reaction.objects.filter(user_id=pk)
+        print(reactions_list)
+        post_list = []
+
+        for reaction in reactions_list:
+            try:
+                id = reaction.post_id.id
+                post = Post.objects.get(pk=id)
+                post_list.append(post)
+            except Post.DoesNotExist:
+                print("cannot find post :(")
+    
+        if not post_list:
+            return JsonResponse({'message': 'User has not reacted to any posts'}, status=status.HTTP_404_NOT_FOUND)
+
+        post_serializer = PostSerializer(post_list, many=True)
+        return JsonResponse(post_serializer.data, safe=False)
+#  ``   # GET list of comments, POST a new comment, DELETE all comment
+
 # returns multiple comments based on post, returns all comments
 @api_view(['GET', 'POST', 'DELETE'])
 def post_comments_list(request, pk=""):
@@ -339,32 +460,11 @@ def user_comments_list(request, pk=""):
         print("getting comments from user: " + pk)
         comments_list = Comment.objects.filter(user_id=pk)
 
+        if not comments_list:
+            return JsonResponse({'message': 'User has no comments'}, status=status.HTTP_404_NOT_FOUND)
+
         comments_serializer = CommentSerializer(comments_list, many=True)
         return JsonResponse(comments_serializer.data, safe=False)
-#  ``   # GET list of comments, POST a new comment, DELETE all comments
-
-@api_view(['GET', 'POST', 'DELETE'])
-def user_reactions_list(request, pk=""):
-    if request.method == 'GET':
-        print("getting reactions from user: " + pk)
-        id = User.objects.get(pk=pk)
-        reactions_list = Reaction.objects.filter(user_id=pk)
-        print(reactions_list)
-        post_list = []
-
-        for reaction in reactions_list:
-            try: 
-                post = Post.objects.get(pk=pk)
-                print(post)
-                post_list.append(post)
-            except Post.DoesNotExist:
-                print("cannot find post :(")
-    
-        if not post_list:
-            return JsonResponse({'message': 'The topic does not exist'}, status=status.HTTP_404_NOT_FOUND)
-
-        post_serializer = PostSerializer(comments_list, many=True)
-        return JsonResponse(post_serializer.data, safe=False)
 #  ``   # GET list of comments, POST a new comment, DELETE all comments
 
 # returns multiple comments based on user, returns all comments

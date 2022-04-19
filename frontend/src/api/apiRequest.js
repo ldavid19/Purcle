@@ -66,6 +66,8 @@ async function post(type, id, data) { //POST request
 
     if (id != "") {
         type = type + "/";
+    } else {
+        id = id + "/"
     }
 
     console.log("post: /api/" + type + id);
@@ -332,6 +334,29 @@ async function postUser(data) {
     return ret;
 }
 
+
+/* DM helpers */
+
+async function postThread(data) {
+    const ret = post("create-thread",'', data);
+    return ret;
+}
+
+async function getInbox() {
+    const ret = get("inbox");
+    return ret;
+}
+
+async function getContext(id) {
+    const ret = get("inbox", id);
+    return ret;
+}
+
+async function postMessage(receiver, message) {
+    const ret = post("create-message", receiver, message);
+    return ret;
+}
+
 /* authentication helpers */
 async function login(username, password) {
     const data = {
@@ -438,8 +463,10 @@ async function makeComment(data) {
 // }
 
 export {
-    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, getPostsFromUser,     //GET post functions
-    getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopic, getUsers,      //GET misc functions
-    getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, makeComment,      //misc comment functions
-    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout,            //POST misc functions
+
+    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, getInbox, getContext, getPostsFromUser,    //GET post functions
+    getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopicInfo, getTopic, getUsers,          //GET misc functions
+    getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, makeComment,  
+    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout, postThread, postMessage,            //POST misc functions
+
 };  //always leave a comma on the last entry

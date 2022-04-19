@@ -30,7 +30,7 @@ urlpatterns = [
     path('signup/', TemplateView.as_view(template_name='index.html')),
     #path('login/', TemplateView.as_view(template_name='index.html')),
     path('following/', TemplateView.as_view(template_name='index.html')),
-    #re_path(r'^profile/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^profile/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
     re_path(r'^api/profile/(?P<pk>[0-9]+)$', views.profile_detail),
     re_path(r'^api/profilesetup/(?P<pk>[0-9]+)$', views.profile_detail),
     re_path(r'^api/profileid/(?P<pk>[0-9]+)$', views.profile_id),
@@ -56,7 +56,7 @@ urlpatterns = [
     #path('post/', views.posts_list),
     path('topic/:id', TemplateView.as_view(template_name='index.html')),
     path('post/:id', TemplateView.as_view(template_name='index.html')),
-    path('profile/:id', TemplateView.as_view(template_name='index.html')),
+    #path('profile/:id', TemplateView.as_view(template_name='index.html')),
     #path('api/sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('api/auth/login/', views.LoginAPI.as_view(), name='login'),
     #path('api/auth/register/', views.RegisterAPI.as_view(), name='register'),
@@ -72,4 +72,16 @@ urlpatterns = [
 
     # user list link
     path('api/userlist/', views.user_list),
+
+
+    # DM paths
+    path('inbox/', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^inbox/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
+    path('api/inbox/', views.ListThreads.as_view(), name='inbox'),
+
+    path('api/create-thread/', views.CreateThread.as_view(), name='create-thread'),
+
+    re_path(r'^api/inbox/(?P<pk>[0-9]+)$', views.ThreadView.as_view(), name='thread'),
+
+    re_path(r'^api/create-message/(?P<pk>[0-9]+)$', views.CreateMessage.as_view(), name='create-message'),
 ]
