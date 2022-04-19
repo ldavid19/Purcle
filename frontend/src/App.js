@@ -11,6 +11,10 @@ import PostPage from './components/Post/PostPage';
 import ProfileSetup from './components/Profile/ProfileSetup';
 import ErrorPage from './components/ErrorPage';
 
+
+import Inbox from './components/Messaging/Inbox';
+import ThreadView from './components/Messaging/ThreadView'
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -33,6 +37,8 @@ function App() {
             <Route path="/profile/:id" element={<Profile />}/>
             <Route path="/topic/:id" element={<Topic />}/>
             <Route path="/post/:id" element={<PostPage />}/>
+            <Route path="/inbox" element={<Inbox />}/>
+            <Route path="/inbox/:id" element={<ThreadView />}/>
             <Route path="*" element={<ErrorPage />}/>
             <Route path="/*/*" element={<ErrorPage />}/>
           </Route>
