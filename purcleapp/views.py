@@ -161,6 +161,18 @@ def user_posts_list(request, pk=""):
         return JsonResponse(posts_serializer.data, safe=False)
 #  ``   # GET list of posts, POST a new post, DELETE all posts
 
+# returns multiple posts based on user, returns all posts
+@api_view(['GET', 'POST', 'DELETE'])
+def interactions_detail(request, pk=""):
+    if request.method == 'GET':
+        print("getting posts from user: " + pk)
+
+        post_list = Post.objects.filter(user_id=pk)
+
+        posts_serializer = PostSerializer(post_list, many=True)
+        return JsonResponse(posts_serializer.data, safe=False)
+#  ``   # GET list of posts, POST a new post, DELETE all posts
+
 
 @api_view(['GET'])
 def post_detail(request, pk):
@@ -329,6 +341,30 @@ def user_comments_list(request, pk=""):
 
         comments_serializer = CommentSerializer(comments_list, many=True)
         return JsonResponse(comments_serializer.data, safe=False)
+#  ``   # GET list of comments, POST a new comment, DELETE all comments
+
+@api_view(['GET', 'POST', 'DELETE'])
+def user_reactions_list(request, pk=""):
+    if request.method == 'GET':
+        print("getting reactions from user: " + pk)
+        id = User.objects.get(pk=pk)
+        reactions_list = Reaction.objects.filter(user_id=pk)
+        print(reactions_list)
+        post_list = []
+
+        for reaction in reactions_list:
+            try: 
+                post = Post.objects.get(pk=pk)
+                print(post)
+                post_list.append(post)
+            except Post.DoesNotExist:
+                print("cannot find post :(")
+    
+        if not post_list:
+            return JsonResponse({'message': 'The topic does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        post_serializer = PostSerializer(comments_list, many=True)
+        return JsonResponse(post_serializer.data, safe=False)
 #  ``   # GET list of comments, POST a new comment, DELETE all comments
 
 # returns multiple comments based on user, returns all comments
