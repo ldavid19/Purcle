@@ -151,6 +151,9 @@ function Profile(props) {
         email: string
     }
     */
+    const handleFollowUser = (event) => {
+        
+    }
 
     /* helper functions */
     const handleUpdateUser = (event) => {
@@ -316,6 +319,9 @@ function Profile(props) {
                             <h6>{user.follower_count} followers</h6>
                             <h6>{user.following_count} following</h6>
                         </div>
+                        <Button onClick={props.handleFollowUser}>
+                            Follow User
+                        </Button>
                     </div>
                 </div>
 
@@ -349,7 +355,7 @@ function Profile(props) {
             </div>
             <Container style={{ padding: "25px 50px 75px" }}>
                 <Row>
-                    <PostCard postList={posts} />
+                    <PostCard postList={user.posts} />
                 </Row>
             </Container>
             <div className="gallery">
