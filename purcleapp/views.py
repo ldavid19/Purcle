@@ -1,7 +1,9 @@
+from email import message
 from os import lseek
 from pydoc_data.topics import topics
-from django.shortcuts import render
-from django.http.response import JsonResponse
+from django.dispatch import receiver
+from django.shortcuts import render, redirect
+from django.http.response import JsonResponse, HttpResponse
 
 from rest_framework.views import APIView
 from . models import *
@@ -30,7 +32,11 @@ from django.contrib.auth import logout
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 
+from django.views import View
 
+from django.db.models import Q
+
+from .forms import *
 # Create your views here.
 
 # urlpatterns = [S
@@ -308,6 +314,107 @@ def post_list(request):
             message = post_serializer.errors[error][0].title()
         return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
 
+
+    # if request.method == 'POST':
+    #     post_data = JSONParser().parse(request)
+    #     post_serializer = PostSerializer(data=post_data)
+    #     if post_serializer.is_valid():
+    #         post_serializer.save()
+    #         return JsonResponse(post_serializer.data, status=status.HTTP_201_CREATED)
+    #     return JsonResponse(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class CreateThread(View):
+    
+    # def get(self, request, *args, **kwargs):
+    #     form = ThreadForm()
+
+    #     context = {
+    #         'form': form
+    #     }
+
+    #     return HttpResponse(form.as_p())
+
+
+    def post(self, request, *args, **kwargs):
+        #form = ThreadForm(request.POST)
+
+
+        username = JSONParser().parse(request)['username']
+        print(username)
+
+        try:
+            receiver = User.objects.get(username=username)
+
+            if ThreadModel.objects.filter(user=request.user, receiver=receiver).exists():
+
+                thread = ThreadModel.objects.filter(user=request.user, receiver=receiver)[0]
+
+                return redirect('thread', pk=thread.pk)
+            elif ThreadModel.objects.filter(user=receiver, receiver=request.user).exists():
+                thread = ThreadModel.objects.filter(user=receiver, receiver=request.user)[0]
+                return redirect('thread', pk=thread.pk)
+
+            
+            sender_thread = ThreadModel(user=request.user, receiver=receiver)
+
+            sender_thread.save()
+            thread_pk = sender_thread.pk
+
+            return redirect('thread', pk=thread_pk)
+
+
+        except:
+            return redirect('create-thread')
+
+
+class ListThreads(View):
+    def get(self, request, *args, **kwargs):
+        threads = ThreadModel.objects.filter(Q(user=request.user) | Q(receiver=request.user))
+
+        threads_serializer = ThreadSerializer(threads, many=True)
+
+        print(threads_serializer.data)
+
+        return JsonResponse(threads_serializer.data, safe=False)
+
+
+class CreateMessage(View):
+    def post(self, request, pk, *args, **kwargs):
+        thread = ThreadModel.objects.get(pk=pk)
+
+        if thread.receiver == request.user:
+            receiver = thread.user
+        else:
+            receiver = thread.receiver
+
+        message = MessageModel(thread = thread, sender_user = request.user, receiver_user = receiver, body = JSONParser().parse(request)['body'],)
+
+        message.save()
+
+        return redirect('thread', pk=pk)
+
+
+class ThreadView(View):
+    def get(self, request, pk, *args, **kwargs):
+
+        thread = ThreadModel.objects.get(pk=pk)
+
+        thread_serializer = ThreadSerializer(thread)
+
+
+        message_list = MessageModel.objects.filter(thread__pk__contains = pk)
+
+        message_list_serializer = MessageSerializer(message_list, many = True)
+
+        context = {
+            'thread': thread_serializer.data,
+            'message_list': message_list_serializer.data,
+        }
+
+        return JsonResponse(context, safe=False)
+
 # returns multiple comments based on post, returns all comments
 @api_view(['GET', 'POST', 'DELETE'])
 def post_comments_list(request, pk=""):
@@ -357,3 +464,4 @@ def comment_detail(request):
         for error in comment_serializer.errors:
             message = comment_serializer.errors[error][0].title()
         return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
+
