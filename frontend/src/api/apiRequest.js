@@ -286,6 +286,28 @@ async function getUsers() {
     return get("userlist");
 }
 
+async function getInteractions(id) {
+    let interactions = {
+        posts: [],
+        comments: [],
+        reactions: []
+    };
+
+    let posts = await getPostsFromUser(id)
+        .then((reS) => {
+
+        })
+
+    let comments = await getCommentsfromUser(id)
+        .then((res) => {
+            
+        })
+
+    let reactions = [];
+
+    
+}
+
 
 /* POST helper functions */
 /* post helpers */
