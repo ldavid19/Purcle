@@ -31,11 +31,6 @@ class UserProfile(models.Model):
     def get_id(self):
         return self.user
 
-    # def get_password(self):
-    #     return self.user_password
-
-    # def get_created_date(self):
-    #     return self.created_date
 
     def get_following_topic(self):
         return self.user_following_topic

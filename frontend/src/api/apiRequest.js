@@ -465,7 +465,7 @@ async function makeComment(data) {
 export {
 
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, getInbox, getContext, getPostsFromUser,    //GET post functions
-    getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopicInfo, getTopic, getUsers,          //GET misc functions
+    getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopic, getUsers,          //GET misc functions
     getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, makeComment,  
     upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout, postThread, postMessage,            //POST misc functions
 
