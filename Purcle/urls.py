@@ -47,7 +47,9 @@ urlpatterns = [
     re_path(r'^api/user_comments/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_comments_list), # grabs multiple comments based on user
     re_path(r'^api/user_nonanon_comments/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_nonanon_comments_list), # grabs multiple comments based on user
                                                                                                         # but only ones which aren't anonymous
+    re_path(r'^api/user_reactions/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_reactions_list), # grabs multiple comments based on user
     re_path(r'^api/comment$', views.comment_detail),
+
     path('login/', TemplateView.as_view(template_name='index.html')),
     path('profilesetup/', TemplateView.as_view(template_name='index.html')),
     path('messages/', TemplateView.as_view(template_name='index.html')),
