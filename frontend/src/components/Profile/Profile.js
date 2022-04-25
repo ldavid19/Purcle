@@ -6,8 +6,9 @@ import styled from 'styled-components'
 import { Button } from '@mui/material';
 
 import PostCard from '../Post/PostCard';
+import ProfileInteractions from './ProfileInteractions';
 
-import { getRandPosts, getUser, updateUser, getCurrUser, logout } from '../../api/apiRequest.js';
+import { getRandPosts, getUser, updateUser, getCurrUser, logout, getInteractions } from '../../api/apiRequest.js';
 import { formatUser, unformatUser } from '../../api/helper';
 
 /*
@@ -100,7 +101,7 @@ function Profile(props) {
     const navigate = useNavigate();
 
     const nullUser = {
-        username: "User not really found",
+        username: "User not found",
         pfp: null,
         bio: "",
         follower_count: 0,
@@ -308,14 +309,10 @@ function Profile(props) {
                 setUser(res);
             })
             .catch(err => console.error(`Error: ${err}`));
-        console.log("make sure user stored", user)
 
     }
 
     const setUserApi = () => {
-        //change testUser to updated user object
-        //const updatedUser = unformatUser(testUser);
-
         console.log("put user----------");
         console.log(tempUser);
         console.log(localStorage.getItem('token'));
@@ -356,6 +353,8 @@ function Profile(props) {
 
         console.log("user in useeffect", user)
     }, []);
+
+    //TODO: make pfp 1/3 column and username and info 2/3
 
     return (
         <div style={{ maxWidth: "550px", margin: "0px auto" }}>
@@ -413,26 +412,9 @@ function Profile(props) {
             </div> */}
                 </div>
             </div>
-            <div>
-                <p>Post History</p>
-                {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
-            </div>
-            <Container style={{ padding: "25px 50px 75px" }}>
-                <Row>
-                    <PostCard postList={user.posts} />
-                </Row>
-            </Container>
-            <Container>
-                <ImageUploader
-                withIcon={true}
-                withPreview={true}
-                buttonText="Choose images"
-                onChange={(image) => onDrop(image)}
-                singleImage={true}
-                imgExtension={['.jpg', '.gif', '.png', '.gif']}
-                maxFileSize={5242880}
-                />
-            </Container>
+
+            <ProfileInteractions user={user} id={id}/>
+            
             <div className="gallery">
                 
                 {/* {
