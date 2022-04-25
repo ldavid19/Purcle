@@ -83,13 +83,13 @@ function ProfileInteractions(props) {
         setInterType(type);
     }
 
-    /*
+    
     if (!props.user || props.user.private) {
         return (
             <h3>This user profile is private.</h3>
         )
     }
-    */
+    
 
     return (
         <Container>
