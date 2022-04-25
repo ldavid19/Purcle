@@ -22,7 +22,7 @@ class UserProfile(models.Model):
     user_following = ArrayField(models.IntegerField(), blank=True, null=True)
     user_followers_count = models.FloatField(default=0, null=False)
     user_following_count = models.FloatField(default=0, null=False)
-    user_following_topic = ArrayField(models.IntegerField(), blank=True, null=True)
+    user_following_topic = ArrayField(models.CharField(max_length=100), blank=True, null=True)
     user_blocked = ArrayField(models.CharField(max_length=200), blank=True, null=True)
     allow_only_followed_users = models.BooleanField(default=False)
 

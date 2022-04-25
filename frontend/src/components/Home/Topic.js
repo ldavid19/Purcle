@@ -68,6 +68,14 @@ function Topic() {
         window.location.reload();
     }
 
+    const handleFollowTopic = () => {
+
+    }
+
+    const handleUnfollowTopic = () => {
+        
+    }
+
     return (
         <Container className="Home" style={{padding: "0px 75px"}}>
             <Row style={{padding: "20px 0px"}}>
@@ -78,10 +86,15 @@ function Topic() {
                 <Col>
                     <h1>{topic}</h1>
                 </Col>
+                <Col>
+                    {<Button onClick={handleFollowTopic}> Follow Topic</Button>}
+                    {/* { <Button onClick={handleUnfollowTopic}> Unfollow Topic</Button>} */}
+                </Col>
                 
                 <Col>
-                    <h1>{followCount}{(followCount === 1) ? " follower" : " followers"}</h1>
+                    <h3>{followCount}{(followCount === 1) ? " follower" : " followers"}</h3>
                 </Col>
+                
             </Row>
 
             <Row style={{display: "flex"}}>
