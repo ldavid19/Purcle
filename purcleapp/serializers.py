@@ -24,6 +24,7 @@ class UserListSerializer(serializers.ModelSerializer):
             'user',
             'profile_name'
         )
+
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
