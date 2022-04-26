@@ -1,7 +1,8 @@
 import { Container, Row, Modal } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
-
+import ImageUploader from 'react-images-upload'
+import styled from 'styled-components'
 import { Button } from '@mui/material';
 
 import PostCard from '../Post/PostCard';
@@ -16,6 +17,7 @@ import axios from 'axios'
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 */
+
 
 function ConfirmationModal(props) {
     const handleLogout = async () => {
@@ -43,8 +45,9 @@ function ConfirmationModal(props) {
             </Modal>
         </>
     )
-
 }
+
+
 
 function UpdateProfileModal(props) {
     return (
@@ -62,9 +65,7 @@ function UpdateProfileModal(props) {
                         onChange={props.handleUpdateUser}
                     />
                     <label>Upload New Profile Picture</label>
-                    <input
-                        type="file"
-                    />
+                    <input type="file"/>
                 </form>
                 <br></br>
                 <br></br>
@@ -87,23 +88,27 @@ function CloseConfirmationModal() {
 
 }
 
+
 function Profile(props) {
     console.log(props)
     var placeholder = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLeqsbTn6eqpr7PJzc/j5ebf4eLZ3N2wtrnBxsjN0NLGysy6v8HT1tissra8wMNxTKO9AAAFDklEQVR4nO2d3XqDIAxAlfivoO//tEOZWzvbVTEpic252W3PF0gAIcsyRVEURVEURVEURVEURVEURVEURVEURVEURVEURflgAFL/AirAqzXO9R7XNBVcy9TbuMHmxjN6lr92cNVVLKEurVfK/zCORVvW8iUBnC02dj+Wpu0z0Y6QlaN5phcwZqjkOkK5HZyPAjkIjSO4fIdfcOwFKkJlX4zPu7Ha1tIcwR3wWxyFhRG6g4Je0YpSPDJCV8a2Sv2zd1O1x/2WMDZCwljH+clRrHfWCLGK8REMiql//2si5+DKWKcWeAGcFMzzNrXC/0TUwQ2s6+LhlcwjTMlYsUIQzPOCb7YBiyHopyLXIEKPEkI/TgeuiidK/R9FniUDOjRDpvm0RhqjMyyXNjDhCfIMYl1gGjIMIuYsnGEYRMRZOMMunaLVwpWRW008v6fYKDIzxCwVAeNSO90BJW6emelYBRF/kHpYGVaoxTDAaxOFsfP9y8hpJ4xd7gOcij7JNGQ1EYFgkPJa1jQEiYZXRaRINKxSDUW9n+FT82lSKadkiru9/4XPqSLWOekGPoY05TAvLm9orm+YWuwHoBHkZKijNBJGmeb61eL6Ff/6q7bLr7yvv3vKGhpDRjvgjGaPz+gUg6YgcvpyAR2FIZ9U6nEEyZRTovmEU32KichpGn7C17XrfyH9gK/c0CMP05HZIM2uf9sEveizKveBy9/6Qt7o89ne33D525cfcIMW6ab+TMEukQbQbu+xu7X3A9bChmWaCeAkG17bpntwXgWxHaMzGPmUaR5dQZiKqRVeUZ3047fi3nAu28h4CHxCsZAgmEH8Y27jJAhm8c+5RQzRQNVGhVFSfxOYIjp/pP7RxzjevYXVGf4eLt+BJ1vCuLuLkrgABgCGXZ2wik5uty+oBvNirI6mkzhAf4Gsb58Hcm67Jzd+KwD10BYPLL3e0MjvKrgAULnOfveF/O4N2Xb9BZom3gJes3F9X5Zze8/6Yt09b4CrqsEjUv8oFBaR2rl+6CZr2xVrp24o/WitBKuGrrpl1+bFkmK2qXTON4VpbdfLa7o7y/WdLxG7lm2Lqh2clOwTegbvc/vj2U78CwhA87Bn8G5Nk3eOb0Nsr9flz3sG78UUtue4kpv1xvjg3TMay62BMlTlP+vrOMnJsRmt/ze0jsfkPPYdAH57hK+34PeOyc8XIXu5xT2HsUkdZz+adwg8HGFfQ3K5jtDvbUiO4Di9/ywHGrL88pDizZ++oTp+an+SMX/ndymUCwmHMdO7yuOx83pUx/eEMU0AvxWndwgidAqOZ8ypCwdEfvvEo6D9HwpA8wzvmOJEqAg9ySu8g4x0Hb9hSB/BANEKJ+LbPBU0lzbAJs4xt1AoshKkUGQmiH8/jJ0gdhTTLmSegHlPE0oOdXALnqDjKYh3px//fSgSWG8UqfrrIICzYYSJXRr9BSPbpNzw7gBjKjKOYI7ReIGqQRIap5+5MdjyvuDkExvGeXSlONWZAP3/AZBwJohU7QJRGU+cTVH18ELmRPNBmibW6MT/k1b0XhdkRBvyT6SB6EYv/GvhSmRNpGngRULsAlxMCGNXp7w3FfdEbTEEDdLI9TdIKRUzUesa3I461ER8cpNT7gMRhpKmYVS9ELOgCUQsa4SsulciKiLbY+AnHD8cpuhISsnxpamI84sbDq9qYJgf8wiiOBrC7Ml7M7ZECCqKoiiKoiiKoiiKoijv5AvJxlZRyNWWLwAAAABJRU5ErkJggg==";
     placeholder = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+    placeholder ="profile_images\cat1.png"
 
 
+    // const currid = -1;
     const { id } = useParams();
     const navigate = useNavigate();
 
     const nullUser = {
         username: "User not found",
-        pfp: placeholder,
+        pfp: null,
         bio: "",
         follower_count: 0,
         following_count: 0,
         followers: [],
         following: [],
+        topics:[],
         private: true,
         first: "",
         last: "",
@@ -132,12 +137,16 @@ function Profile(props) {
 
     /* state hooks */
     const [user, setUser] = useState(nullUser);
+    const [curr, setCurr] = useState(nullUser);
     const [error, setError] = React.useState("");
     const [posts, setPosts] = useState([]);
     const [show, setShow] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [tempUser, setTempUser] = useState(nullUser);
     const [update, setUpdate] = useState(false);
+    const [followed, setFollowed] = useState(false);
+    const [currId, setCurrId] = useState(null);
+    const [uploadedPictures, setUploadedPictures] = useState([]);
 
     /* user formatted this way:
     User = {
@@ -152,6 +161,71 @@ function Profile(props) {
         email: string
     }
     */
+    const onDrop = (picture) => {
+        setUploadedPictures([...uploadedPictures, picture])
+        user.pfp = uploadedPictures;
+        console.log("profile pic", uploadedPictures);
+        console.log(user)
+
+    }
+
+    const handleFollowUser = (event) => {
+        console.log("followed", followed);
+        console.log("actually", user.followers.includes(currId));
+        setFollowed(true)
+        console.log(user.followers)
+        var arr = []
+        if (user.followers != null) {
+            arr = user.followers
+        }
+        arr.push(currId);
+        user.followers = arr
+        user.follower_count = arr.length;
+        console.log(user)
+        updateUser(id, user, localStorage.getItem('token'))
+
+        arr=[]
+        if (curr.following != null) {
+            arr = curr.following
+        }
+        if (!curr.following.includes(id)) {
+            arr.push(id);
+        }
+        curr.following = arr
+        curr.following_count = arr.length
+        updateUser(currId, curr, localStorage.getItem('token'))
+        getUserApi()
+    }
+    const handleUnfollowUser = (event) => {
+        console.log("followed", followed);
+        console.log("actually", user.followers.includes(currId));
+        user.follower_count -= 1;
+        setFollowed(false);
+        var arr = user.followers
+        var index = arr.indexOf(currId);
+        if (index !== -1) {
+            arr.splice(index, 1);
+        }
+        user.followers = arr;
+        user.follower_count = arr.length;
+        console.log(user)
+        updateUser(id, user, localStorage.getItem('token'))
+        
+        arr=[]
+        index = arr.indexOf(id);
+        if (index !== -1) {
+            arr.splice(index, 1);
+        }
+        curr.following = arr;
+        curr.following_count = arr.length;
+
+        updateUser(currId, curr, localStorage.getItem('token'))
+        getUserApi()
+
+    }
+    const handleDM = (event) => {
+
+    }
 
     /* helper functions */
     const handleUpdateUser = (event) => {
@@ -216,8 +290,9 @@ function Profile(props) {
     const confirmCanUpdate = () => {
         getCurrUser().then(res => {
             console.log(res)
-            const curr = res.curr_user;
-            canUpdate(id, curr);
+            const currid = res.curr_user;
+            setCurrId(currid);
+            canUpdate(id, currid);
         }).catch(err => console.error(`Error: ${err}`));
     }
 
@@ -230,7 +305,7 @@ function Profile(props) {
                 setUser(usr);
                 console.log(usr);
                 */
-                console.log(res);
+                console.log("get user",res);
                 setUser(res);
             })
             .catch(err => console.error(`Error: ${err}`));
@@ -244,9 +319,10 @@ function Profile(props) {
         console.log("------------------");
 
         updateUser(id, tempUser, localStorage.getItem('token')).then(res => {
-            console.log("response: " + res)
+            console.log("response: " + res);
             const usr = formatUser(res.data);
             setUser(usr);
+            console.log("make sure user stored in update", user)
         })
     }
 
@@ -258,14 +334,24 @@ function Profile(props) {
             setUpdate(true);
         } else {
             setUpdate(false);
+            // setFollowed(user.followers.includes(currId));
+            // console.log(user.followers.includes(currId))
+            // console.log("user",user)
+            getUser(currID)
+            .then(res => {
+                setCurr(res);
+            })
+            .catch(err => console.error(`Error: ${err}`));
         }
     }
 
     useEffect(() => {
         getNewPosts();
         //getNewUser();
-        confirmCanUpdate();
         getUserApi();
+        confirmCanUpdate();
+
+        console.log("user in useeffect", user)
     }, []);
 
     //TODO: make pfp 1/3 column and username and info 2/3
@@ -289,13 +375,16 @@ function Profile(props) {
                     <div className="down">
                         <p></p>
                         {/* <div style="padding-top:5em;"></div> */}
-                        <h4>{user.username}</h4>
+                        <h4>{user.username} </h4>
                         <h7>{user.bio}</h7>
                         <div style={{ display: "flex", justifyContent: "space-between", width: "108%" }}>
                             <h6>3 posts</h6>
                             <h6>{user.follower_count} followers</h6>
                             <h6>{user.following_count} following</h6>
                         </div>
+                        {!update && (!user.followers.includes(currId)) && <Button onClick={handleFollowUser}> Follow User</Button>}
+                        {!update && (user.followers.includes(currId)) && <Button onClick={handleUnfollowUser}> Unfollow User</Button>}
+                        {!update && <Button onClick={handleDM}> Message User</Button>}
                     </div>
                 </div>
 
@@ -327,6 +416,7 @@ function Profile(props) {
             <ProfileInteractions user={user} id={id}/>
             
             <div className="gallery">
+                
                 {/* {
                    mypics.map(item=>{
                        return(

@@ -13,7 +13,8 @@
     "index.html": "/index.html",
     "precache-manifest.75fcfb6f65d0dd7c78c63fc41015528f.js": "/precache-manifest.75fcfb6f65d0dd7c78c63fc41015528f.js",
     "service-worker.js": "/service-worker.js",
-    "static/css/2.68a81a89.chunk.css.map": "/static/css/2.68a81a89.chunk.css.map",
-    "static/css/main.eacbc102.chunk.css.map": "/static/css/main.eacbc102.chunk.css.map"
+    "static/css/2.173ac9d0.chunk.css.map": "/static/css/2.173ac9d0.chunk.css.map",
+    "static/css/main.eacbc102.chunk.css.map": "/static/css/main.eacbc102.chunk.css.map",
+    "static/media/UploadIcon.svg": "/static/media/UploadIcon.1cedb6e9.svg"
   }
 }
