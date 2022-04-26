@@ -163,6 +163,10 @@ def user_posts_list(request, pk=""):
 
         post_list = Post.objects.filter(user_id=pk)
 
+        if not post_list:
+            return JsonResponse({'message': 'User has no posts'}, status=status.HTTP_404_NOT_FOUND)
+
+
         posts_serializer = PostSerializer(post_list, many=True)
         return JsonResponse(posts_serializer.data, safe=False)
 #  ``   # GET list of posts, POST a new post, DELETE all posts
@@ -237,7 +241,6 @@ def posts_detail(request, pk):
         post = Post.objects.get(pk=pk) 
     except Post.DoesNotExist: 
         return JsonResponse({'message': 'The post does not exist'}, status=status.HTTP_404_NOT_FOUND) 
-
     if request.method == 'GET': 
         user_profile_serializer = UserSerializer(userprofile) 
         return JsonResponse(user_profile_serializer.data)
@@ -436,6 +439,29 @@ class ThreadView(View):
 
         return JsonResponse(context, safe=False)
 
+@api_view(['GET', 'POST', 'DELETE'])
+def user_reactions_list(request, pk=""):
+    if request.method == 'GET':
+        print("getting reactions from user: " + pk)
+        reactions_list = Reaction.objects.filter(user_id=pk)
+        print(reactions_list)
+        post_list = []
+
+        for reaction in reactions_list:
+            try:
+                id = reaction.post_id.id
+                post = Post.objects.get(pk=id)
+                post_list.append(post)
+            except Post.DoesNotExist:
+                print("cannot find post :(")
+    
+        if not post_list:
+            return JsonResponse({'message': 'User has not reacted to any posts'}, status=status.HTTP_404_NOT_FOUND)
+
+        post_serializer = PostSerializer(post_list, many=True)
+        return JsonResponse(post_serializer.data, safe=False)
+#  ``   # GET list of comments, POST a new comment, DELETE all comment
+
 # returns multiple comments based on post, returns all comments
 @api_view(['GET', 'POST', 'DELETE'])
 def post_comments_list(request, pk=""):
@@ -454,6 +480,9 @@ def user_comments_list(request, pk=""):
     if request.method == 'GET':
         print("getting comments from user: " + pk)
         comments_list = Comment.objects.filter(user_id=pk)
+
+        if not comments_list:
+            return JsonResponse({'message': 'User has no comments'}, status=status.HTTP_404_NOT_FOUND)
 
         comments_serializer = CommentSerializer(comments_list, many=True)
         return JsonResponse(comments_serializer.data, safe=False)
@@ -485,4 +514,3 @@ def comment_detail(request):
         for error in comment_serializer.errors:
             message = comment_serializer.errors[error][0].title()
         return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
-

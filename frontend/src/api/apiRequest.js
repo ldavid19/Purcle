@@ -287,6 +287,45 @@ async function getUsers() {
     return get("userlist");
 }
 
+async function getReactionsFromUser(id) {
+    return get("user_reactions", id)
+}
+
+async function getInteractions(id) {
+    let interactions = {
+        posts: [],
+        comments: [],
+        reactions: []
+    };
+
+    let posts = await getPostsFromUser(id)
+        .then((res) => {
+            interactions.posts = res;
+        })
+        .catch(err => console.error(`Error: ${err}`));
+
+    let comments = await getCommentsfromUser(id)
+        .then((res) => {
+            interactions.comments = res;
+        })
+        .catch(err => console.error(`Error: ${err}`));
+
+    let reactions = await getReactionsFromUser(id)
+        .then((res) => {
+            interactions.reactions = res;
+        })
+        .catch(err => console.error(`Error: ${err}`));
+
+    Promise.allSettled([posts, comments, reactions])
+        .then(values => {
+            console.log(values);
+            console.log(interactions);
+            return interactions;
+        });
+
+    return interactions
+}
+
 
 /* POST helper functions */
 /* post helpers */
@@ -479,9 +518,11 @@ async function makeComment(data) {
 
 export {
 
-    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, getInbox, getContext, getPostsFromUser,    //GET post functions
+    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, 
+    getInbox, getContext, getPostsFromUser,
     getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopic, getUsers,          //GET misc functions
-    getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, makeComment, makeImagePost,
+    getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, getReactionsFromUser, getInteractions,
+    makeComment, makeImagePost,
     upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout, postThread, postMessage,            //POST misc functions
 
 };  //always leave a comma on the last entry

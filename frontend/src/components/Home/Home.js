@@ -30,6 +30,8 @@ function Home() {
             console.log(res);
             let id = res.curr_user;
 
+            console.log(id);
+
             getTimeline(id)
             .then((res) => {
                 setPosts(res);

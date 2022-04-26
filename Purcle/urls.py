@@ -29,60 +29,68 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='index.html')),
+
+    #REACT ROUTES
     path('signup/', TemplateView.as_view(template_name='index.html')),
-    #path('login/', TemplateView.as_view(template_name='index.html')),
+    path('login/', TemplateView.as_view(template_name='index.html')),
     path('following/', TemplateView.as_view(template_name='index.html')),
+    path('profilesetup/', TemplateView.as_view(template_name='index.html')),
+    path('messages/', TemplateView.as_view(template_name='index.html')),
+    path('inbox/', TemplateView.as_view(template_name='index.html')),
+
+    #REACT ROUTES REGEX
     re_path(r'^profile/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^topic/((?P<pk>[0-9a-zA-Z_]+)?)$', TemplateView.as_view(template_name='index.html')), # id is char not int
+    re_path(r'^post/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^comment/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^inbox/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
+    
+    #API CALLS
+    #--auth--
+    path('api/auth/login/', views.LoginAPI.as_view(), name='login'),
+    #path('api/auth/register/', views.RegisterAPI.as_view(), name='register'),
+    path('api/auth/logout/', knox_views.LogoutView.as_view(), name='logout'),
+    path('api/sign_up', views.user_detail),
+    path('api/auth/', include('knox.urls')),
+    
+    #--profile--
     re_path(r'^api/profile/(?P<pk>[0-9]+)$', views.profile_detail),
-    re_path(r'^api/profilesetup/(?P<pk>[0-9]+)$', views.profile_detail),
     re_path(r'^api/profileid/(?P<pk>[0-9]+)$', views.profile_id),
+    re_path(r'^api/profilesetup/(?P<pk>[0-9]+)$', views.profile_detail),
+    re_path(r'^api/profile_update/(?P<pk>[0-9]+)$', views.profile_update),
+
+    #--posts--
+    re_path(r'^api/postlist$', views.post_list),
+    re_path(r'^api/post/((?P<pk>[0-9a-zA-Z_]+)?)$', views.post_detail), # grabs single post based on id
     re_path(r'^api/posts/((?P<pk>[0-9a-zA-Z_]+)?)$', views.posts_list), # grabs multiple posts based on topic
     re_path(r'^api/user_posts/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_posts_list), # grabs multiple posts based on user_id
-    re_path(r'^api/post/((?P<pk>[0-9a-zA-Z_]+)?)$', views.post_detail), # grabs single post based on id
-    #path('api/profile/', views.profile_detail),
-    re_path(r'^api/profile_update/(?P<pk>[0-9]+)$', views.profile_update),
-    #re_path(r'^api/post$', views.posts_list),
+    
+    #--topics--
     re_path(r'^api/topic$', views.topic_list),
     re_path(r'^api/topic/((?P<pk>[0-9a-zA-Z_]+)?)$', views.topic_detail), # id is char not int
-    re_path(r'^api/postlist/$', views.post_list),
+
+    #--comments--
+    re_path(r'^api/comment$', views.comment_detail),
     re_path(r'^api/post_comments/((?P<pk>[0-9a-zA-Z_]+)?)$', views.post_comments_list), # grabs multiple comments based on post
     re_path(r'^api/user_comments/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_comments_list), # grabs multiple comments based on user
     re_path(r'^api/user_nonanon_comments/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_nonanon_comments_list), # grabs multiple comments based on user
                                                                                                         # but only ones which aren't anonymous
-    re_path(r'^api/comment/$', views.comment_detail),
-    #re_path(r'^api/image/', views.image_detail, name = 'api/image/'),
-    path('login/', TemplateView.as_view(template_name='index.html')),
-    path('profilesetup/', TemplateView.as_view(template_name='index.html')),
-    path('messages/', TemplateView.as_view(template_name='index.html')),
-    #path('post/', views.posts_list),
-    path('topic/:id', TemplateView.as_view(template_name='index.html')),
-    path('post/:id', TemplateView.as_view(template_name='index.html')),
-    #path('profile/:id', TemplateView.as_view(template_name='index.html')),
-    #path('api/sign_up/', views.SignUpView.as_view(), name='sign_up'),
-    path('api/auth/login/', views.LoginAPI.as_view(), name='login'),
-    #path('api/auth/register/', views.RegisterAPI.as_view(), name='register'),
-    path('api/auth/logout/', knox_views.LogoutView.as_view(), name='logout'),
-    path('api/auth/', include('knox.urls')),
+    #--reactions--
+    re_path(r'^api/user_reactions/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_reactions_list), # grabs multiple comments based on user
+
+    #--misc--
     path('api/current_user', views.curr_user),
+    path('api/userlist/', views.user_list),
     re_path(r'^api/convert/((?P<pk>[0-9a-zA-Z_]+)?)$', views.convert),
-    
+
+    #--dm--
+    path('api/inbox/', views.ListThreads.as_view(), name='inbox'),
+    path('api/create-thread/', views.CreateThread.as_view(), name='create-thread'),
+    re_path(r'^api/inbox/(?P<pk>[0-9]+)$', views.ThreadView.as_view(), name='thread'),
+    re_path(r'^api/create-message/(?P<pk>[0-9]+)$', views.CreateMessage.as_view(), name='create-message'),
+
     #path('api/sign_up/', views.SignUpView.as_view(), name='sign_up'),
-    path('api/sign_up/', views.user_detail),
     #path('api/auth/register/', include('rest_auth.registration.urls')),
     # path(r'^', include('Purcle.urls')),
 
-    # user list link
-    path('api/userlist/', views.user_list),
-
-
-    # DM paths
-    path('inbox/', TemplateView.as_view(template_name='index.html')),
-    re_path(r'^inbox/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
-    path('api/inbox/', views.ListThreads.as_view(), name='inbox'),
-
-    path('api/create-thread/', views.CreateThread.as_view(), name='create-thread'),
-
-    re_path(r'^api/inbox/(?P<pk>[0-9]+)$', views.ThreadView.as_view(), name='thread'),
-
-    re_path(r'^api/create-message/(?P<pk>[0-9]+)$', views.CreateMessage.as_view(), name='create-message'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -5,8 +5,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from '@mui/material';
 
 import PostCard from '../Post/PostCard';
+import ProfileInteractions from './ProfileInteractions';
 
-import { getRandPosts, getUser, updateUser, getCurrUser, logout } from '../../api/apiRequest.js';
+import { getRandPosts, getUser, updateUser, getCurrUser, logout, getInteractions } from '../../api/apiRequest.js';
 import { formatUser, unformatUser } from '../../api/helper';
 
 /*
@@ -96,7 +97,7 @@ function Profile(props) {
     const navigate = useNavigate();
 
     const nullUser = {
-        username: "User not really found",
+        username: "User not found",
         pfp: placeholder,
         bio: "",
         follower_count: 0,
@@ -234,23 +235,9 @@ function Profile(props) {
             })
             .catch(err => console.error(`Error: ${err}`));
 
-
-        /*
-        axios.get('/api/profile/1')
-            .then(res => {
-                const usr = formatUser(res.data);
-                console.log(usr);
-                console.log(formatUser(usr))
-                setUser(usr);
-            })
-        */
-
     }
 
     const setUserApi = () => {
-        //change testUser to updated user object
-        //const updatedUser = unformatUser(testUser);
-
         console.log("put user----------");
         console.log(tempUser);
         console.log(localStorage.getItem('token'));
@@ -261,15 +248,6 @@ function Profile(props) {
             const usr = formatUser(res.data);
             setUser(usr);
         })
-
-        /*
-        axios.put('/api/profile/1', testUser)
-            .then(response => {
-                console.log(response.data)
-                setUser(response.data)
-            
-            });
-        */
     }
 
 
@@ -289,6 +267,8 @@ function Profile(props) {
         confirmCanUpdate();
         getUserApi();
     }, []);
+
+    //TODO: make pfp 1/3 column and username and info 2/3
 
     return (
         <div style={{ maxWidth: "550px", margin: "0px auto" }}>
@@ -343,15 +323,9 @@ function Profile(props) {
             </div> */}
                 </div>
             </div>
-            <div>
-                <p>Post History</p>
-                {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
-            </div>
-            <Container style={{ padding: "25px 50px 75px" }}>
-                <Row>
-                    <PostCard postList={posts} />
-                </Row>
-            </Container>
+
+            <ProfileInteractions user={user} id={id}/>
+            
             <div className="gallery">
                 {/* {
                    mypics.map(item=>{
