@@ -92,7 +92,7 @@ function Topic() {
                 </Col>
                 
                 <Col>
-                    <h3>{followCount}{(followCount === 1) ? " follower" : " followers"}</h3>
+                    <h5>{followCount}{(followCount === 1) ? " follower" : " followers"}</h5>
                 </Col>
                 
             </Row>
