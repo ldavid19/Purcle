@@ -106,6 +106,7 @@ class Post(models.Model):       # created by Nicole
     post_title = models.CharField(max_length=100)
     post_content = models.CharField(max_length=500) # either the text field for a text post, or the photo for a photo post
     post_time = models.DateTimeField(auto_now=False, auto_now_add=True) # time is set on initial creation
+    #post_image = models.FileField(upload_to='images/', default='images/cursed_turkey.jpg')
 
     # deletes post, any references to that post in Reaction or Comment are also deleted
     def delete_post(self):

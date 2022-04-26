@@ -5,11 +5,42 @@ import Creatable from 'react-select/creatable';
 import { Modal, Col, Row, Image } from "react-bootstrap";
 import { Button } from '@mui/material';
 
-import { makePost, getAllTopics, makeTopic, getTopic, getCurrUser } from "../../api/apiRequest.js";
+import { makePost, getAllTopics, makeTopic, getTopic, getCurrUser, makeImagePost } from "../../api/apiRequest.js";
 import axios from 'axios'
+import $ from "jquery";
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
+
+function includeHTML() {
+    var z, i, elmnt, file, xhttp;
+    /*loop through a collection of all HTML elements:*/
+    z = document.getElementsByTagName("*");
+    console.log(z);
+    for (i = 0; i < z.length; i++) {
+      elmnt = z[i];
+      /*search for elements with a certain atrribute:*/
+      file = elmnt.getAttribute("w3-include-html");
+      console.log(file)
+      if (file) {
+        /*make an HTTP request using the attribute value as the file name:*/
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4) {
+            if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+            if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+            /*remove the attribute, and call this function once more:*/
+            elmnt.removeAttribute("w3-include-html");
+            includeHTML();
+          }
+        }      
+        xhttp.open("GET", file, true);
+        xhttp.send();
+        /*exit the function:*/
+        return;
+      }
+    }
+  };
 
 function errorMessage(title, type, text, topic) {
     let message = "";
@@ -27,16 +58,19 @@ function errorMessage(title, type, text, topic) {
     if (type.localeCompare("Text") === 0 && text.length === 0) {
         message = message + "Please insert text.\n";
     }
-    if (type.localeCompare("Image") === 0 && text.length === 0) {
-        message = message + "Please insert image.\n";
-    } else if (type.localeCompare("Image") === 0 && text.length < 5) {
-        message = message + "Filetype not supported.\n";
-    } else if (type.localeCompare("Image") === 0
-    && text.substring(text.length - 4, text.length).localeCompare(".png") !== 0
-    && text.substring(text.length - 4, text.length).localeCompare(".jpg") !== 0
-    && text.substring(text.length - 5, text.length).localeCompare(".jpeg") !== 0) {
-        message = message + "Filetype not supported.\n";
-    }
+    // if (type.localeCompare("Image") === 0 && text.length === 0) {
+    //     message = message + "Please insert image.\n";
+    // } else if (type.localeCompare("Image") === 0 && text.length < 5) {
+    //     message = message + "Filetype not supported.\n";
+    // } else if (type.localeCompare("Image") === 0
+    // && text.substring(text.length - 4, text.length).localeCompare(".png") !== 0
+    // && text.substring(text.length - 4, text.length).localeCompare(".PNG") !== 0
+    // && text.substring(text.length - 4, text.length).localeCompare(".jpg") !== 0
+    // && text.substring(text.length - 4, text.length).localeCompare(".JPG") !== 0
+    // && text.substring(text.length - 5, text.length).localeCompare(".jpeg") !== 0
+    // && text.substring(text.length - 5, text.length).localeCompare(".JPEG") !== 0) {
+    //     message = message + "Filetype not supported.\n";
+    // }
     return message;
 }
 
@@ -58,7 +92,7 @@ function NewPost(props) {
             }
 
             var type_int = type.localeCompare("Image") === 0 ? 1 : 0;
-            var content_str = type.localeCompare("Image") === 0 ? image : text;
+            //var content_str = type.localeCompare("Image") === 0 ? image : text;
 
             var newPost;
 
@@ -81,11 +115,11 @@ function NewPost(props) {
                                     //user_id: 1,
                                     post_is_anonymous: checked,
                                     post_title: title,
-                                    post_content: content_str,
+                                    post_content: text,
                                     post_time: undefined
                                 };
                                 console.log(newPost);
-                                makePost(newPost);
+                                type_int == 0 ? makePost(newPost) : makeImagePost(newPost)
                                 //.catch(err => console.error(`Error: ${err}`));
                             })
                             .catch(err => console.error(`Error: ${err}`));
@@ -103,11 +137,11 @@ function NewPost(props) {
                             //user_id: 1,
                             post_is_anonymous: checked,
                             post_title: title,
-                            post_content: content_str,
+                            post_content: text,
                             post_time: undefined
                         };
                         console.log(newPost);
-                        makePost(newPost);
+                        type_int == 0 ? makePost(newPost) : makeImagePost(newPost)
                         //.catch(err => console.error(`Error: ${err}`));
                     })
                     .catch(err => console.error(`Error: ${err}`));
@@ -150,10 +184,14 @@ function NewPost(props) {
         setTitle(ev.target.value);
     };
 
-    const [image, setImage] = React.useState(null);
+    const [image, setImage] = React.useState(undefined);
     const handleImageChange = ev => {
         setImage(URL.createObjectURL(ev.target.files[0]));
-        setText(ev.target.value);
+        //setText(URL.createObjectURL(ev.target.files[0]));
+        //setImage(ev.target.files[0]);
+        setText("/media/images/" + ev.target.files[0].name);
+        console.log(ev.target.files[0]);
+        console.log(ev.target.files[0].name);
     };
 
     const [text, setText] = React.useState("");
@@ -285,18 +323,27 @@ function NewPost(props) {
                                 cols={5}
                             />
                         :
-                            <form>
-                                <input
-                                    type="file"
-                                    onChange={handleImageChange}
-                                />
-                                <p></p>
-                                { image.length > 0 ?
-                                            <Image
-                                                src={image} 
-                                            />
-                                : ""}
+                            <div>
+                                {/*}
+                                <form method="post" enctype="multipart/form-data">
+                                    <input
+                                        type="file"
+                                        onChange={handleImageChange}
+                                    />
+                                    <button type="submit">Upload</button>
                                 </form>
+                                */}
+                                {/*}
+                                <div w3-include-html="test.html"></div>
+                                {includeHTML()}
+                                */}
+                                <input
+                                        type="file"
+                                        onChange={handleImageChange}
+                                    />
+                                <p></p>
+                                { image.length > 0 ? <Image src={image}/> : ""}
+                            </div>
                     :
                         <p></p>
                 }
@@ -307,7 +354,7 @@ function NewPost(props) {
                 </Button> */}
                 <p>{error}</p>
                 <Button variant="primary" onClick={handleSubmit}>
-                Post
+                    Post
                 </Button>
             </Modal.Footer>
             </Modal>

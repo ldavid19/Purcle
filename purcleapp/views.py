@@ -297,14 +297,35 @@ def user_list(request):
 
         user_list_serializer = UserListSerializer(users, many=True)
         return JsonResponse(user_list_serializer.data, safe=False)
-@api_view(['GET', 'POST', 'DELETE', 'PUT'])
 
+# def image_detail(request):
+#     if request.method == 'POST':
+#         form = PostForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             post_serializer = PostSerializer(form)
+#             return JsonResponse(post_serializer.data, safe=False)
+
+# def image_detail(request):
+#     if request.method == 'POST':
+#         form = PostForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('login')
+#     else:
+#         form = PostForm()
+#     return render(request, 'image_form.html', {'form': form})
+
+@api_view(['GET', 'POST', 'DELETE', 'PUT'])
 def post_list(request):
     
     if request.method == 'POST':
+        print("this prints")
+        #print(request.data.post_image)
         post_data = JSONParser().parse(request)
         print("from views.py post_list POST:")
         print(post_data)
+        #print(post_data.post_image)
         post_serializer = PostSerializer(data=post_data)
         if post_serializer.is_valid():
             post_serializer.save()

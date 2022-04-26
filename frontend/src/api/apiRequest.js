@@ -71,6 +71,7 @@ async function post(type, id, data) { //POST request
     }
 
     console.log("post: /api/" + type + id);
+    console.log(data); 
     await axios.post('/api/' + type + id, data, {
         validateStatus: function (status) {
             console.log("status < 500");
@@ -292,15 +293,29 @@ async function getUsers() {
 
 async function makePost(data) {
     let ret = [];
-    //console.log("attempting to make a post");
+    console.log("attempting to make a post");
 
-    await post("post", "", data)
+    await post("postlist", "", data)
         .then((res) => {
             console.log(res);
             ret = res;
         })
         .catch(err => console.error(`Error: ${err}`));
     return ret;
+}
+
+async function makeImagePost(data) {
+    makePost(data)
+    // let ret = [];
+    // console.log("attempting to make an image post");
+
+    // await post("image", "", data)
+    //     .then((res) => {
+    //         console.log(res);
+    //         ret = res;
+    //     })
+    //     .catch(err => console.error(`Error: ${err}`));
+    // return ret;
 }
 
 async function makeTopic(data) {
@@ -465,8 +480,8 @@ async function makeComment(data) {
 export {
 
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, getInbox, getContext, getPostsFromUser,    //GET post functions
-    getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopicInfo, getTopic, getUsers,          //GET misc functions
-    getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, makeComment,  
+    getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopic, getUsers,          //GET misc functions
+    getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, makeComment, makeImagePost,
     upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout, postThread, postMessage,            //POST misc functions
 
 };  //always leave a comma on the last entry
