@@ -6,7 +6,7 @@ import { Button } from "react-bootstrap";
 
 import { useParams } from "react-router-dom";
 
-import {postThread, getContext, postMessage} from '../../api/apiRequest.js';
+import {postThread, getContext, postMessage, getCurrUser} from '../../api/apiRequest.js';
 import { Card, Container, ListGroup, Row, Col, Image, Ratio } from 'react-bootstrap';
 import Message from './Message';
 
@@ -23,6 +23,10 @@ function ThreadView() {
     const [error, setError] = React.useState("");
 
     const [message, setMessage] = useState("");
+
+    const [currUser, setCurr] = useState("");
+
+    const [receiver, setReceiver] = useState("");
 
     const handleUpdateUserInput = (event) => {
         console.log(event.target.name);
@@ -49,6 +53,18 @@ function ThreadView() {
         }
     }
 
+    const updateUsername = (thread) => {
+        getCurrUser().then(res => {
+            console.log(res)
+            const curr = res.curr_user;
+            if (curr == thread.user) {
+                setReceiver(thread.receivername);
+            } else {
+                setReceiver(thread.username);
+            }
+        }).catch(err => console.error(`Error: ${err}`));
+    }
+
     useEffect(() => {
         // getThreadContext(id).then((res) => {
         //     setThread(res.thread);
@@ -66,6 +82,10 @@ function ThreadView() {
 
         getThreadContext(id).then((res) => {
             setThread(res.thread);
+
+            updateUsername(res.thread);
+
+
 
             res.message_list.forEach(message => {
                 arr.push(<Message sender={message.sender} message={message.body} time={message.date} />)
@@ -95,7 +115,7 @@ function ThreadView() {
         <div className="MessageBox">
             <Card style={{ width: '50rem'}}>
                 <Card.Header>
-                    {id}
+                    {receiver}
                 </Card.Header>
             
             <Card.Body>
