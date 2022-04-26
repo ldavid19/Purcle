@@ -10,11 +10,19 @@ import {postThread, getInbox} from '../../api/apiRequest.js';
 function Inbox() {
     const [threadList, setThreadList] = useState([<ThreadItem />, <ThreadItem />, <ThreadItem />]);
     const [show, setShow] = useState(false);
+    const [showErr, setShowErr] = useState(false);
 
     const [targetUser, setUser] = useState("");
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const handleCloseErr = () => setShowErr(false);
+    const handleShowErr = () => {
+        setShowErr(true);
+        setUser(targetUser);
+    }
+    
+
 
     useEffect(() => {
 
@@ -64,11 +72,26 @@ function Inbox() {
     }
 
 
+    async function makeThread(body) {
+        let response = await postThread(body);
+        return response;
+    }
+
+
     const handleSubmitThread = (event) => {
         console.log(targetUser);
         let err = errorMessage(targetUser);
         if (err == "") {
-            postThread({'username': targetUser,});
+
+            let response = "";
+
+            makeThread({'username': targetUser,}).then((res) => {
+                if(res.hasOwnProperty('message')){
+
+                    handleClose();
+                    handleShowErr();
+                }
+            })
             setUser("");
             handleClose();
         }
@@ -108,6 +131,27 @@ function Inbox() {
 
 
                     </Modal>
+
+                <Modal show={showErr} onHide={handleCloseErr}>
+                    <Modal.Header closeButton>
+                        Error creating thread
+                    </Modal.Header>
+
+                        <Modal.Body centered>
+
+                            <p>User "{targetUser}" does not exist</p>
+
+                        </Modal.Body>
+
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={handleCloseErr}>
+                                Cancel
+                            </Button>
+  
+                        </Modal.Footer>
+
+
+                </Modal>
 
                     <ListGroup style={{ padding: "0px" }}>
                         {threadList}

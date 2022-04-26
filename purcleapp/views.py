@@ -369,7 +369,7 @@ class CreateThread(View):
 
 
         except:
-            return redirect('create-thread')
+            return JsonResponse({'message': 'This user does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class ListThreads(View):
