@@ -17,6 +17,11 @@ class TopicSerializer(serializers.ModelSerializer):
         model = Topic
         fields = '__all__'
 
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = '__all__'
+
 class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
@@ -89,3 +94,31 @@ class UserSerializer(serializers.ModelSerializer):
 #         user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
 
 #         return user
+
+class ThreadSerializer(serializers.ModelSerializer):
+
+    def get_receiver(self, obj):
+        return obj.receiver.username
+
+    def get_username(self, obj):
+        return obj.user.username
+
+    username = serializers.SerializerMethodField("get_username")
+
+    receivername = serializers.SerializerMethodField("get_receiver")
+
+
+    class Meta:
+        model = ThreadModel
+        fields = '__all__'
+
+class MessageSerializer(serializers.ModelSerializer):
+
+    def get_username(self, obj):
+        return obj.sender_user.username
+
+    sender = serializers.SerializerMethodField("get_username")
+
+    class Meta:
+        model = MessageModel
+        fields = '__all__'

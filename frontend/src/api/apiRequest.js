@@ -66,11 +66,14 @@ async function post(type, id, data) { //POST request
 
     if (id != "") {
         type = type + "/";
+    } else {
+        id = id + "/"
     }
 
     console.log("post: /api/" + type + id);
     await axios.post('/api/' + type + id, data, {
         validateStatus: function (status) {
+            console.log("status < 500");
             return status < 500; // Resolve only if the status code is less than 500
         }
     })
@@ -158,7 +161,8 @@ async function getPostsFromTopic(topic) {
                 data.push(formatPost(post))
             });
             //console.log(data);
-        });
+        })
+        .catch(err => console.error(`Error: ${err}`));
 
     data.sort((a, b) => b.date - a.date);
 
@@ -247,6 +251,11 @@ async function getCurrUser() {
     return get("current_user");
 }
 
+async function convertToUserProfile(id) {
+    console.log("convertToUserProfile returns: " + get("convert", id));
+    return get("convert", id);
+}
+
 /* topic helpers */
 async function getAllTopics() {
     let data = [];
@@ -275,6 +284,45 @@ async function getTopic(id) {
 
 async function getUsers() {
     return get("userlist");
+}
+
+async function getReactionsFromUser(id) {
+    return get("user_reactions", id)
+}
+
+async function getInteractions(id) {
+    let interactions = {
+        posts: [],
+        comments: [],
+        reactions: []
+    };
+
+    let posts = await getPostsFromUser(id)
+        .then((res) => {
+            interactions.posts = res;
+        })
+        .catch(err => console.error(`Error: ${err}`));
+
+    let comments = await getCommentsfromUser(id)
+        .then((res) => {
+            interactions.comments = res;
+        })
+        .catch(err => console.error(`Error: ${err}`));
+
+    let reactions = await getReactionsFromUser(id)
+        .then((res) => {
+            interactions.reactions = res;
+        })
+        .catch(err => console.error(`Error: ${err}`));
+
+    Promise.allSettled([posts, comments, reactions])
+        .then(values => {
+            console.log(values);
+            console.log(interactions);
+            return interactions;
+        });
+
+    return interactions
 }
 
 
@@ -325,6 +373,29 @@ async function postUser(data) {
     return ret;
 }
 
+
+/* DM helpers */
+
+async function postThread(data) {
+    const ret = post("create-thread",'', data);
+    return ret;
+}
+
+async function getInbox() {
+    const ret = get("inbox");
+    return ret;
+}
+
+async function getContext(id) {
+    const ret = get("inbox", id);
+    return ret;
+}
+
+async function postMessage(receiver, message) {
+    const ret = post("create-message", receiver, message);
+    return ret;
+}
+
 /* authentication helpers */
 async function login(username, password) {
     const data = {
@@ -356,19 +427,87 @@ async function logout(token) {
     return ret;
 }
 
+async function getCommentsfromPost(post_id) {
+    let data = [];
+
+    await get("post_comments", post_id)
+        .then((res) => {
+            console.log(res);
+            let arr = Array.from(res);
+
+            arr.map((comment) => {
+                //console.log("pushed!")
+                //data.push(formatPost(post))
+                data.push(comment)
+            });
+            console.log(data);
+        });
+
+    return data;
+}
+
+async function getCommentsfromUser(user_id) {
+    let data = [];
+
+    await get("user_comments", user_id)
+        .then((res) => {
+            console.log(res);
+            let arr = Array.from(res);
+
+            arr.map((comment) => {
+                //console.log("pushed!")
+                //data.push(formatPost(post))
+                data.push(comment)
+            });
+            console.log(data);
+        });
+
+    return data;
+}
+
+async function getNonanonCommentsfromUser(user_id) {
+    let data = [];
+
+    await get("user_nonanon_comments", user_id)
+        .then((res) => {
+            console.log(res);
+            let arr = Array.from(res);
+
+            arr.map((comment) => {
+                //console.log("pushed!")
+                //data.push(formatPost(post))
+                data.push(comment)
+            });
+            console.log(data);
+        });
+
+    return data;
+}
+
+async function makeComment(data) {
+    let ret = [];
+    //console.log("attempting to make a comment");
+
+    await post("comment", "", data)
+        .then((res) => {
+            console.log(res);
+            ret = res;
+        })
+        .catch(err => console.error(`Error: ${err}`));
+    return ret;
+}
+
 // async function postProfile(data) {
 //     return post("profile_detail", 0, data);
 // }
 
 export {
-<<<<<<< HEAD
-    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, getPostsFromUser,     //GET post functions
-    getUser, getScore, getAllTopics, getCurrUser,           //GET misc functions
-    upvote, downvote, updateUser, postUser, login, logout,               //POST misc functions
-};
-=======
-    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline,     //GET post functions
-    getUser, getScore, getAllTopics, getCurrUser, getTopicInfo, getTopic, getUsers,          //GET misc functions
-    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout,             //POST misc functions
+
+    getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, 
+    getInbox, getContext, getPostsFromUser,
+    getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopic, getUsers,          //GET misc functions
+    getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, getReactionsFromUser, getInteractions,
+    makeComment,  
+    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout, postThread, postMessage,            //POST misc functions
+
 };  //always leave a comma on the last entry
->>>>>>> dae2b415ea2560e0f5be5318f174985f8cf88dab

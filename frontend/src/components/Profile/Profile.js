@@ -5,8 +5,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from '@mui/material';
 
 import PostCard from '../Post/PostCard';
+import ProfileInteractions from './ProfileInteractions';
 
-import { getRandPosts, getPostsFromUser, getUser, updateUser, getCurrUser, logout } from '../../api/apiRequest.js';
+import { getRandPosts, getUser, updateUser, getCurrUser, logout, getInteractions } from '../../api/apiRequest.js';
 import { formatUser, unformatUser } from '../../api/helper';
 
 /*

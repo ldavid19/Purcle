@@ -3,7 +3,7 @@ import { Container, Card, Image } from 'react-bootstrap';
 
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
-import { getPost, getUser } from '../../api/apiRequest';
+import { getPost, getUser, getCommentsfromPost, makeComment, convertToUserProfile, getCurrUser } from '../../api/apiRequest';
 import { getRelativeTime } from '../../api/helper';
 
 import { Button } from '@mui/material';
@@ -61,8 +61,6 @@ function PostPage(props) {
 
     const [post, setPost] = useState(nullPost);
     const [username, setUsername] = useState("");
-    const [showTestComment, setShowTestComment] = useState(false);
-    const [testCommentText, setTestCommentText] = useState("");
     const [commentText, setCommentText] = React.useState("");
     const [anonCheck, setAnonCheck] = React.useState(false);
 
@@ -72,28 +70,68 @@ function PostPage(props) {
     const handleAnonCheckChange = () => {
         setAnonCheck(!anonCheck);
     }
-    const [anon, setAnon] = React.useState(false);
+
+    const [curr_id, setCurrID] = useState(null);
+    const getCurrID = () => {
+        getCurrUser()
+            .then((res) => {
+                console.log(res);
+                setCurrID(res.curr_user);
+                //console.log(curr_id);
+            })
+            .catch(err => console.error(`Error: ${err}`));
+    }
+
+    const [comments, setComments] = useState([]);
+    const getComments = () => {
+        getCommentsfromPost(id)
+            .then((res) => {
+                let data = res;
+                console.log(res);
+
+                let comment_list = [];
+                data.map((c) => {
+                    let newComment = {
+                        id: c.id,
+                        user_id: c.user_id,
+                        post_id: c.post_id,
+                        content: c.comment_content,
+                        date: c.comment_created_date,
+                        isAnon: c.comment_is_anonymous
+                    }
+
+                    comment_list.push(newComment);
+                })
+
+                //console.log(comment_list);
+                setComments(comment_list);
+                //console.log(comments);
+            })
+            .catch(err => console.error(`Error: ${err}`));
+    }
 
     const handleSubmit = () => {
-        var newComment = {
-            //comment_id: databaseLength(),
-            user_id: "user",
-            comment_content: commentText,
-            comment_created_date: new Date(Date.now()),
-            comment_is_anonymous: anonCheck
-        };
-        /*
-        makeComment(newComment)
-        .then((res) => {
-            props.getComments();
-            //getAllComments();
-        });
-        */
-        setAnon(anonCheck);
+        if (commentText.length > 0) {
+            var newComm;
+            convertToUserProfile(curr_id)
+                .then((res) => {
+                    console.log(res);
+                    newComm = {
+                        id: undefined,
+                        user_id: res.curr_userprofile,
+                        post_id: post.id,
+                        comment_content: commentText,
+                        comment_created_date: undefined,
+                        comment_is_anonymous: anonCheck
+                    };
+                    //console.log(newComm);
+                    makeComment(newComm);
+                })
+                .catch(err => console.error(`Error: ${err}`));
+        }
+
         setAnonCheck(false);
-        setTestCommentText(commentText);
         setCommentText("");
-        setShowTestComment(true);
     }
 
     //redirects user to an error page, then reloads page to ensure that screen is not stuck on nothing 
@@ -104,7 +142,9 @@ function PostPage(props) {
     
     useEffect(() => {
 
-        console.log(id)
+        //console.log(id)
+        getComments();
+        getCurrID();
         
         getPost(id)
             .then((res) => {
@@ -177,24 +217,10 @@ function PostPage(props) {
                             Post
                         </Button>
                 }
-            </Card>
-            {showTestComment ?
-                <Card style = {{textAlign: "left"}}>
-                    {testCommentText}
-                    {
-                        anon ? 
-                            <body>by Anonymous time ago</body>
-                            :
-                            <body>
-                                by{' '}
-                                <Link to="/profile">{"user"}</Link>
-                                {' '}time ago
-                            </body>
-                    }
-                </Card>
-                :
-                <body></body>
-            }
+            </Card> 
+            <div>
+                {comments && comments[0]?.content}
+            </div>
 
         </Container>
     )
