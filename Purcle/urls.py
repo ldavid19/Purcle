@@ -44,6 +44,13 @@ urlpatterns = [
     re_path(r'^inbox/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
     
     #API CALLS
+    #--auth--
+    path('api/auth/login/', views.LoginAPI.as_view(), name='login'),
+    #path('api/auth/register/', views.RegisterAPI.as_view(), name='register'),
+    path('api/auth/logout/', knox_views.LogoutView.as_view(), name='logout'),
+    path('api/sign_up', views.user_detail),
+    path('api/auth/', include('knox.urls')),
+    
     #--profile--
     re_path(r'^api/profile/(?P<pk>[0-9]+)$', views.profile_detail),
     re_path(r'^api/profileid/(?P<pk>[0-9]+)$', views.profile_id),
@@ -68,13 +75,6 @@ urlpatterns = [
                                                                                                         # but only ones which aren't anonymous
     #--reactions--
     re_path(r'^api/user_reactions/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_reactions_list), # grabs multiple comments based on user
-
-    #--auth--
-    path('api/auth/', include('knox.urls')),
-    path('api/auth/login/', views.LoginAPI.as_view(), name='login'),
-    #path('api/auth/register/', views.RegisterAPI.as_view(), name='register'),
-    path('api/auth/logout/', knox_views.LogoutView.as_view(), name='logout'),
-    path('api/sign_up', views.user_detail),
 
     #--misc--
     path('api/current_user', views.curr_user),
