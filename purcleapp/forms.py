@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.models import User
 
+from purcleapp.models import Post
+
 class CustomUserCreationForm(UserCreationForm):    
     first_name = forms.CharField()
     last_name = forms.CharField()
@@ -19,4 +21,8 @@ class MessageForm(forms.Form):
 
     message = forms.CharField(label='', max_length=200)
 
+# class PostForm(forms.ModelForm):
+#     class Meta:
+#         model = Post
+#         fields = '__all__'
     
