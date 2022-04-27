@@ -9,6 +9,8 @@ import ProfileInteractions from './ProfileInteractions';
 
 import { getRandPosts, getUser, updateUser, getCurrUser, logout, getInteractions } from '../../api/apiRequest.js';
 import { formatUser, unformatUser } from '../../api/helper';
+import FollowingItem from './FollowingItem';
+import FollowerItem from './FollowerItem';
 
 /*
 import axios from 'axios'
@@ -83,19 +85,58 @@ function UpdateProfileModal(props) {
     )
 }
 
-function CloseConfirmationModal() {
-
-}
-
 
 function FollowingModal(props) {
+
+    console.log(props.user.following);
+
+    const listItems = props.user.following.map((following) => (
+        <FollowingItem
+            key={following}
+            user_id={following}
+        />
+    ));
+
     return (
         <>
-            <Modal show={props.showFollowers} onHide={props.handleCloseFollowers}>
+            <Modal show={props.show} onHide={props.handleCloseFollowers}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Following List</Modal.Title>
+                </Modal.Header>
+                <Modal.Body user={props.user}>
+                    <ul>{listItems}</ul>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={props.handleCloseFollowers}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    )
+}
+
+function FollowerModal(props) {
+
+    console.log("poop");
+    console.log(props.user.followers);
+
+    const listItems = props.user.followers.map((follower) => (
+        <FollowerItem
+            key={follower}
+            user_id={follower}
+        />
+    ));
+
+    return (
+        <>
+            <Modal show={props.show} onHide={props.handleCloseFollowers}>
                 <Modal.Header closeButton>
                     <Modal.Title>Follower List</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Are you sure about deleting your account?</Modal.Body>
+                <Modal.Body user={props.user}>
+                    <ul>{listItems}</ul>
+                </Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" onClick={props.handleCloseFollowers}>
                         Close
@@ -160,6 +201,7 @@ function Profile(props) {
     const [show, setShow] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [showFollowers, setShowFollowers] = useState(false);
+    const [showFollowing, setShowFollowing] = useState(false);
     const [tempUser, setTempUser] = useState(nullUser);
     const [update, setUpdate] = useState(false);
 
@@ -241,6 +283,13 @@ function Profile(props) {
     const handleCloseFollowers = () => {
         setShowFollowers(false);
     }
+    const handleShowFollowing = () => {
+        setShowFollowing(true);
+    }
+    const handleCloseFollowing = () => {
+        setShowFollowing(false);
+    }
+
 
     const confirmCanUpdate = () => {
         getCurrUser().then(res => {
@@ -342,9 +391,24 @@ function Profile(props) {
                         <h4>{user.username}</h4>
                         <h7>{user.bio}</h7>
                         <div style={{ display: "flex", justifyContent: "space-between", width: "108%" }}>
-                            <h6>3 posts</h6>
-                            <h6>{user.follower_count} followers</h6>
-                            <h6>{user.following_count} following</h6>
+                            <Button variant="danger" onClick={handleShowFollowers}>
+                                {user.follower_count} followers
+                            </Button>
+                            <FollowerModal
+                                show={showFollowers}
+                                user={user}
+                                handleCloseFollowers={handleCloseFollowers}
+                            />
+                            <Button variant="danger" onClick={handleShowFollowing}>
+                                {user.following_count} following
+                            </Button>
+                            <FollowingModal
+                                show={showFollowing}
+                                user={user}
+                                handleCloseFollowers={handleCloseFollowing}
+                            />
+                        </div>
+                        <div>
                         </div>
                     </div>
                 </div>
@@ -352,7 +416,6 @@ function Profile(props) {
                 <div className="file-field input-field" style={{ margin: "0px" }}>
                     <div className="btn #64b5f6 blue darken-1">
                         {update && <span onClick={handleShow}>Update Profile</span>}
-
                         <UpdateProfileModal
                             show={show}
                             handleClose={handleClose}
@@ -365,7 +428,6 @@ function Profile(props) {
                             show={showConfirmation}
                             handleClose={handleCloseConfirmation}
                         />
-
                         {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
                     </div>
                     {/* <div className="file-path-wrapper">
