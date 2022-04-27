@@ -251,6 +251,7 @@ def posts_detail(request, pk):
 # # def posts_list_published(request):
 #     # GET all published posts
 
+
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
 def topic_list(request):
     if request.method == 'GET':
@@ -265,6 +266,24 @@ def topic_list(request):
         if topic_serializer.is_valid():
             topic_serializer.save()
             return JsonResponse(topic_serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(topic_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT', 'PATCH'])
+#@permission_classes((IsAuthenticated, ))
+def topic_update(request, pk):
+    try: 
+        topic = Topic.objects.get(pk=pk) 
+    except Topic.DoesNotExist: 
+        return JsonResponse({'message': 'The topic does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PATCH':
+        
+        topic_data = JSONParser().parse(request)
+        topic_serializer = TopicSerializer(topic, data=topic_data, partial=True) 
+        if topic_serializer.is_valid(): 
+            topic_serializer.save() 
+            return JsonResponse(topic_serializer.data)
+        print(topic_serializer.errors)
         return JsonResponse(topic_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
