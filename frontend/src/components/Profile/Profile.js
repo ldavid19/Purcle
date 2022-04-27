@@ -190,7 +190,7 @@ function Profile(props) {
 
     const nullUser = {
         username: "User not found",
-        pfp: null,
+        pfp: placeholder,
         bio: "",
         follower_count: 0,
         following_count: 0,
@@ -212,6 +212,7 @@ function Profile(props) {
         following_count: 9,
         followers: [],
         following: [],
+        topics:[],
         private: true,
         first: "what",
         last: "thefuc",
@@ -252,13 +253,16 @@ function Profile(props) {
         email: string
     }
     */
-    const onDrop = (picture) => {
-        setUploadedPictures([...uploadedPictures, picture])
-        user.pfp = uploadedPictures;
-        console.log("profile pic", uploadedPictures);
-        console.log(user)
 
-    }
+
+
+    // const onDrop = (picture) => {
+    //     setUploadedPictures([...uploadedPictures, picture])
+    //     user.pfp = uploadedPictures;
+    //     console.log("profile pic", uploadedPictures);
+    //     console.log(user)
+
+    // }
 
     const handleFollowUser = (event) => {
         console.log("followed", followed);
