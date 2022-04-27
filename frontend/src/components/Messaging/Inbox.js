@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { ListGroup } from 'react-bootstrap';
+import { ListGroup, Container, Row, Modal } from 'react-bootstrap';
 
 import ThreadItem from './ThreadItem'
-import { Modal } from "react-bootstrap";
-import { Button } from "react-bootstrap";
+import { Button } from '@mui/material';
 
-import {postThread, getInbox} from '../../api/apiRequest.js';
+import {postThread, getInbox, getCurrUser} from '../../api/apiRequest.js';
 
 function Inbox() {
-    const [threadList, setThreadList] = useState([<ThreadItem />, <ThreadItem />, <ThreadItem />]);
+    const [threadList, setThreadList] = useState([]);
     const [show, setShow] = useState(false);
     const [showErr, setShowErr] = useState(false);
+    const [currUser, setCurrUser] = useState(0);
 
     const [targetUser, setUser] = useState("");
 
@@ -27,6 +27,7 @@ function Inbox() {
     useEffect(() => {
 
         console.log("use effect");
+        getCurrentUser();
         getConvos().then((res) => {
             setThreadList(res);
         })
@@ -36,6 +37,18 @@ function Inbox() {
 
 
     },[]);
+
+    const getCurrentUser = () => {
+        getCurrUser()
+        .then((res) => {
+            console.log(res);
+            let id = res.curr_user;
+
+            console.log(id);
+
+            setCurrUser(id);
+        })
+    }
 
     async function getConvos() {
         // getInbox().then(res => {
@@ -50,7 +63,7 @@ function Inbox() {
 
         threads.forEach(thread => {
 
-            arr.push(<ThreadItem id={thread.id} sendername={thread.username} receivername={thread.receivername}/>)
+            arr.push(<ThreadItem id={thread.id} currUser={currUser}/>)
         })
         return arr;
 
@@ -101,63 +114,63 @@ function Inbox() {
 
     return (
 
-        <div>
-            <Button variant="primary" onClick={handleShow}>
-                Create Thread
-            </Button>
+        <Container className="Home" style={{padding: "0px 75px"}}>
+            <Row style={{padding: "20px 0px"}}>
+                <Button variant="contained" onClick={handleShow}>
+                    Create Thread
+                </Button>
+            </Row>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Create Thread</Modal.Title>
                 </Modal.Header>
 
-                        <Modal.Body>
+                <Modal.Body>
 
-                            <form>
-                            <input name="username" type="text" className="form-control" placeholder="User to start thread with" onChange={handleUpdateUserInput}/>
-                            </form>
+                    <form>
+                    <input name="username" type="text" className="form-control" placeholder="User to start thread with" onChange={handleUpdateUserInput}/>
+                    </form>
 
-                        </Modal.Body>
+                </Modal.Body>
 
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={handleClose}>
-                                Cancel
-                            </Button>
-                            
-                            <Button variant="primary" onClick={handleSubmitThread}>
-                                Create
-                            </Button>
-                        </Modal.Footer>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Cancel
+                    </Button>
+                    
+                    <Button variant="primary" onClick={handleSubmitThread}>
+                        Create
+                    </Button>
+                </Modal.Footer>
 
+            </Modal>
 
-                    </Modal>
+            <Modal show={showErr} onHide={handleCloseErr}>
+                <Modal.Header closeButton>
+                    Error creating thread
+                </Modal.Header>
 
-                <Modal show={showErr} onHide={handleCloseErr}>
-                    <Modal.Header closeButton>
-                        Error creating thread
-                    </Modal.Header>
+                    <Modal.Body centered>
 
-                        <Modal.Body centered>
+                        <p>User "{targetUser}" does not exist</p>
 
-                            <p>User "{targetUser}" does not exist</p>
+                    </Modal.Body>
 
-                        </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleCloseErr}>
+                            Cancel
+                        </Button>
 
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={handleCloseErr}>
-                                Cancel
-                            </Button>
-  
-                        </Modal.Footer>
+                    </Modal.Footer>
+            </Modal>
 
-
-                </Modal>
-
-                    <ListGroup style={{ padding: "0px" }}>
-                        {threadList}
-                    </ListGroup>
-                </div>
-
+            <Row style={{display: "flex"}}>
+                <ListGroup style={{ padding: "0px" }}>
+                    {threadList}
+                </ListGroup>
+            </Row>
+        </Container>
 
     );
 }
