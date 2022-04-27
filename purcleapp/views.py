@@ -300,14 +300,35 @@ def user_list(request):
 
         user_list_serializer = UserListSerializer(users, many=True)
         return JsonResponse(user_list_serializer.data, safe=False)
-@api_view(['GET', 'POST', 'DELETE', 'PUT'])
 
+# def image_detail(request):
+#     if request.method == 'POST':
+#         form = PostForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             post_serializer = PostSerializer(form)
+#             return JsonResponse(post_serializer.data, safe=False)
+
+# def image_detail(request):
+#     if request.method == 'POST':
+#         form = PostForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('login')
+#     else:
+#         form = PostForm()
+#     return render(request, 'image_form.html', {'form': form})
+
+@api_view(['GET', 'POST', 'DELETE', 'PUT'])
 def post_list(request):
     
     if request.method == 'POST':
+        print("this prints")
+        #print(request.data.post_image)
         post_data = JSONParser().parse(request)
         print("from views.py post_list POST:")
         print(post_data)
+        #print(post_data.post_image)
         post_serializer = PostSerializer(data=post_data)
         if post_serializer.is_valid():
             post_serializer.save()
@@ -479,6 +500,7 @@ def user_nonanon_comments_list(request, pk=""):
         return JsonResponse(comments_serializer.data, safe=False)
 #  ``   # GET list of comments, POST a new comment, DELETE all comments
 
+@api_view(['GET', 'POST', 'DELETE'])
 def comment_detail(request):
     
     if request.method == 'POST':
@@ -493,3 +515,41 @@ def comment_detail(request):
         for error in comment_serializer.errors:
             message = comment_serializer.errors[error][0].title()
         return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'POST', 'DELETE'])  
+def reaction_detail(request):
+    
+    if request.method == 'POST':
+        reaction_data = JSONParser().parse(request)
+        print("from views.py reaction_detail POST:")
+        print(reaction_data)
+        reaction_serializer = ReactionSerializer(data=reaction_data)
+        if reaction_serializer.is_valid():
+            reaction_serializer.save()
+            return JsonResponse(reaction_serializer.data)
+        message = ""
+        for error in reaction_serializer.errors:
+            message = reaction_serializer.errors[error][0].title()
+        return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'POST', 'DELETE'])  
+def del_reaction(request, pk=""):
+
+    if request.method == 'DELETE':
+        print("from views.py reaction_detail DELETE")
+        print(pk)
+        reaction = Reaction.objects.get(pk=pk)
+        reaction.delete() 
+        return JsonResponse({'message': 'Reaction was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'POST', 'DELETE'])
+def post_reactions(request, pk=""):
+    if request.method == 'GET':
+        print("getting reactions from post: " + pk)
+        reactions_list = Reaction.objects.filter(post_id=pk)
+
+        if not reactions_list:
+            return JsonResponse({'message': 'Post has no reactions'}, status=status.HTTP_404_NOT_FOUND)
+
+        reactions_serializer = ReactionSerializer(reactions_list, many=True)
+        return JsonResponse(reactions_serializer.data, safe=False)

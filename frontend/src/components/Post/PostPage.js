@@ -187,8 +187,11 @@ function PostPage(props) {
                 </p>
 
                 <p></p>
-
-                <Content style={{textAlign: "center"}} type={post.type} content={post.content}/>
+                {post.type == 0 ?
+                    <Content style={{textAlign: "center"}} type={post.type} content={post.content}/>
+                :
+                    <Image style={{textAlign: "center"}} src={post.content}/>
+                }
             </Card>
 
             <Card>
