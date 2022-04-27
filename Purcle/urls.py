@@ -23,6 +23,8 @@ from knox import views as knox_views
 #from rest_auth import urls
 
 from purcleapp import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -58,7 +60,7 @@ urlpatterns = [
     re_path(r'^api/profile_update/(?P<pk>[0-9]+)$', views.profile_update),
 
     #--posts--
-    re_path(r'^api/post$', views.post_list),
+    re_path(r'^api/postlist$', views.post_list),
     re_path(r'^api/post/((?P<pk>[0-9a-zA-Z_]+)?)$', views.post_detail), # grabs single post based on id
     re_path(r'^api/posts/((?P<pk>[0-9a-zA-Z_]+)?)$', views.posts_list), # grabs multiple posts based on topic
     re_path(r'^api/user_posts/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_posts_list), # grabs multiple posts based on user_id
@@ -69,13 +71,16 @@ urlpatterns = [
     re_path(r'^api/topic_update/((?P<pk>[0-9a-zA-Z_]+)?)$', views.topic_update), # id is char not int
 
     #--comments--
-    re_path(r'^api/comment$', views.comment_detail),
+    re_path(r'^api/comment/$', views.comment_detail),
     re_path(r'^api/post_comments/((?P<pk>[0-9a-zA-Z_]+)?)$', views.post_comments_list), # grabs multiple comments based on post
     re_path(r'^api/user_comments/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_comments_list), # grabs multiple comments based on user
     re_path(r'^api/user_nonanon_comments/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_nonanon_comments_list), # grabs multiple comments based on user
                                                                                                         # but only ones which aren't anonymous
     #--reactions--
     re_path(r'^api/user_reactions/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_reactions_list), # grabs multiple comments based on user
+    re_path(r'^api/reaction/$', views.reaction_detail), # post for individual reaction
+    re_path(r'^api/del_reaction/((?P<pk>[0-9a-zA-Z_]+)?)$', views.del_reaction), # delete a specific reaction
+    re_path(r'^api/post_reactions/((?P<pk>[0-9a-zA-Z_]+)?)$', views.post_reactions), # grabs multiple reactions based on post
 
     #--misc--
     path('api/current_user', views.curr_user),
@@ -91,4 +96,5 @@ urlpatterns = [
     #path('api/sign_up/', views.SignUpView.as_view(), name='sign_up'),
     #path('api/auth/register/', include('rest_auth.registration.urls')),
     # path(r'^', include('Purcle.urls')),
-]
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

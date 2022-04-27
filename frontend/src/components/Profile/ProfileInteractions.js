@@ -11,6 +11,7 @@ function ProfileInterationsMap(props) {
     const [posts, setPosts] = useState([]);
     const [comments, setComments] = useState([]);
     const [reactions, setReactions] = useState([]);
+    console.log(props.type)
 
     const getPosts = () => {
         getPostsFromUser(props.id)
@@ -57,6 +58,7 @@ function ProfileInterationsMap(props) {
     }
 
     if (props.type === "Comments") {
+        console.log(comments)
         if (!comments || comments.length === 0) {
             return (<h3>This user has not made any comments.</h3>)
         }
