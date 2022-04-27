@@ -12,6 +12,7 @@ import { getRandPosts, getUser, updateUser, getCurrUser, logout, getInteractions
 import { formatUser, unformatUser } from '../../api/helper';
 import FollowingItem from './FollowingItem';
 import FollowerItem from './FollowerItem';
+import TopicItem from './TopicItem';
 
 /*
 import axios from 'axios'
@@ -100,7 +101,7 @@ function FollowingModal(props) {
 
     return (
         <>
-            <Modal show={props.show} onHide={props.handleCloseFollowers}>
+            <Modal show={props.show} onHide={props.handleCloseFollowing}>
                 <Modal.Header closeButton>
                     <Modal.Title>Following List</Modal.Title>
                 </Modal.Header>
@@ -108,7 +109,7 @@ function FollowingModal(props) {
                     <ul>{listItems}</ul>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={props.handleCloseFollowers}>
+                    <Button variant="primary" onClick={props.handleCloseFollowing}>
                         Close
                     </Button>
                 </Modal.Footer>
@@ -148,8 +149,31 @@ function FollowerModal(props) {
     )
 }
 
-function TopicsModal(props) {
+function TopicModal(props) {
+    const listItems = props.user.topics.map((topic) => (
+        <TopicItem
+            key={topic}
+            topic_id={topic}
+        />
+    ));
 
+    return (
+        <>
+            <Modal show={props.show} onHide={props.handleCloseTopics}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Followed Topics List</Modal.Title>
+                </Modal.Header>
+                <Modal.Body user={props.user}>
+                    <ul>{listItems}</ul>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={props.handleCloseTopics}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    )
 }
 
 
@@ -208,6 +232,7 @@ function Profile(props) {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [showFollowers, setShowFollowers] = useState(false);
     const [showFollowing, setShowFollowing] = useState(false);
+    const [showTopics, setShowTopics] = useState(false);
     const [tempUser, setTempUser] = useState(nullUser);
     const [update, setUpdate] = useState(false);
     const [followed, setFollowed] = useState(false);
@@ -363,6 +388,12 @@ function Profile(props) {
     const handleCloseFollowing = () => {
         setShowFollowing(false);
     }
+    const handleShowTopics = () => {
+        setShowTopics(true);
+    }
+    const handleCloseTopics = () => {
+        setShowTopics(false);
+    }
 
 
     const confirmCanUpdate = () => {
@@ -451,6 +482,7 @@ function Profile(props) {
         //getNewUser();
         getUserApi();
         confirmCanUpdate();
+        //FollowerItem();
 
         console.log("user in useeffect", user)
     }, []);
@@ -491,7 +523,15 @@ function Profile(props) {
                             <FollowingModal
                                 show={showFollowing}
                                 user={user}
-                                handleCloseFollowers={handleCloseFollowing}
+                                handleCloseFollowing={handleCloseFollowing}
+                            />
+                            <Button variant="danger" onClick={handleShowTopics}>
+                                Topics
+                            </Button>
+                            <TopicModal
+                                show={showTopics}
+                                user={user}
+                                handleCloseTopics={handleCloseTopics}
                             />
                         </div>
                         <div>
