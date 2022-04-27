@@ -66,6 +66,7 @@ urlpatterns = [
     #--topics--
     re_path(r'^api/topic$', views.topic_list),
     re_path(r'^api/topic/((?P<pk>[0-9a-zA-Z_]+)?)$', views.topic_detail), # id is char not int
+    re_path(r'^api/topic_update/((?P<pk>[0-9a-zA-Z_]+)?)$', views.topic_update), # id is char not int
 
     #--comments--
     re_path(r'^api/comment$', views.comment_detail),

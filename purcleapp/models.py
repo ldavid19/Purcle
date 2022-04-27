@@ -15,7 +15,7 @@ class UserProfile(models.Model):
     profile_name = models.CharField(max_length=100, null=True)
     first_name = models.CharField(max_length=50, null=True)
     last_name = models.CharField(max_length=50, null=True)
-    user_profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images', blank=True, null=True)
+    user_profile_picture = models.CharField(max_length=500, null=True)
     # user_profile_picture= models.BinaryField(blank=True)
     user_bio = models.TextField(max_length=500)
     user_followers = ArrayField(models.IntegerField(), blank=True, null=True)

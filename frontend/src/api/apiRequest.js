@@ -366,12 +366,18 @@ async function updateUser(id, data, token) {
     return patch("profile_update", id, unformatUser(data), token);
 }
 
+/* user helpers */
+async function updateTopic(id, data, token) {
+    return patch("topic_update", id, data, token);
+}
+
 /* signup helpers */
 async function postUser(data) {
     const ret = post("sign_up", '', data);
     //console.log("result from post: " + ret);
     return ret;
 }
+
 
 
 /* DM helpers */
@@ -508,6 +514,6 @@ export {
     getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopic, getUsers,          //GET misc functions
     getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, getReactionsFromUser, getInteractions,
     makeComment,  
-    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout, postThread, postMessage,            //POST misc functions
+    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout, postThread, postMessage, updateTopic,            //POST misc functions
 
 };  //always leave a comma on the last entry

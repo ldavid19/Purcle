@@ -7,7 +7,7 @@ import { Button } from '@mui/material';
 import NewPost from "../Post/NewPost.js";
 import PostCard from '../Post/PostCard';
 
-import { getRandPosts, getAllPosts, getPostsFromTopic, getTopicInfo } from '../../api/apiRequest.js';
+import { getRandPosts, getAllPosts, getPostsFromTopic, getTopicInfo, getCurrUser, updateTopic, getUser, updateUser } from '../../api/apiRequest.js';
 
 function Topic() {
     const { id } = useParams();
@@ -15,13 +15,27 @@ function Topic() {
 
     console.log(id);
 
+    const nullTopic = {
+        topic_id : "All",
+        topic_num_followers: 0
+    }
+
+    const nullUser = {
+        topics:[]
+        //topics = []
+    }
+
     const [posts, setPosts] = useState([]);
-    const [topic, setTopic] = useState("All");
-    const [followCount, setFollowCount] = useState(0);
+    const [topic, setTopic] = useState(nullTopic);
+    const [following, setFollowing] = useState(false);
+    const [curr, setCurr] = useState(nullUser);
+    const [currId, setCurrId] = useState(0)
 
     useEffect(() => {
         getPosts();
         getInfo();
+        getCurr();
+        
     }, []);
 
     const getPosts = () => {
@@ -42,14 +56,14 @@ function Topic() {
 
     const getInfo = () => {
         if (!id || id == "all") {
-            setTopic("All");
+            // setTopic("All");
         } else {
             getTopicInfo(id)
                 .then((res) => {
                     console.log(res);
-                    setFollowCount(100);
+                    setTopic(res);
+                    // setFollowCount(100);
                 })
-            setTopic(id);
         }
     }
 
@@ -68,12 +82,45 @@ function Topic() {
         window.location.reload();
     }
 
-    const handleFollowTopic = () => {
+    const getCurr = () => {
+        getCurrUser().then(res => {
+            console.log(res)
+            const currid = res.curr_user;
+            setCurrId(currid)
+            getUser(currid)
+            .then(res => {
+                setCurr(res);
+            }).catch(err => console.error(`Error: ${err}`));
+            // console.log("following?",curr.topics.includes(id))
 
+            // if (curr.topics.includes(id)) {
+            //     setFollowing(true);
+            // }
+        }).catch(err => console.error(`Error: ${err}`));
+    }
+
+    const handleFollowTopic = () => {
+        setFollowing(true)
+        topic.topic_num_followers++;
+        curr.topics.push(id);
+        updateTopic(id, topic, localStorage.getItem('token'))
+        updateUser(currId, curr, localStorage.getItem('token'))
+        getCurr();
     }
 
     const handleUnfollowTopic = () => {
-        
+        setFollowing(false)
+        topic.topic_num_followers--;
+        var arr = curr.topics;
+        var index = arr.indexOf(id)
+        if (index !== -1) {
+            arr.splice(index);
+        }
+        curr.topics=arr;
+        updateTopic(id, topic, localStorage.getItem('token'))
+        updateUser(currId, curr, localStorage.getItem('token'))
+        getCurr();
+
     }
 
     return (
@@ -84,15 +131,15 @@ function Topic() {
 
             <Row >
                 <Col>
-                    <h1>{topic}</h1>
+                    <h1>{topic.topic_id}</h1>
                 </Col>
                 <Col>
-                    {<Button onClick={handleFollowTopic}> Follow Topic</Button>}
-                    {/* { <Button onClick={handleUnfollowTopic}> Unfollow Topic</Button>} */}
+                    {!curr.topics.includes(id)&&<Button onClick={handleFollowTopic}> Follow Topic</Button>}
+                    {curr.topics.includes(id)&& <Button onClick={handleUnfollowTopic}> Unfollow Topic</Button>}
                 </Col>
                 
                 <Col>
-                    <h5>{followCount}{(followCount === 1) ? " follower" : " followers"}</h5>
+                    <h5>{topic.topic_num_followers}{(topic.topic_num_followers === 1) ? " follower" : " followers"}</h5>
                 </Col>
                 
             </Row>
