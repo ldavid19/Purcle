@@ -70,13 +70,16 @@ urlpatterns = [
     re_path(r'^api/topic/((?P<pk>[0-9a-zA-Z_]+)?)$', views.topic_detail), # id is char not int
 
     #--comments--
-    re_path(r'^api/comment$', views.comment_detail),
+    re_path(r'^api/comment/$', views.comment_detail),
     re_path(r'^api/post_comments/((?P<pk>[0-9a-zA-Z_]+)?)$', views.post_comments_list), # grabs multiple comments based on post
     re_path(r'^api/user_comments/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_comments_list), # grabs multiple comments based on user
     re_path(r'^api/user_nonanon_comments/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_nonanon_comments_list), # grabs multiple comments based on user
                                                                                                         # but only ones which aren't anonymous
     #--reactions--
     re_path(r'^api/user_reactions/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_reactions_list), # grabs multiple comments based on user
+    re_path(r'^api/reaction/$', views.reaction_detail), # post for individual reaction
+    re_path(r'^api/del_reaction/((?P<pk>[0-9a-zA-Z_]+)?)$', views.del_reaction), # delete a specific reaction
+    re_path(r'^api/post_reactions/((?P<pk>[0-9a-zA-Z_]+)?)$', views.post_reactions), # grabs multiple reactions based on post
 
     #--misc--
     path('api/current_user', views.curr_user),

@@ -342,7 +342,7 @@ function NewPost(props) {
                                         onChange={handleImageChange}
                                     />
                                 <p></p>
-                                { image.length > 0 ? <Image src={image}/> : ""}
+                                { image.length > 0 ? <Image src={image} width={"465px"}/> : ""}
                             </div>
                     :
                         <p></p>

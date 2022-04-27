@@ -27,6 +27,30 @@ async function get(type, query = "") { //GET request
     return data;
 }
 
+async function del(type, query = "") { //DELETE request
+    var ret = [];
+
+    if (query !== "") {
+        query = "/" + query;
+    }
+
+    const url = '/api/' + type + query;
+    console.log("del: " + url);
+
+    await axios.delete(url)
+        .catch(err => {
+            if (err.status === 400 || err.status === 401) {
+                console.log("error!")
+                ret = {"ERROR": "ERROR"};
+            }
+        })
+        .then((res) => {
+            ret = res;
+        });
+
+    return ret;
+}
+
 async function put(type, id, data, token) { //PUT request
     var ret = [];
     //console.log("token " + token)
@@ -274,8 +298,77 @@ async function getTopicInfo(topic) {
 }
 
 /* misc helpers */
-async function getScore(id) {
-    return 0;
+async function getScore(post_id) {
+    let score = 0;
+    
+    await get("post_reactions", post_id)
+        .then((res) => {
+            console.log(res);
+            let arr = Array.from(res);
+    
+            arr.map((reaction) => {
+                if (reaction.reaction_type === 0) {
+                    score = score + 1;
+                } else {
+                    score = score - 1;
+                }
+            });
+        });
+
+    console.log(score)
+    return score;
+}
+
+async function getSpecReaction(post_id, curr_id) {
+    let data = [];
+    console.log(curr_id)
+
+    await get("post_reactions", post_id)
+        .then((res) => {
+            console.log(res);
+            let arr = Array.from(res);
+
+            arr.map((reaction) => {
+                if (reaction.user_id === curr_id) {
+                    data.push(reaction)
+                }
+            });
+            console.log(data);
+        })
+        .catch(err => console.error(`Error: ${err}`));
+
+    var type = 0;
+    if (data.length > 0) {
+        var temp = data[0];
+        if (temp.reaction_type === 0) {
+            type = 1;
+        } else {
+            type = -1;
+        }
+    }
+    return type;
+}
+
+async function deleteReaction(post_id, curr_id) {
+    let data = [];
+    console.log(curr_id)
+
+    await get("post_reactions", post_id)
+        .then((res) => {
+            console.log(res);
+            let arr = Array.from(res);
+
+            arr.map((reaction) => {
+                data.push(reaction)
+            });
+            console.log(data);
+        });
+
+    if (data.length > 0) {
+        var temp = data[0];
+        await del("del_reaction", temp.id)
+        .catch(err => console.error(`Error: ${err}`));
+    }
 }
 
 async function getTopic(id) {
@@ -288,7 +381,20 @@ async function getUsers() {
 }
 
 async function getReactionsFromUser(id) {
-    return get("user_reactions", id)
+    let data = [];
+
+    await get("user_reactions", id)
+        .then((res) => {
+            console.log(res);
+            let arr = Array.from(res);
+
+            arr.map((reaction) => {
+                data.push(reaction)
+            });
+            console.log(data);
+        });
+
+    return data;
 }
 
 async function getInteractions(id) {
@@ -360,20 +466,6 @@ async function makeImagePost(data) {
 async function makeTopic(data) {
     console.log(data);
     return post("topic", "", data);
-}
-
-function incrementScore(id, offset) {
-    //allPosts[id].score += offset;
-}
-
-async function upvote(id) {
-    incrementScore(id, 1);
-    //console.log("upvoted!")
-}
-
-async function downvote(id) {
-    incrementScore(id, -1);
-    //console.log("downvoted!")
 }
 
 /* user helpers */
@@ -464,6 +556,7 @@ async function getCommentsfromPost(post_id) {
 async function getCommentsfromUser(user_id) {
     let data = [];
 
+    console.log(user_id)
     await get("user_comments", user_id)
         .then((res) => {
             console.log(res);
@@ -516,13 +609,26 @@ async function makeComment(data) {
 //     return post("profile_detail", 0, data);
 // }
 
+async function makeReaction(data) {
+    let ret = [];
+    //console.log("attempting to make a comment");
+
+    await post("reaction", "", data)
+        .then((res) => {
+            console.log(res);
+            ret = res;
+        })
+        .catch(err => console.error(`Error: ${err}`));
+    return ret;
+}
+
 export {
 
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, 
     getInbox, getContext, getPostsFromUser,
     getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopic, getUsers,          //GET misc functions
     getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, getReactionsFromUser, getInteractions,
-    makeComment, makeImagePost,
-    upvote, downvote, updateUser, postUser, login, makePost, makeTopic, logout, postThread, postMessage,            //POST misc functions
+    makeComment, makeImagePost, makeReaction, getSpecReaction, deleteReaction, 
+    updateUser, postUser, login, makePost, makeTopic, logout, postThread, postMessage,            //POST misc functions
 
 };  //always leave a comma on the last entry

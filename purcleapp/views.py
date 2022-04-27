@@ -500,6 +500,7 @@ def user_nonanon_comments_list(request, pk=""):
         return JsonResponse(comments_serializer.data, safe=False)
 #  ``   # GET list of comments, POST a new comment, DELETE all comments
 
+@api_view(['GET', 'POST', 'DELETE'])
 def comment_detail(request):
     
     if request.method == 'POST':
@@ -514,3 +515,41 @@ def comment_detail(request):
         for error in comment_serializer.errors:
             message = comment_serializer.errors[error][0].title()
         return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'POST', 'DELETE'])  
+def reaction_detail(request):
+    
+    if request.method == 'POST':
+        reaction_data = JSONParser().parse(request)
+        print("from views.py reaction_detail POST:")
+        print(reaction_data)
+        reaction_serializer = ReactionSerializer(data=reaction_data)
+        if reaction_serializer.is_valid():
+            reaction_serializer.save()
+            return JsonResponse(reaction_serializer.data)
+        message = ""
+        for error in reaction_serializer.errors:
+            message = reaction_serializer.errors[error][0].title()
+        return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'POST', 'DELETE'])  
+def del_reaction(request, pk=""):
+
+    if request.method == 'DELETE':
+        print("from views.py reaction_detail DELETE")
+        print(pk)
+        reaction = Reaction.objects.get(pk=pk)
+        reaction.delete() 
+        return JsonResponse({'message': 'Reaction was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'POST', 'DELETE'])
+def post_reactions(request, pk=""):
+    if request.method == 'GET':
+        print("getting reactions from post: " + pk)
+        reactions_list = Reaction.objects.filter(post_id=pk)
+
+        if not reactions_list:
+            return JsonResponse({'message': 'Post has no reactions'}, status=status.HTTP_404_NOT_FOUND)
+
+        reactions_serializer = ReactionSerializer(reactions_list, many=True)
+        return JsonResponse(reactions_serializer.data, safe=False)

@@ -133,7 +133,7 @@ class Post(models.Model):       # created by Nicole
 # does not check if the user has already reacted to post
 class Reaction(models.Model):                 # created by Nicole
     # Reaction.id is created automatically
-    user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)   # if the UserProfile is deleted, so will the Reaction
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)   # if the UserProfile is deleted, so will the Reaction
     reaction_type = models.IntegerField()   # 0 for like, 1 for dislike
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)   # if the Post is deleted, so will the Reaction
 
