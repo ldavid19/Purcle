@@ -3,14 +3,16 @@ import React, { useState, useEffect } from 'react';
 
 import PostCard from '../Post/PostCard';
 import ProfileInteractionsItem from './ProfileInteractionsItem';
+import CommentList from '../Post/CommentList';
 import ProfileButtonGroup from './ProfileButtonGroup';
 
-import { getReactionsFromUser, getCommentsfromUser, getPostsFromUser } from '../../api/apiRequest';
+import { getReactionsFromUser, getCommentsfromUserProfile, getPostsFromUser } from '../../api/apiRequest';
 
 function ProfileInterationsMap(props) {
     const [posts, setPosts] = useState([]);
     const [comments, setComments] = useState([]);
     const [reactions, setReactions] = useState([]);
+    console.log(props.type)
 
     const getPosts = () => {
         getPostsFromUser(props.id)
@@ -21,9 +23,26 @@ function ProfileInterationsMap(props) {
     }
 
     const getComments = () => {
-        getCommentsfromUser(props.id)
+        getCommentsfromUserProfile(props.id)
             .then((res) => {
-                setComments(res);
+                console.log(res);
+
+                let comment_list = [];
+
+                res.map((c) => {
+                    let newComment = {
+                        id: c.id,
+                        user_id: c.user_id,
+                        post_id: c.post_id,
+                        content: c.comment_content,
+                        date: c.comment_created_date,
+                        isAnon: c.comment_is_anonymous
+                    }
+
+                    comment_list.push(newComment);
+                })
+
+                setComments(comment_list);
             })
             .catch(err => console.error(`Error: ${err}`));
     }
@@ -48,20 +67,22 @@ function ProfileInterationsMap(props) {
 
     console.log(props.type);
 
+    if (props.type === "Comments") {
+        console.log("UsER COMMENTS", comments);
+        if (!comments || comments.length === 0) {
+            return (<h3>This user has not commented on any posts.</h3>)
+        }
+
+        return (< CommentList comments={comments}/>)
+    }
+
     if (props.type === "Reactions") {
+        console.log(reactions)
         if (!reactions || reactions.length === 0) {
             return (<h3>This user has not reacted to any posts.</h3>)
         }
 
-        return (<h2>reactions</h2>)
-    }
-
-    if (props.type === "Comments") {
-        if (!comments || comments.length === 0) {
-            return (<h3>This user has not made any comments.</h3>)
-        }
-
-        return (<PostCard postList={comments} />)
+        return (<PostCard postList={reactions} />)
     }
 
     if (props.type === "Posts") {
@@ -82,15 +103,13 @@ function ProfileInteractions(props) {
         console.log(type);
         setInterType(type);
     }
-
     
-    if (!props.user || props.user.private) {
+    if (!props.user) {
         return (
-            <h3>This user profile is private.</h3>
+            <h3>This user profile does not exist.</h3>
         )
     }
     
-
     return (
         <Container>
             <Row style={{marginBottom: "15px"}}>

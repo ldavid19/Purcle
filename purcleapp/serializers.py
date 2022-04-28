@@ -17,6 +17,11 @@ class TopicSerializer(serializers.ModelSerializer):
         model = Topic
         fields = '__all__'
 
+class ReactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reaction
+        fields = '__all__'
+
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
@@ -29,6 +34,7 @@ class UserListSerializer(serializers.ModelSerializer):
             'user',
             'profile_name'
         )
+
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post

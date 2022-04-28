@@ -185,6 +185,22 @@ def post_detail(request, pk):
         post_serializer = PostSerializer(post)
         return JsonResponse(post_serializer.data, safe=False)
 
+@api_view(['GET'])
+def userprofile_detail(request, pk):
+    print("in userprofile_detail")
+    print("request:")
+    print(request)
+    print("pk: " + pk)
+    try: 
+        userprofile = UserProfile.objects.get(pk=pk) 
+    except UserProfile.DoesNotExist: 
+        return JsonResponse({'message': 'The userprofile does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        print("requesting userprofile #" + pk)
+
+        userprofile_serializer = UserProfileSerializer(userprofile)
+        return JsonResponse(userprofile_serializer.data, safe=False)
 
 
 class LoginAPI(KnoxLoginView):
@@ -251,6 +267,7 @@ def posts_detail(request, pk):
 # # def posts_list_published(request):
 #     # GET all published posts
 
+
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
 def topic_list(request):
     if request.method == 'GET':
@@ -265,6 +282,24 @@ def topic_list(request):
         if topic_serializer.is_valid():
             topic_serializer.save()
             return JsonResponse(topic_serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(topic_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT', 'PATCH'])
+#@permission_classes((IsAuthenticated, ))
+def topic_update(request, pk):
+    try: 
+        topic = Topic.objects.get(pk=pk) 
+    except Topic.DoesNotExist: 
+        return JsonResponse({'message': 'The topic does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PATCH':
+        
+        topic_data = JSONParser().parse(request)
+        topic_serializer = TopicSerializer(topic, data=topic_data, partial=True) 
+        if topic_serializer.is_valid(): 
+            topic_serializer.save() 
+            return JsonResponse(topic_serializer.data)
+        print(topic_serializer.errors)
         return JsonResponse(topic_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'POST', 'DELETE', 'PUT'])
@@ -300,14 +335,35 @@ def user_list(request):
 
         user_list_serializer = UserListSerializer(users, many=True)
         return JsonResponse(user_list_serializer.data, safe=False)
-@api_view(['GET', 'POST', 'DELETE', 'PUT'])
 
+# def image_detail(request):
+#     if request.method == 'POST':
+#         form = PostForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             post_serializer = PostSerializer(form)
+#             return JsonResponse(post_serializer.data, safe=False)
+
+# def image_detail(request):
+#     if request.method == 'POST':
+#         form = PostForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('login')
+#     else:
+#         form = PostForm()
+#     return render(request, 'image_form.html', {'form': form})
+
+@api_view(['GET', 'POST', 'DELETE', 'PUT'])
 def post_list(request):
     
     if request.method == 'POST':
+        print("this prints")
+        #print(request.data.post_image)
         post_data = JSONParser().parse(request)
         print("from views.py post_list POST:")
         print(post_data)
+        #print(post_data.post_image)
         post_serializer = PostSerializer(data=post_data)
         if post_serializer.is_valid():
             post_serializer.save()
@@ -360,16 +416,38 @@ class CreateThread(View):
                 return redirect('thread', pk=thread.pk)
 
             
-            sender_thread = ThreadModel(user=request.user, receiver=receiver)
+        
 
-            sender_thread.save()
-            thread_pk = sender_thread.pk
 
-            return redirect('thread', pk=thread_pk)
+            receiver_profile = UserProfile.objects.get(user_id=receiver.pk)
+
+            
+
+            can_create = False
+
+            if (receiver_profile.allow_only_followed_users):
+                following_list = receiver_profile.user_following
+                print(following_list)
+                print(request.user.pk)
+                for follow in following_list:
+                    if request.user.pk == int(follow):
+                        can_create = True
+            else:
+                can_create = True
+
+            if can_create:
+                sender_thread = ThreadModel(user=request.user, receiver=receiver)
+
+                sender_thread.save()
+                thread_pk = sender_thread.pk
+
+                return redirect('thread', pk=thread_pk)
+            else:
+                return JsonResponse({'message': 'You cannot DM this user'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
         except:
-            return redirect('create-thread')
+            return JsonResponse({'message': 'This user does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class ListThreads(View):
@@ -392,11 +470,24 @@ class CreateMessage(View):
         else:
             receiver = thread.receiver
 
-        message = MessageModel(thread = thread, sender_user = request.user, receiver_user = receiver, body = JSONParser().parse(request)['body'],)
+        receiver_profile = UserProfile.objects.get(user_id=receiver.pk)
+        print(receiver_profile)
+        blocked_list = receiver_profile.user_blocked
 
-        message.save()
+        can_send = True
 
-        return redirect('thread', pk=pk)
+        for blocked in blocked_list:
+            if request.user.pk == int(blocked):
+                can_send = False
+
+        if can_send:
+            message = MessageModel(thread = thread, sender_user = request.user, receiver_user = receiver, body = JSONParser().parse(request)['body'],)
+
+            message.save()
+
+            return redirect('thread', pk=pk)
+        else:
+            return JsonResponse({'message': 'This user has blocked you'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 class ThreadView(View):
@@ -424,21 +515,25 @@ def user_reactions_list(request, pk=""):
         print("getting reactions from user: " + pk)
         reactions_list = Reaction.objects.filter(user_id=pk)
         print(reactions_list)
-        post_list = []
 
-        for reaction in reactions_list:
-            try:
-                id = reaction.post_id.id
-                post = Post.objects.get(pk=id)
-                post_list.append(post)
-            except Post.DoesNotExist:
-                print("cannot find post :(")
+        reactions_serializer = ReactionSerializer(reactions_list, many=True)
+        return JsonResponse(reactions_serializer.data, safe=False)
+        
+        # post_list = []
+
+        # for reaction in reactions_list:
+        #     try:
+        #         id = reaction.post_id.id
+        #         post = Post.objects.get(pk=id)
+        #         post_list.append(post)
+        #     except Post.DoesNotExist:
+        #         print("cannot find post :(")
     
-        if not post_list:
-            return JsonResponse({'message': 'User has not reacted to any posts'}, status=status.HTTP_404_NOT_FOUND)
+        # if not post_list:
+        #     return JsonResponse({'message': 'User has not reacted to any posts'}, status=status.HTTP_404_NOT_FOUND)
 
-        post_serializer = PostSerializer(post_list, many=True)
-        return JsonResponse(post_serializer.data, safe=False)
+        # post_serializer = PostSerializer(post_list, many=True)
+        # return JsonResponse(post_serializer.data, safe=False)
 #  ``   # GET list of comments, POST a new comment, DELETE all comment
 
 # returns multiple comments based on post, returns all comments
@@ -479,6 +574,19 @@ def user_nonanon_comments_list(request, pk=""):
         return JsonResponse(comments_serializer.data, safe=False)
 #  ``   # GET list of comments, POST a new comment, DELETE all comments
 
+@api_view(['GET', 'POST', 'DELETE'])
+def user_comments_list_from_profile(request, pk=""):
+    if request.method == 'GET':
+        print("getting comments from user: " + pk)
+        comments_list = Comment.objects.filter(user_id=pk)
+
+        if not comments_list:
+            return JsonResponse({'message': 'User has no comments'}, status=status.HTTP_404_NOT_FOUND)
+
+        comments_serializer = CommentSerializer(comments_list, many=True)
+        return JsonResponse(comments_serializer.data, safe=False)
+
+@api_view(['GET', 'POST', 'DELETE'])
 def comment_detail(request):
     
     if request.method == 'POST':
@@ -493,3 +601,44 @@ def comment_detail(request):
         for error in comment_serializer.errors:
             message = comment_serializer.errors[error][0].title()
         return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'POST', 'DELETE'])  
+def reaction_detail(request):
+    
+    if request.method == 'POST':
+        reaction_data = JSONParser().parse(request)
+        print("from views.py reaction_detail POST:")
+        print(reaction_data)
+        reaction_serializer = ReactionSerializer(data=reaction_data)
+        if reaction_serializer.is_valid():
+            reaction_serializer.save()
+            return JsonResponse(reaction_serializer.data)
+        message = ""
+        for error in reaction_serializer.errors:
+            message = reaction_serializer.errors[error][0].title()
+        return JsonResponse({'message': message}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'POST', 'DELETE'])  
+def del_reaction(request, pk=""):
+
+    if request.method == 'DELETE':
+        print("from views.py reaction_detail DELETE")
+        print(pk)
+        try:
+            reaction = Reaction.objects.get(pk=pk)
+            reaction.delete()
+        except:
+            return JsonResponse({'message': 'Reaction was not found'}, status=status.HTTP_404_NOT_FOUND)
+        return JsonResponse({'message': 'Reaction was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'POST', 'DELETE'])
+def post_reactions(request, pk=""):
+    if request.method == 'GET':
+        print("getting reactions from post: " + pk)
+        reactions_list = Reaction.objects.filter(post_id=pk)
+
+        if not reactions_list:
+            return JsonResponse({'message': 'Post has no reactions'}, status=status.HTTP_404_NOT_FOUND)
+
+        reactions_serializer = ReactionSerializer(reactions_list, many=True)
+        return JsonResponse(reactions_serializer.data, safe=False)

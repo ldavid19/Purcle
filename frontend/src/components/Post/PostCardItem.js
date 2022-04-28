@@ -5,11 +5,10 @@ import { IconButton } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-import { getScore, upvote, downvote } from "../../api/apiRequest.js";
+import { getScore, makeReaction, getCurrUser, getSpecReaction, deleteReaction } from "../../api/apiRequest.js";
 import { getRelativeTime } from '../../api/helper.js';
 
 import { Link } from "react-router-dom";
-
 
 function Anon(props) {
     if (props.anon) {
@@ -45,20 +44,66 @@ function PostCardTitle(props) {
     );
 }
 
-function PostCardScore(props) {
-    var [score, setScore] = useState(0);
+function handleVote(type, postid, curr_user) {
+    //getCurrUser()
+        //.then((res) => {
+        var newReaction;
+        newReaction = {
+            id: undefined,
+            user_id: curr_user,
+            reaction_type: type,
+            post_id: postid
+        };
+        console.log(newReaction);
+        makeReaction(newReaction);
+    //})
+    //.catch(err => console.error(`Error: ${err}`));
+}
 
+function PostCardScore(props) {
+    console.log(props)
+    console.log(props.curr_user)
+    var [score, setScore] = useState(0);
     var [up_color, setUpColor] = useState("black");
     var [down_color, setDownColor] = useState("black");
 
-    function updateScore(id) {
-        getScore(id)
+    //const [curr_id, setCurrID] = useState(null);
+    // const getCurrID = () => {
+    //     getCurrUser()
+    //         .then((res) => {
+    //             console.log(res);
+    //             var temp = res.curr_user;
+    //             setCurrID(temp);
+    //         })
+    //         .catch(err => console.error(`Error: ${err}`));
+    // }
+
+    function updateScore(post_id) {
+        getScore(post_id)
         .then((res) => {
+            console.log(res)
             setScore(res);
         })
     }
 
     useEffect(() => {
+        //getCurrUser()
+            //.then((res1) => {
+                console.log(props.curr_user)
+                getSpecReaction(props.id, props.curr_user)
+                    .then((res) => {
+                        if (res === 1) {
+                            setUpColor("mediumslateblue")
+                            setDownColor("black")
+                        } else if (res === -1) {
+                            setDownColor("mediumslateblue")
+                            setUpColor("black")
+                        }
+                    })
+                    .catch(err => console.error(`Error: ${err}`));
+            //})
+            //.catch(err => console.error(`Error: ${err}`));
+        //getCurrID();
         updateScore(props.id);
     }, []);
 
@@ -67,15 +112,26 @@ function PostCardScore(props) {
             <IconButton 
                 aria-label="upvote"
                 size="small"
-                onClick={ function() {
-                    upvote(props.id)
-                        .then(() => {
-                            updateScore(props.id);
-                        });
-                    up_color.localeCompare("black") === 0
-                    ? setUpColor("mediumslateblue"):setUpColor("black");
-                    setDownColor("black");
-                }}
+                onClick={function() {
+                        if (up_color.localeCompare("black") === 0) {
+                            deleteReaction(props.id, props.curr_id)
+                                .then(() => {
+                                    handleVote(0, props.id)
+                                })
+                                .catch(err => {
+                                    handleVote(0, props.id)
+                                    console.error(`Error: ${err}`)
+                                });
+                            setScore(score + 1)
+                            setUpColor("mediumslateblue")
+                        } else {
+                            deleteReaction(props.id, props.curr_id)
+                                .catch(err => console.error(`Error: ${err}`));
+                            setUpColor("black");
+                            setScore(score - 1)
+                        }
+                        setDownColor("black");
+                    }}
             >
                 < KeyboardArrowUpIcon style={{color: up_color}}/>
             </IconButton>
@@ -85,13 +141,24 @@ function PostCardScore(props) {
             <IconButton 
                 aria-label="downvote"
                 size="small"
-                onClick={ function() {
-                    downvote(props.id)
-                        .then(() => {
-                            updateScore(props.id);
-                        });
-                    down_color.localeCompare("black") === 0
-                    ? setDownColor("mediumslateblue"):setDownColor("black");
+                onClick={function() {
+                    if (down_color.localeCompare("black") === 0) {
+                        deleteReaction(props.id, props.curr_id)
+                            .then(() => {
+                                handleVote(1, props.id)
+                            })
+                            .catch(err => {
+                                handleVote(1, props.id)
+                                console.error(`Error: ${err}`)
+                            });
+                        setScore(score - 1)
+                        setDownColor("mediumslateblue")
+                    } else {
+                        deleteReaction(props.id, props.curr_id)
+                            .catch(err => console.error(`Error: ${err}`));
+                        setDownColor("black");
+                        setScore(score + 1)
+                    }
                     setUpColor("black");
                 }}
             >
@@ -120,7 +187,6 @@ function PostCardImg(props) {
 }
 
 function PostCardItem(props) {
-    //console.log(props);
     //console.log(props.post)
 
     /* posts are formatted this way
@@ -139,8 +205,10 @@ function PostCardItem(props) {
     return (
         <ListGroup.Item>
             <Row className="align-items-center">
+                {console.log(props.curr_user)}
                 <PostCardScore 
                     id={props.post.id}
+                    curr_user={props.curr_user}
                 />
                 
                 <PostCardImg 

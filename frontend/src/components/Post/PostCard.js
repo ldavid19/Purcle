@@ -9,6 +9,7 @@ import { getUser } from '../../api/apiRequest';
 
 
 function PostCard(props) {
+    console.log(props)
     const [list, setList] = useState([]);
 
     /* posts are formatted this way
@@ -34,7 +35,7 @@ function PostCard(props) {
         //var users = [];
         //console.log(posts);
 
-        addUsernames(posts).then((res) => {
+        addUsernames(posts, props.curr_user).then((res) => {
             setList(res);
         })
 
@@ -51,7 +52,7 @@ function PostCard(props) {
         //setList(postcards);
     }, [props.postList])
 
-    async function addUsernames(posts) {
+    async function addUsernames(posts, curr_user) {
         let postcards = [];
         let users = {};
 
@@ -67,6 +68,7 @@ function PostCard(props) {
                     key={post.id}
                     post={post}
                     username={username}
+                    curr_user={curr_user}
                 />
             )
         }
@@ -78,7 +80,7 @@ function PostCard(props) {
         //console.log("looking up user: " + id)
         if (users && id in users) {
             return {
-                username: users[id], 
+                username: users[id],
                 users: users
             }
         }

@@ -3,10 +3,12 @@ import { Container, Card, Image } from 'react-bootstrap';
 
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
-import { getPost, getUser, getCommentsfromPost, makeComment, convertToUserProfile, getCurrUser } from '../../api/apiRequest';
+import { getPost, getUser, getCommentsfromPost, makeComment, convertToUserProfile, getCurrUser, convertToUser } from '../../api/apiRequest';
 import { getRelativeTime } from '../../api/helper';
 
-import { Button } from '@mui/material';
+import { Button, TextField, FormGroup, FormControlLabel, Switch } from '@mui/material';
+
+import CommentList from './CommentList';
 
 function Content(props) {
     //if props.type == true then is image 
@@ -19,10 +21,10 @@ function Content(props) {
                     src={props.content}
                 />
             </Container>
-            
+
         );
     }
-        
+
     return (
         <Container>
             <p>{props.content}</p>
@@ -176,24 +178,24 @@ function PostPage(props) {
         navigate('/error', { replace: true });
         window.location.reload();
     }
-    
+
     useEffect(() => {
 
         //console.log(id)
         getComments();
         getCurrID();
-        
+
         getPost(id)
             .then((res) => {
                 let userid = res.user;
                 console.log(res);
 
                 getUser(userid)
-                .then((res) => {
-                    let name = res.username;
-                    console.log(res);
-                    setUsername(name);
-                })
+                    .then((res) => {
+                        let name = res.username;
+                        console.log(res);
+                        setUsername(name);
+                    })
 
                 setPost(res);
             })
@@ -201,9 +203,9 @@ function PostPage(props) {
                 console.error(`Error: ${err}`);
                 //errorHandler();
             });
-        
+
         //setPost(newPost);
-    }, []); 
+    }, []);
 
 
     return (
@@ -211,26 +213,28 @@ function PostPage(props) {
             <Card>
                 <h1>{post.title}</h1>
 
-                <p style={{/*margin: 0*/}}>
+                <p style={{/*margin: 0*/ }}>
                     {"posted by "}
-                    <Link to={{pathname: `/profile/${post.user}`, query:{id: post.user}}}>
+                    <Link to={{ pathname: `/profile/${post.user}`, query: { id: post.user } }}>
                         {username}
                     </Link>
-                    {" in "} 
-                    <Link to={{pathname: `/topic/${post.topic}`, query:{id: post.topic}}}>
+                    {" in "}
+                    <Link to={{ pathname: `/topic/${post.topic}`, query: { id: post.topic } }}>
                         {post.topic}
                     </Link>
                     {" " + getRelativeTime(post.date)}
                 </p>
 
                 <p></p>
-
-                <Content style={{textAlign: "center"}} type={post.type} content={post.content}/>
+                {post.type == 0 ?
+                    <Content style={{ textAlign: "center" }} type={post.type} content={post.content} />
+                    :
+                    <Image style={{ textAlign: "center" }} src={post.content} />
+                }
             </Card>
 
             <Card>
-                <h1></h1>
-                <textarea
+                <TextField
                     name="commentText"
                     placeholder=" New Comment"
                     value={commentText || ""}
@@ -238,30 +242,31 @@ function PostPage(props) {
                     maxLength="500"
                     rows={2}
                 />
-                <label>
-                    Anonymous{' '}
-                    <input type="checkbox" 
-                    checked={anonCheck}
-                    onChange={handleAnonCheckChange}/>
-                </label>
+                <FormGroup className="align-items-center">
+                    <FormControlLabel control={
+                        <Switch checked={anonCheck}
+                            onChange={handleAnonCheckChange} />
+                    }
+
+                        label="Anonymous" />
+                </FormGroup>
                 {
                     commentText.length > 0 ?
-                        <Button variant="primary" onClick={handleSubmit}>
+                        <Button variant="contained" onClick={handleSubmit} color="success">
                             Post
                         </Button>
-                    :
-                        <Button variant="primary">
+                        :
+                        <Button variant="outlined" color="error">
                             Post
                         </Button>
                 }
-            </Card> 
-            <div>
-                {comments && comments[0]?.content}
-            </div>
-
+            </Card>
+            <CommentList
+                comments={comments}
+            />
         </Container>
     )
-    
+
 }
 
 export default PostPage;
