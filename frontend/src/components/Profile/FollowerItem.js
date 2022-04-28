@@ -1,5 +1,4 @@
 import { ListGroup, Row, Col, Image, Ratio, ListGroupItem } from 'react-bootstrap';
-import { useParams, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 
 import { getUser } from '../../api/apiRequest.js';
@@ -30,7 +29,6 @@ function FollowerItem(props) {
     const [following, setFollowing] = useState(true);
 
     const getUserApi = () => {
-
         getUser(props.user_id)
             .then(res => {
                 /*
@@ -61,7 +59,11 @@ function FollowerItem(props) {
                     />
                 </Col>
                 <Col>
-                    {user.username}
+                    <Link to={{ pathname: `/profile/${props.user_id}`, query:{id: props.user_id}}}>
+                        <Button>
+                            {user.username}
+                        </Button>
+                    </Link>
                 </Col>
             </Row>
         </ListGroupItem>
