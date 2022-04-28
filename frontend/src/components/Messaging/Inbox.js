@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { ListGroup, Container, Row, Modal } from 'react-bootstrap';
 
-import ThreadItem from './ThreadItem'
 import { Button } from '@mui/material';
+import LinearProgress from '@mui/material/LinearProgress';
+
+import ThreadItem from './ThreadItem'
 
 import {postThread, getInbox, getCurrUser} from '../../api/apiRequest.js';
 
@@ -10,8 +12,8 @@ function Inbox() {
     const [threadList, setThreadList] = useState([]);
     const [show, setShow] = useState(false);
     const [showErr, setShowErr] = useState(false);
-    const [currUser, setCurrUser] = useState(0);
-
+    //const [currUser, setCurrUser] = useState(0);
+    const [receiver, setReceiver] = useState("");
     const [targetUser, setUser] = useState("");
 
     const handleClose = () => setShow(false);
@@ -27,7 +29,7 @@ function Inbox() {
     useEffect(() => {
 
         console.log("use effect");
-        getCurrentUser();
+        //getCurrentUser();
         getConvos().then((res) => {
             setThreadList(res);
         })
@@ -38,6 +40,21 @@ function Inbox() {
 
     },[]);
 
+    const updateUsername = (thread) => {
+        getCurrUser().then(res => {
+            console.log(res)
+            const curr = res.curr_user;
+
+            //setCurr(curr);
+
+            if (curr == thread.user) {
+                setReceiver(thread.receivername);
+            } else {
+                setReceiver(thread.username);
+            }
+        }).catch(err => console.error(`Error: ${err}`));
+    }
+
     const getCurrentUser = () => {
         getCurrUser()
         .then((res) => {
@@ -46,7 +63,7 @@ function Inbox() {
 
             console.log(id);
 
-            setCurrUser(id);
+            //setCurrUser(id);
         })
     }
 
@@ -61,9 +78,28 @@ function Inbox() {
 
         let threads = await getInbox();
 
-        threads.forEach(thread => {
+        let userPromise = await getCurrUser();
 
-            arr.push(<ThreadItem id={thread.id} currUser={currUser}/>)
+        console.log(threads);
+        console.log(userPromise);
+
+        const curr = userPromise.curr_user;
+
+        /*
+        let currUser = "";
+
+        if (curr == threads.user) {
+            currUser = threads.receivername;
+        } else {
+            currUser = threads.username;
+        }
+        */
+
+        //console.log(currUser);
+
+        threads.forEach(thread => {
+            console.log(thread);
+            arr.push(<ThreadItem id={thread.id} currUser={curr}/>)
         })
         return arr;
 
@@ -110,7 +146,18 @@ function Inbox() {
         }
     }
 
+    if (!threadList) {
+        return (
+            <p>You currently have no conversations.</p>
+        )
+    }
 
+    //while postList is being retrieved show loading spinner
+    if (threadList.length <= 0) {
+        return (
+            <LinearProgress />
+        );
+    }
 
     return (
 

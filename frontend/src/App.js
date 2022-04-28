@@ -22,9 +22,20 @@ import {
   Outlet
 } from "react-router-dom";
 
+import { ThemeProvider, createTheme } from '@material-ui/core/styles';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#7b68ee" //medium slate blue
+    },
+  },
+});
+
 
 function App() {
   return (
+    <ThemeProvider theme={theme}>
     <div className="App">
       <Router>
         
@@ -50,6 +61,7 @@ function App() {
         </Routes>
       </Router>
     </div>
+    </ThemeProvider>
   );
 }
 

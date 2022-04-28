@@ -12,11 +12,14 @@ function ThreadItem(props) {
     const [receiver, setReceiver] = useState("...");
 
     const updateUsername = (thread) => {
-            if (props.currUser === thread.user) {
-                setReceiver(thread.username);
-            } else {
-                setReceiver(thread.receivername);
-            }
+        console.log(props.currUser);
+        console.log(thread.user);
+
+        if (props.currUser === thread.user) {
+            setReceiver(thread.receivername);
+        } else {
+            setReceiver(thread.username);
+        }
     }
 
     const getThreadInfo = () => {
@@ -37,14 +40,6 @@ function ThreadItem(props) {
         })
     }
 
-    const divider = () => {
-        if (lastTime) {
-            return "|";
-        } else {
-            return "";
-        }
-    }
-
     const time = () => {
         const t = getRelativeTime(lastTime);
 
@@ -52,7 +47,7 @@ function ThreadItem(props) {
             return "";
         }
 
-        return t;
+        return "| " + t;
     }
 
     useEffect(() => {
@@ -67,7 +62,7 @@ function ThreadItem(props) {
                 </Row>
                 
                 <Row style={{fontStyle: "italic"}}>
-                    <p>{lastMessage} {divider()} {time()}</p>
+                    <p>{lastMessage} {time()}</p>
                 </Row>
             </Link>
         </ListGroup.Item>
