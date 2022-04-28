@@ -50,6 +50,7 @@ function ProfileSetup(props) {
         following_count: 0,
         followers: [],
         following: [],
+        topics:[],
         private: false
     }
 

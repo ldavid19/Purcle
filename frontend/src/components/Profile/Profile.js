@@ -10,6 +10,9 @@ import ProfileInteractions from './ProfileInteractions';
 
 import { getRandPosts, getUser, updateUser, getCurrUser, logout, getInteractions } from '../../api/apiRequest.js';
 import { formatUser, unformatUser } from '../../api/helper';
+import FollowingItem from './FollowingItem';
+import FollowerItem from './FollowerItem';
+import TopicItem from './TopicItem';
 
 /*
 import axios from 'axios'
@@ -84,8 +87,93 @@ function UpdateProfileModal(props) {
     )
 }
 
-function CloseConfirmationModal() {
 
+function FollowingModal(props) {
+
+    console.log(props.user.following);
+
+    const listItems = props.user.following.map((following) => (
+        <FollowingItem
+            key={following}
+            user_id={following}
+        />
+    ));
+
+    return (
+        <>
+            <Modal show={props.show} onHide={props.handleCloseFollowing}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Following List</Modal.Title>
+                </Modal.Header>
+                <Modal.Body user={props.user}>
+                    <ul>{listItems}</ul>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={props.handleCloseFollowing}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    )
+}
+
+function FollowerModal(props) {
+
+    console.log("poop");
+    console.log(props.user.followers);
+
+    const listItems = props.user.followers.map((follower) => (
+        <FollowerItem
+            key={follower}
+            user_id={follower}
+        />
+    ));
+
+    return (
+        <>
+            <Modal show={props.show} onHide={props.handleCloseFollowers}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Follower List</Modal.Title>
+                </Modal.Header>
+                <Modal.Body user={props.user}>
+                    <ul>{listItems}</ul>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={props.handleCloseFollowers}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    )
+}
+
+function TopicModal(props) {
+    const listItems = props.user.topics.map((topic) => (
+        <TopicItem
+            key={topic}
+            topic_id={topic}
+        />
+    ));
+
+    return (
+        <>
+            <Modal show={props.show} onHide={props.handleCloseTopics}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Followed Topics List</Modal.Title>
+                </Modal.Header>
+                <Modal.Body user={props.user}>
+                    <ul>{listItems}</ul>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={props.handleCloseTopics}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    )
 }
 
 
@@ -102,7 +190,7 @@ function Profile(props) {
 
     const nullUser = {
         username: "User not found",
-        pfp: null,
+        pfp: placeholder,
         bio: "",
         follower_count: 0,
         following_count: 0,
@@ -124,6 +212,7 @@ function Profile(props) {
         following_count: 9,
         followers: [],
         following: [],
+        topics:[],
         private: true,
         first: "what",
         last: "thefuc",
@@ -142,6 +231,9 @@ function Profile(props) {
     const [posts, setPosts] = useState([]);
     const [show, setShow] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [showFollowers, setShowFollowers] = useState(false);
+    const [showFollowing, setShowFollowing] = useState(false);
+    const [showTopics, setShowTopics] = useState(false);
     const [tempUser, setTempUser] = useState(nullUser);
     const [update, setUpdate] = useState(false);
     const [followed, setFollowed] = useState(false);
@@ -161,13 +253,16 @@ function Profile(props) {
         email: string
     }
     */
-    const onDrop = (picture) => {
-        setUploadedPictures([...uploadedPictures, picture])
-        user.pfp = uploadedPictures;
-        console.log("profile pic", uploadedPictures);
-        console.log(user)
 
-    }
+
+
+    // const onDrop = (picture) => {
+    //     setUploadedPictures([...uploadedPictures, picture])
+    //     user.pfp = uploadedPictures;
+    //     console.log("profile pic", uploadedPictures);
+    //     console.log(user)
+
+    // }
 
     const handleFollowUser = (event) => {
         console.log("followed", followed);
@@ -282,10 +377,28 @@ function Profile(props) {
     const handleShow = () => {
         setShow(true);
     }
-
     const handleClose = () => {
         setShow(false);
     }
+    const handleShowFollowers = () => {
+        setShowFollowers(true);
+    }
+    const handleCloseFollowers = () => {
+        setShowFollowers(false);
+    }
+    const handleShowFollowing = () => {
+        setShowFollowing(true);
+    }
+    const handleCloseFollowing = () => {
+        setShowFollowing(false);
+    }
+    const handleShowTopics = () => {
+        setShowTopics(true);
+    }
+    const handleCloseTopics = () => {
+        setShowTopics(false);
+    }
+
 
     const confirmCanUpdate = () => {
         getCurrUser().then(res => {
@@ -310,9 +423,23 @@ function Profile(props) {
             })
             .catch(err => console.error(`Error: ${err}`));
 
+
+        /*
+        axios.get('/api/profile/1')
+            .then(res => {
+                const usr = formatUser(res.data);
+                console.log(usr);
+                console.log(formatUser(usr))
+                setUser(usr);
+            })
+        */
+
     }
 
     const setUserApi = () => {
+        //change testUser to updated user object
+        //const updatedUser = unformatUser(testUser);
+
         console.log("put user----------");
         console.log(tempUser);
         console.log(localStorage.getItem('token'));
@@ -324,6 +451,15 @@ function Profile(props) {
             setUser(usr);
             console.log("make sure user stored in update", user)
         })
+
+        /*
+        axios.put('/api/profile/1', testUser)
+            .then(response => {
+                console.log(response.data)
+                setUser(response.data)
+            
+            });
+        */
     }
 
 
@@ -350,11 +486,10 @@ function Profile(props) {
         //getNewUser();
         getUserApi();
         confirmCanUpdate();
+        //FollowerItem();
 
         console.log("user in useeffect", user)
     }, []);
-
-    //TODO: make pfp 1/3 column and username and info 2/3
 
     return (
         <div style={{ maxWidth: "550px", margin: "0px auto" }}>
@@ -378,9 +513,32 @@ function Profile(props) {
                         <h4>{user.username} </h4>
                         <h7>{user.bio}</h7>
                         <div style={{ display: "flex", justifyContent: "space-between", width: "108%" }}>
-                            <h6>3 posts</h6>
-                            <h6>{user.follower_count} followers</h6>
-                            <h6>{user.following_count} following</h6>
+                            <Button variant="danger" onClick={handleShowFollowers}>
+                                {user.follower_count} followers
+                            </Button>
+                            <FollowerModal
+                                show={showFollowers}
+                                user={user}
+                                handleCloseFollowers={handleCloseFollowers}
+                            />
+                            <Button variant="danger" onClick={handleShowFollowing}>
+                                {user.following_count} following
+                            </Button>
+                            <FollowingModal
+                                show={showFollowing}
+                                user={user}
+                                handleCloseFollowing={handleCloseFollowing}
+                            />
+                            <Button variant="danger" onClick={handleShowTopics}>
+                                Topics
+                            </Button>
+                            <TopicModal
+                                show={showTopics}
+                                user={user}
+                                handleCloseTopics={handleCloseTopics}
+                            />
+                        </div>
+                        <div>
                         </div>
                         {!update && (!user.followers.includes(currId)) && <Button onClick={handleFollowUser}> Follow User</Button>}
                         {!update && (user.followers.includes(currId)) && <Button onClick={handleUnfollowUser}> Unfollow User</Button>}
@@ -391,7 +549,6 @@ function Profile(props) {
                 <div className="file-field input-field" style={{ margin: "0px" }}>
                     <div className="btn #64b5f6 blue darken-1">
                         {update && <span onClick={handleShow}>Update Profile</span>}
-
                         <UpdateProfileModal
                             show={show}
                             handleClose={handleClose}
@@ -404,7 +561,6 @@ function Profile(props) {
                             show={showConfirmation}
                             handleClose={handleCloseConfirmation}
                         />
-
                         {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
                     </div>
                     {/* <div className="file-path-wrapper">
@@ -412,9 +568,15 @@ function Profile(props) {
             </div> */}
                 </div>
             </div>
-
-            <ProfileInteractions user={user} id={id}/>
-            
+            <div>
+                <p>Post History</p>
+                {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
+            </div>
+            <Container style={{ padding: "25px 50px 75px" }}>
+                <Row>
+                    <PostCard postList={posts} />
+                </Row>
+            </Container>
             <div className="gallery">
                 
                 {/* {
