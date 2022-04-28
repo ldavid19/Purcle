@@ -391,8 +391,8 @@ async function getReactionsFromUser(id) {
             console.log(res);
             let arr = Array.from(res);
 
-            arr.map((reaction) => {
-                data.push(reaction)
+            arr.map((post) => {
+                data.push(formatPost(post))
             });
             console.log(data);
         })
