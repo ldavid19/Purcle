@@ -1,30 +1,24 @@
 import React, { useEffect, useState } from 'react';
-
-import ThreadItem from './ThreadItem'
-import { Modal } from "react-bootstrap";
-import { Button } from "react-bootstrap";
-
 import { useParams } from "react-router-dom";
+import { Card, Container, ListGroup, Row, Col, Button } from "react-bootstrap";
 
-import {postThread, getContext, postMessage, getCurrUser} from '../../api/apiRequest.js';
-import { Card, Container, ListGroup, Row, Col, Image, Ratio } from 'react-bootstrap';
+import LinearProgress from '@mui/material/LinearProgress';
+
+import ThreadItem from './ThreadItem';
 import Message from './Message';
 
-
+import {postThread, getContext, postMessage, getCurrUser} from '../../api/apiRequest.js';
 
 
 function ThreadView() {
 
     const { id } = useParams();
 
-    const [thread, setThread] = useState(null);
     const [messageList, setMsgList] = useState([]);
 
     const [error, setError] = React.useState("");
 
     const [message, setMessage] = useState("");
-
-    const [currUser, setCurr] = useState("");
 
     const [receiver, setReceiver] = useState("");
 
@@ -51,47 +45,49 @@ function ThreadView() {
             setMessage("");
             setError("");
         }
-    }
 
-    const updateUsername = (thread) => {
-        getCurrUser().then(res => {
-            console.log(res)
-            const curr = res.curr_user;
-            if (curr == thread.user) {
-                setReceiver(thread.receivername);
-            } else {
-                setReceiver(thread.username);
-            }
-        }).catch(err => console.error(`Error: ${err}`));
+        window.location.reload();
     }
 
     useEffect(() => {
-        // getThreadContext(id).then((res) => {
-        //     setThread(res.thread);
-
-        //     setMsgList(res.message_list)
-        // })
-        setUpContext();
+        setUpContext().then((res) => {
+            setMsgList(res)
+        });
 
     },[]);
 
-    function setUpContext(receiver) {
+    async function setUpContext(receiver) {
 
         let arr = [];
 
-        getThreadContext(id).then((res) => {
-            setThread(res.thread);
+        let user = await getCurrUser();
 
-            updateUsername(res.thread);
+        let context = await getThreadContext(id);
 
+        console.log(context);
+        let currUser = "";
 
+        if (user.curr_user == context.thread.user) {
+            console.log(context.thread.receivername)
+            currUser = context.thread.receivername;
+        } else {
+            console.log(context.thread.username)
+            currUser = context.thread.username;
+        }
 
-            res.message_list.forEach(message => {
-                arr.push(<Message sender={message.sender} message={message.body} time={message.date} />)
-            })
-
-            setMsgList(arr)
+        context.message_list.forEach(message => {
+            arr.push(
+                <Message 
+                    sender={message.sender} 
+                    message={message.body} 
+                    time={message.date} 
+                    curr={currUser}
+                />
+                
+                )
         })
+
+        return arr;
     }
 
     async function getThreadContext(receiver) {
@@ -108,6 +104,19 @@ function ThreadView() {
         postApiMessage(receiver, message).then((res) => {
             console.log("message sent");
         })
+    }
+
+    if (!messageList) {
+        return (
+            <p>You currently have no conversations.</p>
+        )
+    }
+
+    //while postList is being retrieved show loading spinner
+    if (messageList.length <= 0) {
+        return (
+            <LinearProgress />
+        );
     }
 
     return (

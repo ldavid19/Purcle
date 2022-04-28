@@ -60,14 +60,15 @@ urlpatterns = [
     re_path(r'^api/profile_update/(?P<pk>[0-9]+)$', views.profile_update),
 
     #--posts--
-    re_path(r'^api/postlist$', views.post_list),
+    re_path(r'^api/postlist/$', views.post_list),
     re_path(r'^api/post/((?P<pk>[0-9a-zA-Z_]+)?)$', views.post_detail), # grabs single post based on id
     re_path(r'^api/posts/((?P<pk>[0-9a-zA-Z_]+)?)$', views.posts_list), # grabs multiple posts based on topic
     re_path(r'^api/user_posts/((?P<pk>[0-9a-zA-Z_]+)?)$', views.user_posts_list), # grabs multiple posts based on user_id
     
     #--topics--
-    re_path(r'^api/topic$', views.topic_list),
+    re_path(r'^api/topiclist/$', views.topic_list),
     re_path(r'^api/topic/((?P<pk>[0-9a-zA-Z_]+)?)$', views.topic_detail), # id is char not int
+    re_path(r'^api/topic_update/((?P<pk>[0-9a-zA-Z_]+)?)$', views.topic_update), # id is char not int
 
     #--comments--
     re_path(r'^api/comment/$', views.comment_detail),

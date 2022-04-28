@@ -285,7 +285,7 @@ async function convertToUserProfile(id) {
 async function getAllTopics() {
     let data = [];
 
-    await get("topic")
+    await get("topiclist")
         .then((res) => {
             console.log(res);
             data = res;
@@ -388,8 +388,8 @@ async function getReactionsFromUser(id) {
             console.log(res);
             let arr = Array.from(res);
 
-            arr.map((reaction) => {
-                data.push(reaction)
+            arr.map((post) => {
+                data.push(formatPost(post))
             });
             console.log(data);
         });
@@ -465,12 +465,17 @@ async function makeImagePost(data) {
 
 async function makeTopic(data) {
     console.log(data);
-    return post("topic", "", data);
+    return post("topiclist", "", data);
 }
 
 /* user helpers */
 async function updateUser(id, data, token) {
     return patch("profile_update", id, unformatUser(data), token);
+}
+
+/* user helpers */
+async function updateTopic(id, data, token) {
+    return patch("topic_update", id, data, token);
 }
 
 /* signup helpers */
@@ -479,6 +484,7 @@ async function postUser(data) {
     //console.log("result from post: " + ret);
     return ret;
 }
+
 
 
 /* DM helpers */
@@ -629,6 +635,6 @@ export {
     getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopic, getUsers,          //GET misc functions
     getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, getReactionsFromUser, getInteractions,
     makeComment, makeImagePost, makeReaction, getSpecReaction, deleteReaction, 
-    updateUser, postUser, login, makePost, makeTopic, logout, postThread, postMessage,            //POST misc functions
+    updateUser, postUser, login, makePost, makeTopic, logout, postThread, postMessage, updateTopic            //POST misc functions
 
 };  //always leave a comma on the last entry

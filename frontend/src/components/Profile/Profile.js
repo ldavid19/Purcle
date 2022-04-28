@@ -10,6 +10,9 @@ import ProfileInteractions from './ProfileInteractions';
 
 import { getRandPosts, getUser, updateUser, getCurrUser, logout, getInteractions } from '../../api/apiRequest.js';
 import { formatUser, unformatUser } from '../../api/helper';
+import FollowingItem from './FollowingItem';
+import FollowerItem from './FollowerItem';
+import TopicItem from './TopicItem';
 
 /*
 import axios from 'axios'
@@ -91,8 +94,93 @@ function UpdateProfileModal(props) {
     )
 }
 
-function CloseConfirmationModal() {
 
+function FollowingModal(props) {
+
+    console.log(props.user.following);
+
+    const listItems = props.user.following.map((following) => (
+        <FollowingItem
+            key={following}
+            user_id={following}
+        />
+    ));
+
+    return (
+        <>
+            <Modal show={props.show} onHide={props.handleCloseFollowing}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Following List</Modal.Title>
+                </Modal.Header>
+                <Modal.Body user={props.user}>
+                    <ul>{listItems}</ul>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={props.handleCloseFollowing}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    )
+}
+
+function FollowerModal(props) {
+
+    console.log("poop");
+    console.log(props.user.followers);
+
+    const listItems = props.user.followers.map((follower) => (
+        <FollowerItem
+            key={follower}
+            user_id={follower}
+        />
+    ));
+
+    return (
+        <>
+            <Modal show={props.show} onHide={props.handleCloseFollowers}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Follower List</Modal.Title>
+                </Modal.Header>
+                <Modal.Body user={props.user}>
+                    <ul>{listItems}</ul>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={props.handleCloseFollowers}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    )
+}
+
+function TopicModal(props) {
+    const listItems = props.user.topics.map((topic) => (
+        <TopicItem
+            key={topic}
+            topic_id={topic}
+        />
+    ));
+
+    return (
+        <>
+            <Modal show={props.show} onHide={props.handleCloseTopics}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Followed Topics List</Modal.Title>
+                </Modal.Header>
+                <Modal.Body user={props.user}>
+                    <ul>{listItems}</ul>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={props.handleCloseTopics}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    )
 }
 
 
@@ -100,7 +188,7 @@ function Profile(props) {
     console.log(props)
     var placeholder = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLeqsbTn6eqpr7PJzc/j5ebf4eLZ3N2wtrnBxsjN0NLGysy6v8HT1tissra8wMNxTKO9AAAFDklEQVR4nO2d3XqDIAxAlfivoO//tEOZWzvbVTEpic252W3PF0gAIcsyRVEURVEURVEURVEURVEURVEURVEURVEURVEURflgAFL/AirAqzXO9R7XNBVcy9TbuMHmxjN6lr92cNVVLKEurVfK/zCORVvW8iUBnC02dj+Wpu0z0Y6QlaN5phcwZqjkOkK5HZyPAjkIjSO4fIdfcOwFKkJlX4zPu7Ha1tIcwR3wWxyFhRG6g4Je0YpSPDJCV8a2Sv2zd1O1x/2WMDZCwljH+clRrHfWCLGK8REMiql//2si5+DKWKcWeAGcFMzzNrXC/0TUwQ2s6+LhlcwjTMlYsUIQzPOCb7YBiyHopyLXIEKPEkI/TgeuiidK/R9FniUDOjRDpvm0RhqjMyyXNjDhCfIMYl1gGjIMIuYsnGEYRMRZOMMunaLVwpWRW008v6fYKDIzxCwVAeNSO90BJW6emelYBRF/kHpYGVaoxTDAaxOFsfP9y8hpJ4xd7gOcij7JNGQ1EYFgkPJa1jQEiYZXRaRINKxSDUW9n+FT82lSKadkiru9/4XPqSLWOekGPoY05TAvLm9orm+YWuwHoBHkZKijNBJGmeb61eL6Ff/6q7bLr7yvv3vKGhpDRjvgjGaPz+gUg6YgcvpyAR2FIZ9U6nEEyZRTovmEU32KichpGn7C17XrfyH9gK/c0CMP05HZIM2uf9sEveizKveBy9/6Qt7o89ne33D525cfcIMW6ab+TMEukQbQbu+xu7X3A9bChmWaCeAkG17bpntwXgWxHaMzGPmUaR5dQZiKqRVeUZ3047fi3nAu28h4CHxCsZAgmEH8Y27jJAhm8c+5RQzRQNVGhVFSfxOYIjp/pP7RxzjevYXVGf4eLt+BJ1vCuLuLkrgABgCGXZ2wik5uty+oBvNirI6mkzhAf4Gsb58Hcm67Jzd+KwD10BYPLL3e0MjvKrgAULnOfveF/O4N2Xb9BZom3gJes3F9X5Zze8/6Yt09b4CrqsEjUv8oFBaR2rl+6CZr2xVrp24o/WitBKuGrrpl1+bFkmK2qXTON4VpbdfLa7o7y/WdLxG7lm2Lqh2clOwTegbvc/vj2U78CwhA87Bn8G5Nk3eOb0Nsr9flz3sG78UUtue4kpv1xvjg3TMay62BMlTlP+vrOMnJsRmt/ze0jsfkPPYdAH57hK+34PeOyc8XIXu5xT2HsUkdZz+adwg8HGFfQ3K5jtDvbUiO4Di9/ywHGrL88pDizZ++oTp+an+SMX/ndymUCwmHMdO7yuOx83pUx/eEMU0AvxWndwgidAqOZ8ypCwdEfvvEo6D9HwpA8wzvmOJEqAg9ySu8g4x0Hb9hSB/BANEKJ+LbPBU0lzbAJs4xt1AoshKkUGQmiH8/jJ0gdhTTLmSegHlPE0oOdXALnqDjKYh3px//fSgSWG8UqfrrIICzYYSJXRr9BSPbpNzw7gBjKjKOYI7ReIGqQRIap5+5MdjyvuDkExvGeXSlONWZAP3/AZBwJohU7QJRGU+cTVH18ELmRPNBmibW6MT/k1b0XhdkRBvyT6SB6EYv/GvhSmRNpGngRULsAlxMCGNXp7w3FfdEbTEEDdLI9TdIKRUzUesa3I461ER8cpNT7gMRhpKmYVS9ELOgCUQsa4SsulciKiLbY+AnHD8cpuhISsnxpamI84sbDq9qYJgf8wiiOBrC7Ml7M7ZECCqKoiiKoiiKoiiKoijv5AvJxlZRyNWWLwAAAABJRU5ErkJggg==";
     placeholder = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-    placeholder ="profile_images\cat1.png"
+    placeholder = "/media/images/cat1.png"
 
 
     // const currid = -1;
@@ -109,7 +197,7 @@ function Profile(props) {
 
     const nullUser = {
         username: "User not found",
-        pfp: null,
+        pfp: placeholder,
         bio: "",
         follower_count: 0,
         following_count: 0,
@@ -135,6 +223,7 @@ function Profile(props) {
         following_count: 9,
         followers: [],
         following: [],
+        topics:[],
         private: true,
         first: "what",
         last: "thefuc",
@@ -153,7 +242,10 @@ function Profile(props) {
     const [posts, setPosts] = useState([]);
     const [show, setShow] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
-    const [tempUser, setTempUser] = useState(updateU);
+    const [showFollowers, setShowFollowers] = useState(false);
+    const [showFollowing, setShowFollowing] = useState(false);
+    const [showTopics, setShowTopics] = useState(false);
+    const [tempUser, setTempUser] = useState(nullUser);
     const [update, setUpdate] = useState(false);
     const [followed, setFollowed] = useState(false);
     const [currId, setCurrId] = useState(null);
@@ -174,13 +266,16 @@ function Profile(props) {
         email: string
     }
     */
-    const onDrop = (picture) => {
-        setUploadedPictures([...uploadedPictures, picture])
-        user.pfp = uploadedPictures;
-        console.log("profile pic", uploadedPictures);
-        console.log(user)
 
-    }
+
+
+    // const onDrop = (picture) => {
+    //     setUploadedPictures([...uploadedPictures, picture])
+    //     user.pfp = uploadedPictures;
+    //     console.log("profile pic", uploadedPictures);
+    //     console.log(user)
+
+    // }
 
     const handleFollowUser = (event) => {
         console.log("followed", followed);
@@ -313,10 +408,28 @@ function Profile(props) {
     const handleShow = () => {
         setShow(true);
     }
-
     const handleClose = () => {
         setShow(false);
     }
+    const handleShowFollowers = () => {
+        setShowFollowers(true);
+    }
+    const handleCloseFollowers = () => {
+        setShowFollowers(false);
+    }
+    const handleShowFollowing = () => {
+        setShowFollowing(true);
+    }
+    const handleCloseFollowing = () => {
+        setShowFollowing(false);
+    }
+    const handleShowTopics = () => {
+        setShowTopics(true);
+    }
+    const handleCloseTopics = () => {
+        setShowTopics(false);
+    }
+
 
     const confirmCanUpdate = () => {
         getCurrUser().then(res => {
@@ -344,9 +457,23 @@ function Profile(props) {
             })
             .catch(err => console.error(`Error: ${err}`));
 
+
+        /*
+        axios.get('/api/profile/1')
+            .then(res => {
+                const usr = formatUser(res.data);
+                console.log(usr);
+                console.log(formatUser(usr))
+                setUser(usr);
+            })
+        */
+
     }
 
     const setUserApi = () => {
+        //change testUser to updated user object
+        //const updatedUser = unformatUser(testUser);
+
         console.log("put user----------");
         console.log(tempUser);
         console.log(localStorage.getItem('token'));
@@ -358,6 +485,15 @@ function Profile(props) {
             setUser(usr);
             console.log("make sure user stored in update", user)
         })
+
+        /*
+        axios.put('/api/profile/1', testUser)
+            .then(response => {
+                console.log(response.data)
+                setUser(response.data)
+            
+            });
+        */
     }
 
     const canUpdate = (usrID, currID) => {
@@ -383,11 +519,10 @@ function Profile(props) {
         //getNewUser();
         getUserApi();
         confirmCanUpdate();
+        //FollowerItem();
 
         console.log("user in useeffect", user)
     }, []);
-
-    //TODO: make pfp 1/3 column and username and info 2/3
 
     return (
         <div style={{ maxWidth: "550px", margin: "0px auto" }}>
@@ -401,8 +536,7 @@ function Profile(props) {
 
                 }}>
                     <div>
-                        <img style={{ width: "160px", height: "160px", borderRadius: "80px" }}
-                            src={user.pfp}
+                        <img src={user.pfp} style={{ width: "160px", height: "160px", borderRadius: "80px" }} 
                         />
                     </div>
                     <div className="down">
@@ -411,9 +545,32 @@ function Profile(props) {
                         <h4>{user.username} </h4>
                         <h7>{user.bio}</h7>
                         <div style={{ display: "flex", justifyContent: "space-between", width: "108%" }}>
-                            <h6>3 posts</h6>
-                            <h6>{user.follower_count} followers</h6>
-                            <h6>{user.following_count} following</h6>
+                            <Button variant="danger" onClick={handleShowFollowers}>
+                                {user.follower_count} followers
+                            </Button>
+                            <FollowerModal
+                                show={showFollowers}
+                                user={user}
+                                handleCloseFollowers={handleCloseFollowers}
+                            />
+                            <Button variant="danger" onClick={handleShowFollowing}>
+                                {user.following_count} following
+                            </Button>
+                            <FollowingModal
+                                show={showFollowing}
+                                user={user}
+                                handleCloseFollowing={handleCloseFollowing}
+                            />
+                            <Button variant="danger" onClick={handleShowTopics}>
+                                Topics
+                            </Button>
+                            <TopicModal
+                                show={showTopics}
+                                user={user}
+                                handleCloseTopics={handleCloseTopics}
+                            />
+                        </div>
+                        <div>
                         </div>
                         {!update && (!user.followers.includes(currId)) && <Button onClick={handleFollowUser}> Follow User</Button>}
                         {!update && (user.followers.includes(currId)) && <Button onClick={handleUnfollowUser}> Unfollow User</Button>}
@@ -424,7 +581,6 @@ function Profile(props) {
                 <div className="file-field input-field" style={{ margin: "0px" }}>
                     <div className="btn #64b5f6 blue darken-1">
                         {update && <span onClick={handleShow}>Update Profile</span>}
-
                         <UpdateProfileModal
                             show={show}
                             handleClose={handleClose}
@@ -439,7 +595,6 @@ function Profile(props) {
                             show={showConfirmation}
                             handleClose={handleCloseConfirmation}
                         />
-
                         {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
                     </div>
                     {/* <div className="file-path-wrapper">
@@ -447,22 +602,7 @@ function Profile(props) {
             </div> */}
                 </div>
             </div>
-
             <ProfileInteractions user={user} id={id}/>
-            
-            <div className="gallery">  
-                {/* {
-                   mypics.map(item=>{
-                       return(
-                        <img key={item._id} className="item" src={item.photo} alt={item.title}/>  
-                       )
-                   })
-               } */}
-                {/* <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>   */}
-            </div>
         </div>
 
     );
