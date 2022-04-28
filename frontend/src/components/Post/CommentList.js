@@ -5,6 +5,7 @@ import { List, Divider } from '@mui/material';
 function CommentList(props) {
 
     console.log("entered CommentList function");
+    //user_id is pk id.
     const listComments = props.comments.map((comment) => (
         <Comment
             key={comment.id}

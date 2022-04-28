@@ -67,21 +67,14 @@ function UpdateProfileModal(props) {
                         style={{ width: "465px" }}
                         onChange={props.handleUpdateUser}
                     />
-                    <br></br>
                     <label>Upload New Profile Picture</label>
                     <input type="file"/>
-                    <br></br>
-
-                    {/* <input type="checkbox" name="private" onChange={props.handleAllow} checked={props.privateDM}/>
-                    <label for="private"> DM only for following users</label> */}
                 </form>
                 <br></br>
                 <br></br>
                 <Button onClick={props.handleShowConfirmation} color="error">
                     Delete Account
                 </Button>
-
-                
 
             </Modal.Body>
             <Modal.Footer>
@@ -188,7 +181,7 @@ function Profile(props) {
     console.log(props)
     var placeholder = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLeqsbTn6eqpr7PJzc/j5ebf4eLZ3N2wtrnBxsjN0NLGysy6v8HT1tissra8wMNxTKO9AAAFDklEQVR4nO2d3XqDIAxAlfivoO//tEOZWzvbVTEpic252W3PF0gAIcsyRVEURVEURVEURVEURVEURVEURVEURVEURVEURflgAFL/AirAqzXO9R7XNBVcy9TbuMHmxjN6lr92cNVVLKEurVfK/zCORVvW8iUBnC02dj+Wpu0z0Y6QlaN5phcwZqjkOkK5HZyPAjkIjSO4fIdfcOwFKkJlX4zPu7Ha1tIcwR3wWxyFhRG6g4Je0YpSPDJCV8a2Sv2zd1O1x/2WMDZCwljH+clRrHfWCLGK8REMiql//2si5+DKWKcWeAGcFMzzNrXC/0TUwQ2s6+LhlcwjTMlYsUIQzPOCb7YBiyHopyLXIEKPEkI/TgeuiidK/R9FniUDOjRDpvm0RhqjMyyXNjDhCfIMYl1gGjIMIuYsnGEYRMRZOMMunaLVwpWRW008v6fYKDIzxCwVAeNSO90BJW6emelYBRF/kHpYGVaoxTDAaxOFsfP9y8hpJ4xd7gOcij7JNGQ1EYFgkPJa1jQEiYZXRaRINKxSDUW9n+FT82lSKadkiru9/4XPqSLWOekGPoY05TAvLm9orm+YWuwHoBHkZKijNBJGmeb61eL6Ff/6q7bLr7yvv3vKGhpDRjvgjGaPz+gUg6YgcvpyAR2FIZ9U6nEEyZRTovmEU32KichpGn7C17XrfyH9gK/c0CMP05HZIM2uf9sEveizKveBy9/6Qt7o89ne33D525cfcIMW6ab+TMEukQbQbu+xu7X3A9bChmWaCeAkG17bpntwXgWxHaMzGPmUaR5dQZiKqRVeUZ3047fi3nAu28h4CHxCsZAgmEH8Y27jJAhm8c+5RQzRQNVGhVFSfxOYIjp/pP7RxzjevYXVGf4eLt+BJ1vCuLuLkrgABgCGXZ2wik5uty+oBvNirI6mkzhAf4Gsb58Hcm67Jzd+KwD10BYPLL3e0MjvKrgAULnOfveF/O4N2Xb9BZom3gJes3F9X5Zze8/6Yt09b4CrqsEjUv8oFBaR2rl+6CZr2xVrp24o/WitBKuGrrpl1+bFkmK2qXTON4VpbdfLa7o7y/WdLxG7lm2Lqh2clOwTegbvc/vj2U78CwhA87Bn8G5Nk3eOb0Nsr9flz3sG78UUtue4kpv1xvjg3TMay62BMlTlP+vrOMnJsRmt/ze0jsfkPPYdAH57hK+34PeOyc8XIXu5xT2HsUkdZz+adwg8HGFfQ3K5jtDvbUiO4Di9/ywHGrL88pDizZ++oTp+an+SMX/ndymUCwmHMdO7yuOx83pUx/eEMU0AvxWndwgidAqOZ8ypCwdEfvvEo6D9HwpA8wzvmOJEqAg9ySu8g4x0Hb9hSB/BANEKJ+LbPBU0lzbAJs4xt1AoshKkUGQmiH8/jJ0gdhTTLmSegHlPE0oOdXALnqDjKYh3px//fSgSWG8UqfrrIICzYYSJXRr9BSPbpNzw7gBjKjKOYI7ReIGqQRIap5+5MdjyvuDkExvGeXSlONWZAP3/AZBwJohU7QJRGU+cTVH18ELmRPNBmibW6MT/k1b0XhdkRBvyT6SB6EYv/GvhSmRNpGngRULsAlxMCGNXp7w3FfdEbTEEDdLI9TdIKRUzUesa3I461ER8cpNT7gMRhpKmYVS9ELOgCUQsa4SsulciKiLbY+AnHD8cpuhISsnxpamI84sbDq9qYJgf8wiiOBrC7Ml7M7ZECCqKoiiKoiiKoiiKoijv5AvJxlZRyNWWLwAAAABJRU5ErkJggg==";
     placeholder = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-    placeholder = "/media/images/cat1.png"
+    placeholder ="profile_images\cat1.png"
 
 
     // const currid = -1;
@@ -197,7 +190,7 @@ function Profile(props) {
 
     const nullUser = {
         username: "User not found",
-        pfp: placeholder,
+        pfp: null,
         bio: "",
         follower_count: 0,
         following_count: 0,
@@ -211,10 +204,6 @@ function Profile(props) {
         //topics = []
     }
 
-    const updateU = {
-        bio: "",
-    }
-
     const testUser = {
         username: "test user",
         pfp: null,
@@ -223,7 +212,6 @@ function Profile(props) {
         following_count: 9,
         followers: [],
         following: [],
-        topics:[],
         private: true,
         first: "what",
         last: "thefuc",
@@ -251,8 +239,6 @@ function Profile(props) {
     const [currId, setCurrId] = useState(null);
     const [uploadedPictures, setUploadedPictures] = useState([]);
 
-    const [privateDM, setPrivate] = useState(false);
-
     /* user formatted this way:
     User = {
         username: string,
@@ -266,46 +252,40 @@ function Profile(props) {
         email: string
     }
     */
+    const onDrop = (picture) => {
+        setUploadedPictures([...uploadedPictures, picture])
+        user.pfp = uploadedPictures;
+        console.log("profile pic", uploadedPictures);
+        console.log(user)
 
-
-
-    // const onDrop = (picture) => {
-    //     setUploadedPictures([...uploadedPictures, picture])
-    //     user.pfp = uploadedPictures;
-    //     console.log("profile pic", uploadedPictures);
-    //     console.log(user)
-
-    // }
+    }
 
     const handleFollowUser = (event) => {
         console.log("followed", followed);
         console.log("actually", user.followers.includes(currId));
         setFollowed(true)
         console.log(user.followers)
-        var arr = user.followers
-        console.log("arr:",arr)
+        var arr = []
+        if (user.followers != null) {
+            arr = user.followers
+        }
         arr.push(currId);
         user.followers = arr
         user.follower_count = arr.length;
         console.log(user)
-        updateUser(id, user, localStorage.getItem('token')).then(res => {
-            console.log("response: " + res);
-            const usr = formatUser(res.data);
-            setUser(usr);
-            console.log("make sure user stored in update", user)
-        })
-        arr = curr.following
+        updateUser(id, user, localStorage.getItem('token'))
+
+        arr=[]
+        if (curr.following != null) {
+            arr = curr.following
+        }
         if (!curr.following.includes(id)) {
             arr.push(id);
         }
         curr.following = arr
         curr.following_count = arr.length
-        updateUser(currId, curr, localStorage.getItem('token')).then(res => {
-            console.log("response: " + res);
-            const usr = formatUser(res.data);
-            setCurr(usr);
-            console.log("make sure user stored in update", user)
-        })
+        updateUser(currId, curr, localStorage.getItem('token'))
+        getUserApi()
     }
     const handleUnfollowUser = (event) => {
         console.log("followed", followed);
@@ -313,7 +293,6 @@ function Profile(props) {
         user.follower_count -= 1;
         setFollowed(false);
         var arr = user.followers
-        console.log("arr:",arr)
         var index = arr.indexOf(currId);
         if (index !== -1) {
             arr.splice(index, 1);
@@ -321,15 +300,9 @@ function Profile(props) {
         user.followers = arr;
         user.follower_count = arr.length;
         console.log(user)
-        // setUserApi();
-        updateUser(id, user, localStorage.getItem('token')).then(res => {
-            console.log("response: " + res);
-            const usr = formatUser(res.data);
-            setUser(usr);
-            console.log("make sure user stored in update", user)
-        })
-
-        arr=curr.following
+        updateUser(id, user, localStorage.getItem('token'))
+        
+        arr=[]
         index = arr.indexOf(id);
         if (index !== -1) {
             arr.splice(index, 1);
@@ -337,13 +310,8 @@ function Profile(props) {
         curr.following = arr;
         curr.following_count = arr.length;
 
-        updateUser(currId, curr, localStorage.getItem('token')).then(res => {
-            console.log("response: " + res);
-            const usr = formatUser(res.data);
-            setCurr(usr);
-            console.log("make sure user stored in update", user)
-        })        
-        // getUserApi()
+        updateUser(currId, curr, localStorage.getItem('token'))
+        getUserApi()
 
     }
     const handleDM = (event) => {
@@ -355,31 +323,14 @@ function Profile(props) {
         console.log(event.target.name);
         console.log(event.target.value);
         setTempUser({
-            bio: event.target.value,
-            private: tempUser.private,
+            [event.target.name]: event.target.value,
         });
-        console.log(tempUser);
-    }
-
-    const handleAllow = (event) => {
-        console.log(event.target.name);
-        console.log(event.target.value);
-        setPrivate(!privateDM);
-        setTempUser({
-            bio: tempUser.bio,
-            private: privateDM,
-        });
-        
-        console.log(privateDM);
-        console.log(tempUser);
     }
 
     function errorMessage(bio) {
         console.log(bio)
         let message = "";
-        if (typeof bio === 'undefined') {
-            message = "";
-        } else  if (bio.length == 0) {
+        if (bio === null || bio.length == 0) {
             message = message + "Please enter a bio.\n";
         }
         return message;
@@ -387,12 +338,11 @@ function Profile(props) {
 
     const handleSubmitUpdate = (event) => {
         console.log("submit");
-        console.log(tempUser);
         let err = errorMessage(tempUser.bio);
         setError(err);
         if (err == "") {
             setUserApi();
-            setTempUser(updateU);
+            setTempUser(nullUser)
             handleClose();
         }
     }
@@ -464,11 +414,8 @@ function Profile(props) {
                 setUser(usr);
                 console.log(usr);
                 */
-                
-                setUser(res);
                 console.log("get user",res);
-                console.log("allow", res.private);
-                setPrivate(res.private);
+                setUser(res);
             })
             .catch(err => console.error(`Error: ${err}`));
 
@@ -511,6 +458,7 @@ function Profile(props) {
         */
     }
 
+
     const canUpdate = (usrID, currID) => {
         console.log("viewing id: " + usrID);
         console.log("current id: " + currID);
@@ -534,7 +482,6 @@ function Profile(props) {
         //getNewUser();
         getUserApi();
         confirmCanUpdate();
-        //FollowerItem();
 
         console.log("user in useeffect", user)
     }, []);
@@ -551,7 +498,8 @@ function Profile(props) {
 
                 }}>
                     <div>
-                        <img src={user.pfp} style={{ width: "160px", height: "160px", borderRadius: "80px" }} 
+                        <img style={{ width: "160px", height: "160px", borderRadius: "80px" }}
+                            src={user.pfp}
                         />
                     </div>
                     <div className="down">
@@ -602,9 +550,7 @@ function Profile(props) {
                             handleShowConfirmation={handleOpenConfirmation}
                             handleSubmitUpdate={handleSubmitUpdate}
                             handleUpdateUser={handleUpdateUser}
-                            handleAllow={handleAllow}
                             error={error}
-                            privateDM={privateDM}
                         />
                         <ConfirmationModal
                             show={showConfirmation}
@@ -617,10 +563,33 @@ function Profile(props) {
             </div> */}
                 </div>
             </div>
-            <ProfileInteractions user={user} id={id}/>
+            <div>
+                <p>Post History</p>
+                {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
+            </div>
+            <Container style={{ padding: "25px 50px 75px" }}>
+                <Row>
+                    <PostCard postList={posts} />
+                </Row>
+            </Container>
+            <div className="gallery">
+                
+                {/* {
+                   mypics.map(item=>{
+                       return(
+                        <img key={item._id} className="item" src={item.photo} alt={item.title}/>  
+                       )
+                   })
+               } */}
+                {/* <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
+                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
+                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
+                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>   */}
+            </div>
         </div>
 
     );
 }
+
 
 export default Profile

@@ -38,6 +38,7 @@ function Home() {
             let id = res.curr_user;
 
             console.log(id);
+            setUID(id);
 
             if (!id) {
                 redirectToLogin();
@@ -86,7 +87,8 @@ function Home() {
             </Row>
 
             <Row style={{display: "flex"}}>
-                <PostCard postList={posts}/> 
+                {console.log(uid)}
+                <PostCard postList={posts} curr_user={uid}/> 
             </Row>
 
             <Link to="/login">

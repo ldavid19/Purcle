@@ -44,37 +44,39 @@ function PostCardTitle(props) {
     );
 }
 
-function handleVote(type, postid) {
-    getCurrUser()
-        .then((res) => {
+function handleVote(type, postid, curr_user) {
+    //getCurrUser()
+        //.then((res) => {
         var newReaction;
         newReaction = {
             id: undefined,
-            user_id: res.curr_user,
+            user_id: curr_user,
             reaction_type: type,
             post_id: postid
         };
         console.log(newReaction);
         makeReaction(newReaction);
-    })
-    .catch(err => console.error(`Error: ${err}`));
+    //})
+    //.catch(err => console.error(`Error: ${err}`));
 }
 
 function PostCardScore(props) {
+    console.log(props)
+    console.log(props.curr_user)
     var [score, setScore] = useState(0);
     var [up_color, setUpColor] = useState("black");
     var [down_color, setDownColor] = useState("black");
 
-    const [curr_id, setCurrID] = useState(null);
-    const getCurrID = () => {
-        getCurrUser()
-            .then((res) => {
-                console.log(res);
-                var temp = res.curr_user;
-                setCurrID(temp);
-            })
-            .catch(err => console.error(`Error: ${err}`));
-    }
+    //const [curr_id, setCurrID] = useState(null);
+    // const getCurrID = () => {
+    //     getCurrUser()
+    //         .then((res) => {
+    //             console.log(res);
+    //             var temp = res.curr_user;
+    //             setCurrID(temp);
+    //         })
+    //         .catch(err => console.error(`Error: ${err}`));
+    // }
 
     function updateScore(post_id) {
         getScore(post_id)
@@ -85,9 +87,10 @@ function PostCardScore(props) {
     }
 
     useEffect(() => {
-        getCurrUser()
-            .then((res1) => {
-                getSpecReaction(props.id, res1.curr_user)
+        //getCurrUser()
+            //.then((res1) => {
+                console.log(props.curr_user)
+                getSpecReaction(props.id, props.curr_user)
                     .then((res) => {
                         if (res === 1) {
                             setUpColor("mediumslateblue")
@@ -98,9 +101,9 @@ function PostCardScore(props) {
                         }
                     })
                     .catch(err => console.error(`Error: ${err}`));
-            })
-            .catch(err => console.error(`Error: ${err}`));
-        getCurrID();
+            //})
+            //.catch(err => console.error(`Error: ${err}`));
+        //getCurrID();
         updateScore(props.id);
     }, []);
 
@@ -111,7 +114,7 @@ function PostCardScore(props) {
                 size="small"
                 onClick={function() {
                         if (up_color.localeCompare("black") === 0) {
-                            deleteReaction(props.id, curr_id)
+                            deleteReaction(props.id, props.curr_id)
                                 .then(() => {
                                     handleVote(0, props.id)
                                 })
@@ -122,7 +125,7 @@ function PostCardScore(props) {
                             setScore(score + 1)
                             setUpColor("mediumslateblue")
                         } else {
-                            deleteReaction(props.id, curr_id)
+                            deleteReaction(props.id, props.curr_id)
                                 .catch(err => console.error(`Error: ${err}`));
                             setUpColor("black");
                             setScore(score - 1)
@@ -140,7 +143,7 @@ function PostCardScore(props) {
                 size="small"
                 onClick={function() {
                     if (down_color.localeCompare("black") === 0) {
-                        deleteReaction(props.id, curr_id)
+                        deleteReaction(props.id, props.curr_id)
                             .then(() => {
                                 handleVote(1, props.id)
                             })
@@ -151,7 +154,7 @@ function PostCardScore(props) {
                         setScore(score - 1)
                         setDownColor("mediumslateblue")
                     } else {
-                        deleteReaction(props.id, curr_id)
+                        deleteReaction(props.id, props.curr_id)
                             .catch(err => console.error(`Error: ${err}`));
                         setDownColor("black");
                         setScore(score + 1)
@@ -184,7 +187,6 @@ function PostCardImg(props) {
 }
 
 function PostCardItem(props) {
-    //console.log(props);
     //console.log(props.post)
 
     /* posts are formatted this way
@@ -203,8 +205,10 @@ function PostCardItem(props) {
     return (
         <ListGroup.Item>
             <Row className="align-items-center">
+                {console.log(props.curr_user)}
                 <PostCardScore 
                     id={props.post.id}
+                    curr_user={props.curr_user}
                 />
                 
                 <PostCardImg 
