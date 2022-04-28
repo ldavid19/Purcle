@@ -3,7 +3,7 @@ import { Container, Card, Image } from 'react-bootstrap';
 
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
-import { getPost, getUser, getCommentsfromPost, makeComment, convertToUserProfile, getCurrUser } from '../../api/apiRequest';
+import { getPost, getUser, getCommentsfromPost, makeComment, convertToUserProfile, getCurrUser, getCommentsfromUser } from '../../api/apiRequest';
 import { getRelativeTime } from '../../api/helper';
 
 import { Button } from '@mui/material';

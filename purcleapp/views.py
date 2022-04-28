@@ -464,21 +464,25 @@ def user_reactions_list(request, pk=""):
         print("getting reactions from user: " + pk)
         reactions_list = Reaction.objects.filter(user_id=pk)
         print(reactions_list)
-        post_list = []
 
-        for reaction in reactions_list:
-            try:
-                id = reaction.post_id.id
-                post = Post.objects.get(pk=id)
-                post_list.append(post)
-            except Post.DoesNotExist:
-                print("cannot find post :(")
+        reactions_serializer = ReactionSerializer(reactions_list, many=True)
+        return JsonResponse(reactions_serializer.data, safe=False)
+        
+        # post_list = []
+
+        # for reaction in reactions_list:
+        #     try:
+        #         id = reaction.post_id.id
+        #         post = Post.objects.get(pk=id)
+        #         post_list.append(post)
+        #     except Post.DoesNotExist:
+        #         print("cannot find post :(")
     
-        if not post_list:
-            return JsonResponse({'message': 'User has not reacted to any posts'}, status=status.HTTP_404_NOT_FOUND)
+        # if not post_list:
+        #     return JsonResponse({'message': 'User has not reacted to any posts'}, status=status.HTTP_404_NOT_FOUND)
 
-        post_serializer = PostSerializer(post_list, many=True)
-        return JsonResponse(post_serializer.data, safe=False)
+        # post_serializer = PostSerializer(post_list, many=True)
+        # return JsonResponse(post_serializer.data, safe=False)
 #  ``   # GET list of comments, POST a new comment, DELETE all comment
 
 # returns multiple comments based on post, returns all comments
@@ -557,8 +561,11 @@ def del_reaction(request, pk=""):
     if request.method == 'DELETE':
         print("from views.py reaction_detail DELETE")
         print(pk)
-        reaction = Reaction.objects.get(pk=pk)
-        reaction.delete() 
+        try:
+            reaction = Reaction.objects.get(pk=pk)
+            reaction.delete()
+        except:
+            return JsonResponse({'message': 'Reaction was not found'}, status=status.HTTP_404_NOT_FOUND)
         return JsonResponse({'message': 'Reaction was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET', 'POST', 'DELETE'])

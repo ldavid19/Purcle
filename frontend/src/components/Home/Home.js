@@ -31,6 +31,7 @@ function Home() {
             let id = res.curr_user;
 
             console.log(id);
+            setUID(id);
 
             getTimeline(id)
             .then((res) => {
@@ -87,7 +88,8 @@ function Home() {
             </Row>
 
             <Row style={{display: "flex"}}>
-                <PostCard postList={posts}/> 
+                {console.log(uid)}
+                <PostCard postList={posts} curr_user={uid}/> 
             </Row>
 
             <Link to="/login">

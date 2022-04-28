@@ -262,6 +262,7 @@ async function getTimeline(userID) {
 async function getUser(id) {
     let data = [];
 
+    console.log("id: " + id)
     await get("profile", id)
         .then((res) => {
             console.log(res);
@@ -285,7 +286,7 @@ async function convertToUserProfile(id) {
 async function getAllTopics() {
     let data = [];
 
-    await get("topic")
+    await get("topiclist")
         .then((res) => {
             console.log(res);
             data = res;
@@ -313,7 +314,8 @@ async function getScore(post_id) {
                     score = score - 1;
                 }
             });
-        });
+        })
+        .catch(err => console.error(`Error: ${err}`));
 
     console.log(score)
     return score;
@@ -362,7 +364,8 @@ async function deleteReaction(post_id, curr_id) {
                 data.push(reaction)
             });
             console.log(data);
-        });
+        })
+        .catch(err => console.error(`Error: ${err}`));
 
     if (data.length > 0) {
         var temp = data[0];
@@ -392,7 +395,8 @@ async function getReactionsFromUser(id) {
                 data.push(reaction)
             });
             console.log(data);
-        });
+        })
+        .catch(err => console.error(`Error: ${err}`));
 
     return data;
 }
@@ -465,7 +469,7 @@ async function makeImagePost(data) {
 
 async function makeTopic(data) {
     console.log(data);
-    return post("topic", "", data);
+    return post("topiclist", "", data);
 }
 
 /* user helpers */
@@ -554,7 +558,8 @@ async function getCommentsfromPost(post_id) {
                 data.push(comment)
             });
             console.log(data);
-        });
+        })
+        .catch(err => console.error(`Error: ${err}`));
 
     return data;
 }
@@ -574,7 +579,8 @@ async function getCommentsfromUser(user_id) {
                 data.push(comment)
             });
             console.log(data);
-        });
+        })
+        .catch(err => console.error(`Error: ${err}`));
 
     return data;
 }
@@ -593,7 +599,8 @@ async function getNonanonCommentsfromUser(user_id) {
                 data.push(comment)
             });
             console.log(data);
-        });
+        })
+        .catch(err => console.error(`Error: ${err}`));
 
     return data;
 }

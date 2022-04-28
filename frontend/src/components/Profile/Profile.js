@@ -411,6 +411,7 @@ function Profile(props) {
 
     const getUserApi = () => {
 
+        console.log("id: " + id)
         getUser(id)
             .then(res => {
                 /*
@@ -419,7 +420,8 @@ function Profile(props) {
                 console.log(usr);
                 */
                 console.log("get user",res);
-                setUser(res);
+                var set = res;
+                setUser(set);
             })
             .catch(err => console.error(`Error: ${err}`));
 
