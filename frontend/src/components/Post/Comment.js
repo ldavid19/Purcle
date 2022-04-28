@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { convertToUserProfile, getUser } from '../../api/apiRequest.js';
+import { convertToUser, getUser } from '../../api/apiRequest.js';
 
 import { Avatar, ListItemAvatar, ListItem, ListItemText, Typography } from '@mui/material';
 
@@ -29,7 +29,7 @@ function Comment(props) {
     //convert it to user_id
 
     async function getUsername() {
-        const convertedID = await convertToUserProfile(props.user_id);
+        const convertedID = await convertToUser(props.user_id);
 
         const user = await getUser(convertedID);
 
@@ -68,7 +68,7 @@ function Comment(props) {
             {
                 !props.is_anonymous ?
                     <ListItemText
-                        primary="turtle"
+                        primary={user.username}
                         secondary={
                             <React.Fragment>
                                 <Typography
