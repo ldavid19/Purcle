@@ -285,7 +285,7 @@ async function convertToUserProfile(id) {
 async function getAllTopics() {
     let data = [];
 
-    await get("topic")
+    await get("topiclist")
         .then((res) => {
             console.log(res);
             data = res;
@@ -465,7 +465,7 @@ async function makeImagePost(data) {
 
 async function makeTopic(data) {
     console.log(data);
-    return post("topic", "", data);
+    return post("topiclist", "", data);
 }
 
 /* user helpers */
