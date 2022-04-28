@@ -565,7 +565,7 @@ async function getCommentsfromUser(user_id) {
     console.log(user_id)
     await get("user_comments", user_id)
         .then((res) => {
-            console.log(res);
+            console.log("user comments", res);
             let arr = Array.from(res);
 
             arr.map((comment) => {
@@ -577,6 +577,14 @@ async function getCommentsfromUser(user_id) {
         });
 
     return data;
+}
+
+async function getCommentsfromUserProfile(id) {
+    let user_id = await convertToUserProfile(id);
+
+    console.log("uid", user_id);
+
+    return getCommentsfromUser(user_id.curr_userprofile);
 }
 
 async function getNonanonCommentsfromUser(user_id) {
@@ -633,7 +641,7 @@ export {
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, 
     getInbox, getContext, getPostsFromUser,
     getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopic, getUsers,          //GET misc functions
-    getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, getReactionsFromUser, getInteractions,
+    getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, getCommentsfromUserProfile, getReactionsFromUser, getInteractions,
     makeComment, makeImagePost, makeReaction, getSpecReaction, deleteReaction, 
     updateUser, postUser, login, makePost, makeTopic, logout, postThread, postMessage, updateTopic            //POST misc functions
 
