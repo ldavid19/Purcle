@@ -262,6 +262,7 @@ async function getTimeline(userID) {
 async function getUser(id) {
     let data = [];
 
+    console.log("id: " + id)
     await get("profile", id)
         .then((res) => {
             console.log(res);
@@ -277,8 +278,21 @@ async function getCurrUser() {
 }
 
 async function convertToUserProfile(id) {
-    console.log("convertToUserProfile returns: " + get("convert", id));
+    //console.log("convertToUserProfile returns: " + get("convert", id));
     return get("convert", id);
+}
+
+async function convertToUser(id) {
+    var ret;
+    await get("userprofile_id", id)
+        .then((res => {
+            console.log(res)
+            console.log(res.user)
+            ret = res.user;
+        }))
+        .catch(err => console.error(`Error: ${err}`));
+        console.log(ret)
+    return ret;
 }
 
 /* topic helpers */
@@ -313,7 +327,8 @@ async function getScore(post_id) {
                     score = score - 1;
                 }
             });
-        });
+        })
+        .catch(err => console.error(`Error: ${err}`));
 
     console.log(score)
     return score;
@@ -362,7 +377,8 @@ async function deleteReaction(post_id, curr_id) {
                 data.push(reaction)
             });
             console.log(data);
-        });
+        })
+        .catch(err => console.error(`Error: ${err}`));
 
     if (data.length > 0) {
         var temp = data[0];
@@ -392,7 +408,8 @@ async function getReactionsFromUser(id) {
                 data.push(formatPost(post))
             });
             console.log(data);
-        });
+        })
+        .catch(err => console.error(`Error: ${err}`));
 
     return data;
 }
@@ -554,7 +571,8 @@ async function getCommentsfromPost(post_id) {
                 data.push(comment)
             });
             console.log(data);
-        });
+        })
+        .catch(err => console.error(`Error: ${err}`));
 
     return data;
 }
@@ -574,7 +592,8 @@ async function getCommentsfromUser(user_id) {
                 data.push(comment)
             });
             console.log(data);
-        });
+        })
+        .catch(err => console.error(`Error: ${err}`));
 
     return data;
 }
@@ -601,7 +620,8 @@ async function getNonanonCommentsfromUser(user_id) {
                 data.push(comment)
             });
             console.log(data);
-        });
+        })
+        .catch(err => console.error(`Error: ${err}`));
 
     return data;
 }
@@ -639,7 +659,7 @@ async function makeReaction(data) {
 export {
 
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, 
-    getInbox, getContext, getPostsFromUser,
+    getInbox, getContext, getPostsFromUser, convertToUser,
     getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopic, getUsers,          //GET misc functions
     getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, getCommentsfromUserProfile, getReactionsFromUser, getInteractions,
     makeComment, makeImagePost, makeReaction, getSpecReaction, deleteReaction, 
