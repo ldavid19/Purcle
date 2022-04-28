@@ -155,12 +155,7 @@ function ThreadView() {
             </Card.Footer>
         </Card>
         </div>
-        
-        
-        
     )
-
-
 }
 
 export default ThreadView;

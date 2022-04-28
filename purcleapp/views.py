@@ -400,12 +400,34 @@ class CreateThread(View):
                 return redirect('thread', pk=thread.pk)
 
             
-            sender_thread = ThreadModel(user=request.user, receiver=receiver)
+        
 
-            sender_thread.save()
-            thread_pk = sender_thread.pk
 
-            return redirect('thread', pk=thread_pk)
+            receiver_profile = UserProfile.objects.get(user_id=receiver.pk)
+
+            
+
+            can_create = False
+
+            if (receiver_profile.allow_only_followed_users):
+                following_list = receiver_profile.user_following
+                print(following_list)
+                print(request.user.pk)
+                for follow in following_list:
+                    if request.user.pk == int(follow):
+                        can_create = True
+            else:
+                can_create = True
+
+            if can_create:
+                sender_thread = ThreadModel(user=request.user, receiver=receiver)
+
+                sender_thread.save()
+                thread_pk = sender_thread.pk
+
+                return redirect('thread', pk=thread_pk)
+            else:
+                return JsonResponse({'message': 'You cannot DM this user'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
         except:
@@ -432,11 +454,24 @@ class CreateMessage(View):
         else:
             receiver = thread.receiver
 
-        message = MessageModel(thread = thread, sender_user = request.user, receiver_user = receiver, body = JSONParser().parse(request)['body'],)
+        receiver_profile = UserProfile.objects.get(user_id=receiver.pk)
+        print(receiver_profile)
+        blocked_list = receiver_profile.user_blocked
 
-        message.save()
+        can_send = True
 
-        return redirect('thread', pk=pk)
+        for blocked in blocked_list:
+            if request.user.pk == int(blocked):
+                can_send = False
+
+        if can_send:
+            message = MessageModel(thread = thread, sender_user = request.user, receiver_user = receiver, body = JSONParser().parse(request)['body'],)
+
+            message.save()
+
+            return redirect('thread', pk=pk)
+        else:
+            return JsonResponse({'message': 'This user has blocked you'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 class ThreadView(View):
