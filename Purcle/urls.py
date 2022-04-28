@@ -37,6 +37,7 @@ urlpatterns = [
     path('profilesetup/', TemplateView.as_view(template_name='index.html')),
     path('messages/', TemplateView.as_view(template_name='index.html')),
     path('inbox/', TemplateView.as_view(template_name='index.html')),
+    path('error/', TemplateView.as_view(template_name='index.html')),
 
     #REACT ROUTES REGEX
     re_path(r'^profile/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),

@@ -14,6 +14,8 @@ import FollowingItem from './FollowingItem';
 import FollowerItem from './FollowerItem';
 import TopicItem from './TopicItem';
 
+import ErrorPage from '../ErrorPage';
+
 /*
 import axios from 'axios'
 
@@ -82,6 +84,46 @@ function UpdateProfileModal(props) {
                 <Button variant="primary" onClick={props.handleSubmitUpdate}>
                     Update
                 </Button>
+            </Modal.Footer>
+        </Modal>
+    )
+}
+
+
+function BlockModal(props) {
+    return (
+        <Modal show={props.show} onHide={props.handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Block User</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure you want to block this user?</Modal.Body>
+            <Modal.Footer>
+            <Button variant="secondary" onClick={props.handleClose}>
+                        No
+                    </Button>
+                    <Button variant="primary" onClick={props.handleBlockUser} color="error">
+                        Yes
+                    </Button>
+            </Modal.Footer>
+        </Modal>
+    )
+}
+
+
+function UnblockModal(props) {
+    return (
+        <Modal show={props.show} onHide={props.handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Unblock User</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure you want to unblock this user?</Modal.Body>
+            <Modal.Footer>
+            <Button variant="secondary" onClick={props.handleClose}>
+                        No
+                    </Button>
+                    <Button variant="primary" onClick={props.handleUnblockUser} color="error">
+                        Yes
+                    </Button>
             </Modal.Footer>
         </Modal>
     )
@@ -238,6 +280,7 @@ function Profile(props) {
     const [followed, setFollowed] = useState(false);
     const [currId, setCurrId] = useState(null);
     const [uploadedPictures, setUploadedPictures] = useState([]);
+    const [buttonText, setButtonText] = React.useState("");
 
     /* user formatted this way:
     User = {
@@ -314,6 +357,41 @@ function Profile(props) {
         getUserApi()
 
     }
+
+    const handleBlockUser = (event) => {
+        console.log("blocked")
+        console.log(user.blocked)
+
+        var arr = []
+        if (curr.blocked != null) {
+            arr = curr.blocked
+        } else {
+            curr.blocked = [];
+        }
+        if (!curr.blocked.includes(id)) {
+            arr.push(id);
+        }
+        curr.blocked = arr
+        updateUser(currId, curr, localStorage.getItem('token'))
+        getUserApi()
+        handleClose()
+    }
+    const handleUnblockUser = (event) => {
+        console.log("unblocked")
+        console.log(user.blocked)
+        
+        var arr = curr.blocked
+        var index = arr.indexOf(id);
+        if (index !== -1) {
+            arr.splice(index, 1);
+        }
+        curr.blocked = arr;
+
+        updateUser(currId, curr, localStorage.getItem('token'))
+        getUserApi()
+        handleClose()
+    }
+
     const handleDM = (event) => {
 
     }
@@ -371,7 +449,11 @@ function Profile(props) {
         setShowConfirmation(false);
     }
     const handleShow = () => {
-        setShow(true);
+        if (getCurrUser() != nullUser) {
+            setShow(true);
+        } else {
+            setShow(false);
+        }
     }
     const handleClose = () => {
         setShow(false);
@@ -402,7 +484,9 @@ function Profile(props) {
             const currid = res.curr_user;
             setCurrId(currid);
             canUpdate(id, currid);
-        }).catch(err => console.error(`Error: ${err}`));
+        }).catch(err => {
+            console.error(`Error: ${err}`);
+        });
     }
 
     const getUserApi = () => {
@@ -415,9 +499,35 @@ function Profile(props) {
                 console.log(usr);
                 */
                 console.log("get user",res);
+                const blockedUsers = res.blocked;
+                const tempUser = res;
+                
                 setUser(res);
+                console.log("get user",res);
+                console.log("allow", res.private);
+                setPrivate(res.private);
+
+                getCurrUser().then(res => {
+                    console.log(res)
+                    const currid = res.curr_user;
+                    setCurrId(currid);
+                    console.log("blocked list of user ur tryna view: " + blockedUsers);
+                    console.log("currid: " + currid);
+                    console.log(blockedUsers.includes(currid));
+                    for (const temp of blockedUsers) {
+                        if (temp == currid) {
+                            errorHandler();
+                        }
+                    }
+                    setUser(tempUser);
+                }).catch(err => {
+                    console.error(`Error: ${err}`);
+                });
             })
-            .catch(err => console.error(`Error: ${err}`));
+            .catch(err => {
+                console.error(`Error: ${err}`);
+                errorHandler();
+            });
 
 
         /*
@@ -464,6 +574,7 @@ function Profile(props) {
         console.log("current id: " + currID);
         if (currID == usrID) {
             setUpdate(true);
+            setButtonText("Update Profile");
         } else {
             setUpdate(false);
             // setFollowed(user.followers.includes(currId));
@@ -544,8 +655,11 @@ function Profile(props) {
                 <div className="file-field input-field" style={{ margin: "0px" }}>
                     <div className="btn #64b5f6 blue darken-1">
                         {update && <span onClick={handleShow}>Update Profile</span>}
+                        {!update && (curr.blocked == null || !curr.blocked.includes(id)) && <span onClick={handleShow}>Block</span>}
+                        {!update && (curr.blocked != null && curr.blocked.includes(id)) && <span onClick={handleShow}>Unblock</span>}
+
                         <UpdateProfileModal
-                            show={show}
+                            show={show && update}
                             handleClose={handleClose}
                             handleShowConfirmation={handleOpenConfirmation}
                             handleSubmitUpdate={handleSubmitUpdate}
@@ -556,6 +670,17 @@ function Profile(props) {
                             show={showConfirmation}
                             handleClose={handleCloseConfirmation}
                         />
+                        <BlockModal
+                            show={show && !update && (curr.blocked == null || !curr.blocked.includes(id))}
+                            handleClose={handleClose}
+                            handleBlockUser={handleBlockUser}
+                        />
+                        <UnblockModal
+                            show={show && !update && (curr.blocked != null && curr.blocked.includes(id))}
+                            handleClose={handleClose}
+                            handleUnblockUser={handleUnblockUser}
+                        />
+
                         {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
                     </div>
                     {/* <div className="file-path-wrapper">
