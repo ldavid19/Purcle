@@ -567,29 +567,7 @@ function Profile(props) {
             </div> */}
                 </div>
             </div>
-            <div>
-                <p>Post History</p>
-                {/* <input type="file" onChange={(e)=>updatePhoto(e.target.files[0])} /> */}
-            </div>
-            <Container style={{ padding: "25px 50px 75px" }}>
-                <Row>
-                    <PostCard postList={posts} />
-                </Row>
-            </Container>
-            <div className="gallery">
-                
-                {/* {
-                   mypics.map(item=>{
-                       return(
-                        <img key={item._id} className="item" src={item.photo} alt={item.title}/>  
-                       )
-                   })
-               } */}
-                {/* <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>  
-                <img className="item" src="https://static01.nyt.com/images/2019/05/31/multimedia/parenting-poop/22110ba6851840dd9e7d6012a4c6ed32-superJumbo.jpg" alt="post picture"/>   */}
-            </div>
+            <ProfileInteractions user={user} id={id}/>
         </div>
 
     );

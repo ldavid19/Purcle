@@ -1,7 +1,7 @@
 import { Container, Row } from 'react-bootstrap';
 import React, { useState, useEffect }  from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Button } from '@mui/material';
 
@@ -15,6 +15,8 @@ function Home() {
     const [user, setUser] = useState({});
     const [uid, setUID] = useState(0); //current user id
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         //getPosts();
         /*getCurrentUser().then((res) => {
@@ -24,6 +26,11 @@ function Home() {
         startup();
     }, []);
 
+    const redirectToLogin = () => {
+        navigate('/login', { replace: true });
+        window.location.reload();
+    }
+
     const startup = () => {
         getCurrUser()
         .then((res) => {
@@ -31,6 +38,10 @@ function Home() {
             let id = res.curr_user;
 
             console.log(id);
+
+            if (!id) {
+                redirectToLogin();
+            }
 
             getTimeline(id)
             .then((res) => {
@@ -42,18 +53,6 @@ function Home() {
     const getCurrentTimeline = () => {
         getTimeline(uid) //change this to currently logged in user
         .then((res) => {
-            /*
-            var post_list = [];
-            var data = Array.from(res);
-
-            data.map((post) => {
-                const formattedPost = formatPost(post);
-                console.log(formattedPost)
-                post_list.push(formattedPost);
-            }, setPosts(post_list));
-            */
-            //console.log("getting timeline: ")
-            //console.log(res);
             console.log(res);
             setPosts(res);
         })
