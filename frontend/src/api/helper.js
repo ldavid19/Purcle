@@ -42,7 +42,8 @@ const nullUserFrontend = {
     private: true,
     first: "",
     last: "",
-    email: ""
+    email: "",
+    blocked: []
 }
 
 const nullUserBackend = {
@@ -58,7 +59,8 @@ const nullUserBackend = {
     user_blocked: [],
     first_name: "",
     last_name: "",
-    user_email: ""
+    user_email: "",
+    user_blocked: []
 }
 
 function getRelativeTime(date) {

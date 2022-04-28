@@ -35,6 +35,7 @@ urlpatterns = [
     path('profilesetup/', TemplateView.as_view(template_name='index.html')),
     path('messages/', TemplateView.as_view(template_name='index.html')),
     path('inbox/', TemplateView.as_view(template_name='index.html')),
+    path('error/', TemplateView.as_view(template_name='index.html')),
 
     #REACT ROUTES REGEX
     re_path(r'^profile/(?P<pk>[0-9]+)$', TemplateView.as_view(template_name='index.html')),
@@ -48,7 +49,7 @@ urlpatterns = [
     path('api/auth/login/', views.LoginAPI.as_view(), name='login'),
     #path('api/auth/register/', views.RegisterAPI.as_view(), name='register'),
     path('api/auth/logout/', knox_views.LogoutView.as_view(), name='logout'),
-    path('api/sign_up', views.user_detail),
+    path('api/sign_up/', views.user_detail),
     path('api/auth/', include('knox.urls')),
     
     #--profile--

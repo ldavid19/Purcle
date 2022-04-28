@@ -151,6 +151,51 @@ async function getAllPosts() {
 async function getPostsFromTopic(topic) {
     let data = [];
 
+    let posts = await get("posts", topic);
+
+    let curruser = await getCurrUser();
+    let currid = curruser.curr_id;
+
+    let arr = Array.from(posts);
+
+    arr.map((post) => {
+        var formattedpost = formatPost(post);
+
+        if (formattedpost.anon) {
+            data.push(formattedpost);
+        }
+        
+
+        if (curruser.blocked != null) {
+            for (const temp of curruser.blocked) {
+                if (temp != formattedpost.user && !formattedpost.anon && !data.includes(formattedpost)) {
+                    data.push(formattedpost);
+                }
+            }
+        }
+
+        if (curruser.blocked == null && !formattedpost.anon && !data.includes(formattedpost)) {
+            data.push(formattedpost);
+        }
+
+        getUser(formattedpost.user).then((user) => {
+            if (user.blocked != null) {
+                for (const temp of user.blocked) {
+                    if (temp != currid && !formattedpost.anon && !data.includes(formattedpost)) {
+                        data.push(formattedpost);
+                    }
+                }
+            }
+    
+            if (user.blocked == null && !formattedpost.anon && !data.includes(formattedpost)) {
+                data.push(formattedpost);
+            }
+        })
+
+        
+    });
+
+    /*
     await get("posts", topic)
         .then((res) => {
             console.log(res);
@@ -158,11 +203,50 @@ async function getPostsFromTopic(topic) {
 
             arr.map((post) => {
                 //console.log("pushed!")
-                data.push(formatPost(post))
+                var formattedpost = formatPost(post);
+                var currid;
+
+                if (formattedpost.anon) {
+                    data.push(formattedpost);
+                }
+
+                getCurrUser()
+                .then((res) => {
+                    if (res.blocked != null) {
+                        for (const temp of res.blocked) {
+                            if (temp != formattedpost.user && !formattedpost.anon && !data.includes(formattedpost)) {
+                                data.push(formattedpost);
+                            }
+                        }
+                    }
+
+                    if (res.blocked == null && !formattedpost.anon && !data.includes(formattedpost)) {
+                        data.push(formattedpost);
+                    }
+
+                    currid = res.curr_id;
+                })
+
+                getUser(formattedpost.user)
+                .then((res) => {
+                    if (res.blocked != null) {
+                        for (const temp of res.blocked) {
+                            if (temp != formattedpost.user && !formattedpost.anon && !data.includes(formattedpost)) {
+                                data.push(formattedpost);
+                            }
+                        }
+                    }
+
+                    if (res.blocked == null && !formattedpost.anon && !data.includes(formattedpost)) {
+                        data.push(formattedpost);
+                    }
+                })
+                //data.push(formattedpost)
             });
             //console.log(data);
         })
         .catch(err => console.error(`Error: ${err}`));
+        */
 
     data.sort((a, b) => b.date - a.date);
 
@@ -214,13 +298,7 @@ async function getTimeline(userID) {
     }
 
     for (let topic in topics) {
-        let postsFromTopic = [];
-
-        await getPostsFromTopic(topics[topic])
-            .then(res => {
-                postsFromTopic = res;
-            })
-            .catch(err => console.error(`Error: ${err}`));
+        let postsFromTopic = await getPostsFromTopic(topics[topic])
 
         //console.log(postsFromTopic);
 
