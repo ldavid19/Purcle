@@ -71,7 +71,6 @@ function ThreadView() {
 
         //     setMsgList(res.message_list)
         // })
-
         setUpContext();
 
     },[]);
@@ -147,12 +146,7 @@ function ThreadView() {
             </Card.Footer>
         </Card>
         </div>
-        
-        
-        
     )
-
-
 }
 
 export default ThreadView;

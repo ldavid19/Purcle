@@ -64,14 +64,21 @@ function UpdateProfileModal(props) {
                         style={{ width: "465px" }}
                         onChange={props.handleUpdateUser}
                     />
+                    <br></br>
                     <label>Upload New Profile Picture</label>
                     <input type="file"/>
+                    <br></br>
+
+                    {/* <input type="checkbox" name="private" onChange={props.handleAllow} checked={props.privateDM}/>
+                    <label for="private"> DM only for following users</label> */}
                 </form>
                 <br></br>
                 <br></br>
                 <Button onClick={props.handleShowConfirmation} color="error">
                     Delete Account
                 </Button>
+
+                
 
             </Modal.Body>
             <Modal.Footer>
@@ -116,6 +123,10 @@ function Profile(props) {
         //topics = []
     }
 
+    const updateU = {
+        bio: "",
+    }
+
     const testUser = {
         username: "test user",
         pfp: null,
@@ -142,11 +153,13 @@ function Profile(props) {
     const [posts, setPosts] = useState([]);
     const [show, setShow] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
-    const [tempUser, setTempUser] = useState(nullUser);
+    const [tempUser, setTempUser] = useState(updateU);
     const [update, setUpdate] = useState(false);
     const [followed, setFollowed] = useState(false);
     const [currId, setCurrId] = useState(null);
     const [uploadedPictures, setUploadedPictures] = useState([]);
+
+    const [privateDM, setPrivate] = useState(false);
 
     /* user formatted this way:
     User = {
@@ -232,14 +245,31 @@ function Profile(props) {
         console.log(event.target.name);
         console.log(event.target.value);
         setTempUser({
-            [event.target.name]: event.target.value,
+            bio: event.target.value,
+            private: tempUser.private,
         });
+        console.log(tempUser);
+    }
+
+    const handleAllow = (event) => {
+        console.log(event.target.name);
+        console.log(event.target.value);
+        setPrivate(!privateDM);
+        setTempUser({
+            bio: tempUser.bio,
+            private: privateDM,
+        });
+        
+        console.log(privateDM);
+        console.log(tempUser);
     }
 
     function errorMessage(bio) {
         console.log(bio)
         let message = "";
-        if (bio === null || bio.length == 0) {
+        if (typeof bio === 'undefined') {
+            message = "";
+        } else  if (bio.length == 0) {
             message = message + "Please enter a bio.\n";
         }
         return message;
@@ -247,11 +277,12 @@ function Profile(props) {
 
     const handleSubmitUpdate = (event) => {
         console.log("submit");
+        console.log(tempUser);
         let err = errorMessage(tempUser.bio);
         setError(err);
         if (err == "") {
             setUserApi();
-            setTempUser(nullUser)
+            setTempUser(updateU);
             handleClose();
         }
     }
@@ -305,8 +336,11 @@ function Profile(props) {
                 setUser(usr);
                 console.log(usr);
                 */
-                console.log("get user",res);
+                
                 setUser(res);
+                console.log("get user",res);
+                console.log("allow", res.private);
+                setPrivate(res.private);
             })
             .catch(err => console.error(`Error: ${err}`));
 
@@ -325,7 +359,6 @@ function Profile(props) {
             console.log("make sure user stored in update", user)
         })
     }
-
 
     const canUpdate = (usrID, currID) => {
         console.log("viewing id: " + usrID);
@@ -398,7 +431,9 @@ function Profile(props) {
                             handleShowConfirmation={handleOpenConfirmation}
                             handleSubmitUpdate={handleSubmitUpdate}
                             handleUpdateUser={handleUpdateUser}
+                            handleAllow={handleAllow}
                             error={error}
+                            privateDM={privateDM}
                         />
                         <ConfirmationModal
                             show={showConfirmation}
@@ -415,8 +450,7 @@ function Profile(props) {
 
             <ProfileInteractions user={user} id={id}/>
             
-            <div className="gallery">
-                
+            <div className="gallery">  
                 {/* {
                    mypics.map(item=>{
                        return(
@@ -433,6 +467,5 @@ function Profile(props) {
 
     );
 }
-
 
 export default Profile
