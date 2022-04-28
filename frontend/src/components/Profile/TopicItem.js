@@ -50,7 +50,9 @@ function TopicItem(props) {
             <Row className="align-items-left">
                 <Col>
                     <Link to={{ pathname: `/topic/${props.topic_id}`, query:{id: props.topic_id}}}>
-                        {props.topic_id}
+                        <Button>
+                            {props.topic_id}
+                        </Button>
                     </Link>
                 </Col>
                 <Col>
