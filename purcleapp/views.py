@@ -575,6 +575,18 @@ def user_nonanon_comments_list(request, pk=""):
 #  ``   # GET list of comments, POST a new comment, DELETE all comments
 
 @api_view(['GET', 'POST', 'DELETE'])
+def user_comments_list_from_profile(request, pk=""):
+    if request.method == 'GET':
+        print("getting comments from user: " + pk)
+        comments_list = Comment.objects.filter(user_id=pk)
+
+        if not comments_list:
+            return JsonResponse({'message': 'User has no comments'}, status=status.HTTP_404_NOT_FOUND)
+
+        comments_serializer = CommentSerializer(comments_list, many=True)
+        return JsonResponse(comments_serializer.data, safe=False)
+
+@api_view(['GET', 'POST', 'DELETE'])
 def comment_detail(request):
     
     if request.method == 'POST':

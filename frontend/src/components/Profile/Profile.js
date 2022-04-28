@@ -282,27 +282,30 @@ function Profile(props) {
         console.log("actually", user.followers.includes(currId));
         setFollowed(true)
         console.log(user.followers)
-        var arr = []
-        if (user.followers != null) {
-            arr = user.followers
-        }
+        var arr = user.followers
+        console.log("arr:",arr)
         arr.push(currId);
         user.followers = arr
         user.follower_count = arr.length;
         console.log(user)
-        updateUser(id, user, localStorage.getItem('token'))
-
-        arr=[]
-        if (curr.following != null) {
-            arr = curr.following
-        }
+        updateUser(id, user, localStorage.getItem('token')).then(res => {
+            console.log("response: " + res);
+            const usr = formatUser(res.data);
+            setUser(usr);
+            console.log("make sure user stored in update", user)
+        })
+        arr = curr.following
         if (!curr.following.includes(id)) {
             arr.push(id);
         }
         curr.following = arr
         curr.following_count = arr.length
-        updateUser(currId, curr, localStorage.getItem('token'))
-        getUserApi()
+        updateUser(currId, curr, localStorage.getItem('token')).then(res => {
+            console.log("response: " + res);
+            const usr = formatUser(res.data);
+            setCurr(usr);
+            console.log("make sure user stored in update", user)
+        })
     }
     const handleUnfollowUser = (event) => {
         console.log("followed", followed);
@@ -310,6 +313,7 @@ function Profile(props) {
         user.follower_count -= 1;
         setFollowed(false);
         var arr = user.followers
+        console.log("arr:",arr)
         var index = arr.indexOf(currId);
         if (index !== -1) {
             arr.splice(index, 1);
@@ -317,9 +321,15 @@ function Profile(props) {
         user.followers = arr;
         user.follower_count = arr.length;
         console.log(user)
-        updateUser(id, user, localStorage.getItem('token'))
-        
-        arr=[]
+        // setUserApi();
+        updateUser(id, user, localStorage.getItem('token')).then(res => {
+            console.log("response: " + res);
+            const usr = formatUser(res.data);
+            setUser(usr);
+            console.log("make sure user stored in update", user)
+        })
+
+        arr=curr.following
         index = arr.indexOf(id);
         if (index !== -1) {
             arr.splice(index, 1);
@@ -327,8 +337,13 @@ function Profile(props) {
         curr.following = arr;
         curr.following_count = arr.length;
 
-        updateUser(currId, curr, localStorage.getItem('token'))
-        getUserApi()
+        updateUser(currId, curr, localStorage.getItem('token')).then(res => {
+            console.log("response: " + res);
+            const usr = formatUser(res.data);
+            setCurr(usr);
+            console.log("make sure user stored in update", user)
+        })        
+        // getUserApi()
 
     }
     const handleDM = (event) => {
