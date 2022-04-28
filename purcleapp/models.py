@@ -15,7 +15,7 @@ class UserProfile(models.Model):
     profile_name = models.CharField(max_length=100, null=True)
     first_name = models.CharField(max_length=50, null=True)
     last_name = models.CharField(max_length=50, null=True)
-    user_profile_picture = models.ImageField(default='default.jpg', upload_to='profile_images', blank=True, null=True)
+    user_profile_picture = models.CharField(max_length=500, null=True)
     # user_profile_picture= models.BinaryField(blank=True)
     user_bio = models.TextField(max_length=500)
     user_followers = ArrayField(models.IntegerField(), blank=True, null=True)
@@ -102,6 +102,7 @@ class Post(models.Model):       # created by Nicole
     post_title = models.CharField(max_length=100)
     post_content = models.CharField(max_length=500) # either the text field for a text post, or the photo for a photo post
     post_time = models.DateTimeField(auto_now=False, auto_now_add=True) # time is set on initial creation
+    #post_image = models.FileField(upload_to='images/', default='images/cursed_turkey.jpg')
 
     # deletes post, any references to that post in Reaction or Comment are also deleted
     def delete_post(self):
@@ -128,7 +129,7 @@ class Post(models.Model):       # created by Nicole
 # does not check if the user has already reacted to post
 class Reaction(models.Model):                 # created by Nicole
     # Reaction.id is created automatically
-    user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)   # if the UserProfile is deleted, so will the Reaction
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)   # if the UserProfile is deleted, so will the Reaction
     reaction_type = models.IntegerField()   # 0 for like, 1 for dislike
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)   # if the Post is deleted, so will the Reaction
 

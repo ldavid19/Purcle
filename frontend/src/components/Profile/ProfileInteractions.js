@@ -11,6 +11,7 @@ function ProfileInterationsMap(props) {
     const [posts, setPosts] = useState([]);
     const [comments, setComments] = useState([]);
     const [reactions, setReactions] = useState([]);
+    console.log(props.type)
 
     const getPosts = () => {
         getPostsFromUser(props.id)
@@ -48,20 +49,21 @@ function ProfileInterationsMap(props) {
 
     console.log(props.type);
 
+    if (props.type === "Comments") {
+        if (!comments || comments.length === 0) {
+            return (<h3>This user has not commented on any posts.</h3>)
+        }
+
+        return (<h2>comments ui here</h2>)
+    }
+
     if (props.type === "Reactions") {
+        console.log(reactions)
         if (!reactions || reactions.length === 0) {
             return (<h3>This user has not reacted to any posts.</h3>)
         }
 
-        return (<h2>reactions</h2>)
-    }
-
-    if (props.type === "Comments") {
-        if (!comments || comments.length === 0) {
-            return (<h3>This user has not made any comments.</h3>)
-        }
-
-        return (<PostCard postList={comments} />)
+        return (<PostCard postList={reactions} />)
     }
 
     if (props.type === "Posts") {
@@ -82,15 +84,13 @@ function ProfileInteractions(props) {
         console.log(type);
         setInterType(type);
     }
-
     
-    if (!props.user || props.user.private) {
+    if (!props.user) {
         return (
-            <h3>This user profile is private.</h3>
+            <h3>This user profile does not exist.</h3>
         )
     }
     
-
     return (
         <Container>
             <Row style={{marginBottom: "15px"}}>
