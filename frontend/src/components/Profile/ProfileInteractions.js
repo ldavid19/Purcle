@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 import PostCard from '../Post/PostCard';
 import ProfileInteractionsItem from './ProfileInteractionsItem';
+import CommentList from '../Post/CommentList';
 import ProfileButtonGroup from './ProfileButtonGroup';
 
 import { getReactionsFromUser, getCommentsfromUserProfile, getPostsFromUser } from '../../api/apiRequest';
@@ -25,7 +26,23 @@ function ProfileInterationsMap(props) {
         getCommentsfromUserProfile(props.id)
             .then((res) => {
                 console.log(res);
-                setComments(res);
+
+                let comment_list = [];
+
+                res.map((c) => {
+                    let newComment = {
+                        id: c.id,
+                        user_id: c.user_id,
+                        post_id: c.post_id,
+                        content: c.comment_content,
+                        date: c.comment_created_date,
+                        isAnon: c.comment_is_anonymous
+                    }
+
+                    comment_list.push(newComment);
+                })
+
+                setComments(comment_list);
             })
             .catch(err => console.error(`Error: ${err}`));
     }
@@ -56,7 +73,7 @@ function ProfileInterationsMap(props) {
             return (<h3>This user has not commented on any posts.</h3>)
         }
 
-        return (<h2>comments ui here</h2>)
+        return (< CommentList comments={comments}/>)
     }
 
     if (props.type === "Reactions") {
