@@ -285,7 +285,7 @@ async function convertToUserProfile(id) {
 async function getAllTopics() {
     let data = [];
 
-    await get("topic")
+    await get("topiclist")
         .then((res) => {
             console.log(res);
             data = res;
@@ -388,8 +388,8 @@ async function getReactionsFromUser(id) {
             console.log(res);
             let arr = Array.from(res);
 
-            arr.map((reaction) => {
-                data.push(reaction)
+            arr.map((post) => {
+                data.push(formatPost(post))
             });
             console.log(data);
         });
@@ -465,7 +465,7 @@ async function makeImagePost(data) {
 
 async function makeTopic(data) {
     console.log(data);
-    return post("topic", "", data);
+    return post("topiclist", "", data);
 }
 
 /* user helpers */

@@ -12,6 +12,10 @@ code {
     monospace;
 }
 
+.button {
+  background-color: mediumslateblue;
+}
+
 /*
 light color: #bb8ee6 (lavender) 
 medium color: #70558a (purple)
