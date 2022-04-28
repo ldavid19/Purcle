@@ -55,6 +55,7 @@ urlpatterns = [
     
     #--profile--
     re_path(r'^api/profile/(?P<pk>[0-9]+)$', views.profile_detail),
+    re_path(r'^api/userprofile_id/((?P<pk>[0-9a-zA-Z_]+)?)$', views.userprofile_detail),
     re_path(r'^api/profileid/(?P<pk>[0-9]+)$', views.profile_id),
     re_path(r'^api/profilesetup/(?P<pk>[0-9]+)$', views.profile_detail),
     re_path(r'^api/profile_update/(?P<pk>[0-9]+)$', views.profile_update),

@@ -278,8 +278,21 @@ async function getCurrUser() {
 }
 
 async function convertToUserProfile(id) {
-    console.log("convertToUserProfile returns: " + get("convert", id));
+    //console.log("convertToUserProfile returns: " + get("convert", id));
     return get("convert", id);
+}
+
+async function convertToUser(id) {
+    var ret;
+    await get("userprofile_id", id)
+        .then((res => {
+            console.log(res)
+            console.log(res.user)
+            ret = res.user;
+        }))
+        .catch(err => console.error(`Error: ${err}`));
+        console.log(ret)
+    return ret;
 }
 
 /* topic helpers */
@@ -638,7 +651,7 @@ async function makeReaction(data) {
 export {
 
     getRandPosts, getPost, getAllPosts, getPostsFromTopic, getTimeline, 
-    getInbox, getContext, getPostsFromUser,
+    getInbox, getContext, getPostsFromUser, convertToUser,
     getUser, getScore, getAllTopics, getCurrUser, convertToUserProfile, getTopicInfo, getTopic, getUsers,          //GET misc functions
     getCommentsfromPost, getCommentsfromUser, getNonanonCommentsfromUser, getReactionsFromUser, getInteractions,
     makeComment, makeImagePost, makeReaction, getSpecReaction, deleteReaction, 

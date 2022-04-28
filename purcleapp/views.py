@@ -185,6 +185,22 @@ def post_detail(request, pk):
         post_serializer = PostSerializer(post)
         return JsonResponse(post_serializer.data, safe=False)
 
+@api_view(['GET'])
+def userprofile_detail(request, pk):
+    print("in userprofile_detail")
+    print("request:")
+    print(request)
+    print("pk: " + pk)
+    try: 
+        userprofile = UserProfile.objects.get(pk=pk) 
+    except UserProfile.DoesNotExist: 
+        return JsonResponse({'message': 'The userprofile does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        print("requesting userprofile #" + pk)
+
+        userprofile_serializer = UserProfileSerializer(userprofile)
+        return JsonResponse(userprofile_serializer.data, safe=False)
 
 
 class LoginAPI(KnoxLoginView):
