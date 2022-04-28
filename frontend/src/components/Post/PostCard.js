@@ -78,7 +78,7 @@ function PostCard(props) {
         //console.log("looking up user: " + id)
         if (users && id in users) {
             return {
-                username: users[id], 
+                username: users[id],
                 users: users
             }
         }
