@@ -16,6 +16,8 @@ function Inbox() {
     const [receiver, setReceiver] = useState("");
     const [targetUser, setUser] = useState("");
 
+    const [errMsg, setErrMsg] = useState("");
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleCloseErr = () => setShowErr(false);
@@ -136,7 +138,7 @@ function Inbox() {
 
             makeThread({'username': targetUser,}).then((res) => {
                 if(res.hasOwnProperty('message')){
-
+                    setErrMsg(res.message);
                     handleClose();
                     handleShowErr();
                 }
@@ -199,9 +201,7 @@ function Inbox() {
                 </Modal.Header>
 
                     <Modal.Body centered>
-
-                        <p>User "{targetUser}" does not exist</p>
-
+                        <p>{errMsg}</p>
                     </Modal.Body>
 
                     <Modal.Footer>

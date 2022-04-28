@@ -5,7 +5,7 @@ import PostCard from '../Post/PostCard';
 import ProfileInteractionsItem from './ProfileInteractionsItem';
 import ProfileButtonGroup from './ProfileButtonGroup';
 
-import { getReactionsFromUser, getCommentsfromUser, getPostsFromUser } from '../../api/apiRequest';
+import { getReactionsFromUser, getCommentsfromUserProfile, getPostsFromUser } from '../../api/apiRequest';
 
 function ProfileInterationsMap(props) {
     const [posts, setPosts] = useState([]);
@@ -22,8 +22,9 @@ function ProfileInterationsMap(props) {
     }
 
     const getComments = () => {
-        getCommentsfromUser(props.id)
+        getCommentsfromUserProfile(props.id)
             .then((res) => {
+                console.log(res);
                 setComments(res);
             })
             .catch(err => console.error(`Error: ${err}`));
@@ -50,6 +51,7 @@ function ProfileInterationsMap(props) {
     console.log(props.type);
 
     if (props.type === "Comments") {
+        console.log("UsER COMMENTS", comments);
         if (!comments || comments.length === 0) {
             return (<h3>This user has not commented on any posts.</h3>)
         }
