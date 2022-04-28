@@ -102,10 +102,47 @@ function PostPage(props) {
                         isAnon: c.comment_is_anonymous
                     }
 
-                    comment_list.push(newComment);
+                    if (c.comment_is_anonymous) {
+                        comment_list.push(newComment);
+                    }
+                    var blockedProfiles = [];
+
+                    getCurrUser()
+                    .then((res) => {
+                        console.log(res);
+                        const tempid = res.curr_id;
+                        getUser(tempid)
+                        .then((res) => {
+                            for (const temp of res.blocked) {
+                                blockedProfiles.push(convertToUserProfile(temp).curr_userprofile);
+                            }                    
+                            console.log("blocked profiles!!!!: " + blockedProfiles);
+                            console.log("comment: " + newComment);
+        
+                            if (!blockedProfiles.includes(c.user_id) && !c.comment_is_anonymous && !comment_list.includes(newComment)) {
+                                comment_list.push(newComment);
+                            }
+                        })
+
+                        // getUser(convertToUser(c.user_id))
+                        // .then((res) => {
+                        //     for (const temp of res.blocked) {
+                        //         if (temp != tempid && !c.comment_is_anonymous && !comment_list.includes(newComment)) {
+                        //             comment_list.push(newComment);
+                        //         }
+                        //     }
+
+                        //     if (res.blocked == null && !c.comment_is_anonymous && !comment_list.includes(newComment)) {
+                        //         comment_list.push(newComment);
+                        //     }
+                        // })
+                    })
+                    .catch(err => console.error(`Error: ${err}`));
+
+                    //comment_list.push(newComment);
                 })
 
-                //console.log(comment_list);
+                console.log("comment list!!!: " + comment_list);
                 setComments(comment_list);
                 //console.log(comments);
             })

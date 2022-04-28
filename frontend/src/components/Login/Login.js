@@ -141,11 +141,11 @@ export default class Login extends Component {
                             <input type="password" className="form-control" placeholder="Enter password" onChange={this.handleChange.bind(this, "password")} value={this.state.fields["password"]}/>
                         </div>
                         <button className="btn btn-primary btn-block">Log In</button>
-                        <div className="forgot-password">
+                        {/* <div className="forgot-password">
                             <p>
                                 <a href="#">Forgot Password?</a>
                             </p>
-                        </div>
+                        </div> */}
 
                         <div className="signup">
                             <p>
